@@ -11,10 +11,6 @@ import com.mercadopago.android.px.R;
 import com.mercadopago.android.px.model.PaymentMethod;
 import com.mercadopago.android.px.util.MPAnimationUtils;
 
-/**
- * Created by vaserber on 10/21/16.
- */
-
 public class CardView {
 
     public static final String CARD_SIDE_FRONT = "front";
@@ -229,5 +225,9 @@ public class CardView {
         } else if (mCardSideState.equals(CARD_SIDE_BACK)) {
             mBackCardView.show();
         }
+    }
+
+    public void onPaymentMethodSet() {
+        mFrontCardView.onPaymentMethodSet();
     }
 }

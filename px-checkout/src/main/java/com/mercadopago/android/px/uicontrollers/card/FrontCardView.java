@@ -24,10 +24,6 @@ import com.mercadopago.android.px.util.MPCardUIUtils;
 import com.mercadopago.android.px.util.ScaleUtil;
 import com.mercadopago.android.px.util.ViewUtils;
 
-/**
- * Created by vaserber on 9/29/16.
- */
-
 public class FrontCardView {
 
     public static final String BASE_NUMBER_CARDHOLDER = "•••• •••• •••• ••••";
@@ -417,7 +413,7 @@ public class FrontCardView {
         setFontColor(fontColor, textView);
     }
 
-    private void onPaymentMethodSet() {
+    public void onPaymentMethodSet() {
         if (mPaymentMethod == null) {
             return;
         }

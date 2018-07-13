@@ -9,10 +9,6 @@ import com.mercadopago.android.px.R;
 import com.mercadopago.android.px.uicontrollers.identification.IdentificationView;
 import com.mercadopago.android.px.util.MPCardMaskUtil;
 
-/**
- * Created by vaserber on 10/20/16.
- */
-
 public class IdentificationCardView extends IdentificationView {
 
     public IdentificationCardView(Context context) {
