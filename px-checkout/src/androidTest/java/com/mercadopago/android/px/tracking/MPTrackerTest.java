@@ -1,4 +1,4 @@
-package com.mercadopago.tracking;
+package com.mercadopago.android.px.tracking;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -6,8 +6,9 @@ import android.support.annotation.Nullable;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
+
+import com.mercadopago.android.px.tracking.mocks.MPMockedTrackingService;
 import com.mercadopago.tracking.listeners.TracksListener;
-import com.mercadopago.tracking.mocks.MPMockedTrackingService;
 import com.mercadopago.tracking.model.ActionEvent;
 import com.mercadopago.tracking.model.AppInformation;
 import com.mercadopago.tracking.model.DeviceInfo;

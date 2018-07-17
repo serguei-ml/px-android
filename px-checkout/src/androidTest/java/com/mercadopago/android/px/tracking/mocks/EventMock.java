@@ -1,4 +1,4 @@
-package com.mercadopago.tracking.mocks;
+package com.mercadopago.android.px.tracking.mocks;
 
 import android.support.test.InstrumentationRegistry;
 import com.mercadopago.tracking.model.ScreenViewEvent;

@@ -1,9 +1,10 @@
-package com.mercadopago.tracking;
+package com.mercadopago.android.px.tracking;
 
 import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
-import com.mercadopago.tracking.mocks.MPMockedTrackingService;
-import com.mercadopago.tracking.mocks.TrackingStaticMock;
+
+import com.mercadopago.android.px.tracking.mocks.MPMockedTrackingService;
+import com.mercadopago.android.px.tracking.mocks.TrackingStaticMock;
 import com.mercadopago.tracking.model.Event;
 import com.mercadopago.tracking.model.EventTrackIntent;
 import com.mercadopago.tracking.model.ScreenViewEvent;

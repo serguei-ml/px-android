@@ -1,4 +1,4 @@
-package com.mercadopago.tracking;
+package com.mercadopago.android.px.tracking;
 
 import com.mercadopago.tracking.model.AppInformation;
 import org.junit.Test;
