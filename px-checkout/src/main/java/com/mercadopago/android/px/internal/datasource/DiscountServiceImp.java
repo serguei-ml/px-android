@@ -31,12 +31,17 @@ public class DiscountServiceImp implements DiscountRepository {
     }
 
     @Override
-    public void configureDiscountManually(@Nullable final Discount discount, @Nullable final Campaign campaign) {
+    public void configureMerchantDiscountManually(@Nullable final Discount discount, @Nullable final Campaign campaign) {
         final CheckoutStore store = CheckoutStore.getInstance();
         //TODO remove when discount signature change.
         if (store.hasPaymentProcessor() || !store.getPaymentMethodPluginList().isEmpty()) {
             discountStorageService.configureDiscountManually(discount, campaign);
         }
+    }
+
+    @Override
+    public void configureDiscountManually(@Nullable final Discount discount, @Nullable final Campaign campaign) {
+        discountStorageService.configureDiscountManually(discount, campaign);
     }
 
     @Override
@@ -73,6 +78,12 @@ public class DiscountServiceImp implements DiscountRepository {
     @Override
     public Campaign getCampaign() {
         return discountStorageService.getCampaign();
+    }
+
+    @Nullable
+    @Override
+    public Campaign getCampaign(final String discountId) {
+        return discountStorageService.getCampaign(discountId);
     }
 
     @Override

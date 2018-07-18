@@ -192,7 +192,7 @@ public class CheckoutPresenter extends MvpPresenter<CheckoutView, CheckoutProvid
             final Discount discount = state.paymentDataInput.getDiscount();
             //TODO add campaign
             if (discount != null) {
-                discountRepository.configureDiscountManually(discount, new Campaign.Builder(discount.getId()).build());
+                discountRepository.configureMerchantDiscountManually(discount, new Campaign.Builder(discount.getId()).build());
             }
         } else if (state.paymentResultInput != null && state.paymentResultInput.getPaymentData() != null) {
             userSelectionRepository.select(state.paymentResultInput.getPaymentData().getPaymentMethod());
@@ -202,7 +202,7 @@ public class CheckoutPresenter extends MvpPresenter<CheckoutView, CheckoutProvid
             final Discount discount = state.paymentResultInput.getPaymentData().getDiscount();
             //TODO add campaign
             if (discount != null) {
-                discountRepository.configureDiscountManually(discount, new Campaign.Builder(discount.getId()).build());
+                discountRepository.configureMerchantDiscountManually(discount, new Campaign.Builder(discount.getId()).build());
             }
         }
     }

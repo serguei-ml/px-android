@@ -8,12 +8,12 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.mercadolibre.android.ui.widgets.MeliButton;
 import com.mercadolibre.android.ui.widgets.MeliDialog;
 import com.mercadolibre.android.ui.widgets.MeliSpinner;
 import com.mercadolibre.android.ui.widgets.TextField;
 import com.mercadopago.android.px.R;
-import com.mercadopago.android.px.callbacks.OnDiscountRetrieved;
 import com.mercadopago.android.px.internal.di.Session;
 import com.mercadopago.android.px.model.Discount;
 import com.mercadopago.android.px.services.util.TextUtil;
@@ -34,7 +34,12 @@ public class CodeDiscountDialog extends MeliDialog implements View.OnClickListen
 
     private CodeDiscountPresenter presenter;
 
-    private OnDiscountRetrieved onDiscountRetrieved;
+    protected OnDiscountRetrieved onDiscountRetrieved;
+
+    public interface OnDiscountRetrieved {
+
+        void onDiscountRetrieved();
+    }
 
     public static void showDialog(@NonNull final FragmentManager supportFragmentManager) {
         final DialogFragment codeDiscountDialog = new CodeDiscountDialog();
@@ -112,8 +117,7 @@ public class CodeDiscountDialog extends MeliDialog implements View.OnClickListen
             onDiscountRetrieved.onDiscountRetrieved();
         }
 
-        final View back = new CongratsCodeDiscount(new CongratsCodeDiscount.Props(discount), new Actions())
-            .render(container);
+        final View back = new CongratsCodeDiscount(new CongratsCodeDiscount.Props(discount), new Actions()).render(container);
         FlipModalAnimationUtil.flipView(container, inputLayout, back);
     }
 
@@ -124,7 +128,7 @@ public class CodeDiscountDialog extends MeliDialog implements View.OnClickListen
     }
 
     public class Actions {
-        public void closeDialog() {
+        public void onButtonClicked() {
             dismiss();
         }
     }

@@ -65,7 +65,7 @@ public final class Session extends ApplicationModule
         configuration.configure(mercadoPagoCheckout.getFlowPreference());
         configuration.configurePrivateKey(mercadoPagoCheckout.getPrivateKey());
         discountRepository
-            .configureDiscountManually(mercadoPagoCheckout.getDiscount(), mercadoPagoCheckout.getCampaign());
+            .configureMerchantDiscountManually(mercadoPagoCheckout.getDiscount(), mercadoPagoCheckout.getCampaign());
 
         final CheckoutPreference checkoutPreference = mercadoPagoCheckout.getCheckoutPreference();
         if (checkoutPreference != null) {

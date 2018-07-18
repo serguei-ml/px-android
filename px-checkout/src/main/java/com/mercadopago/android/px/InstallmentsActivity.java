@@ -14,7 +14,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import com.google.gson.reflect.TypeToken;
 import com.mercadopago.android.px.adapters.PayerCostsAdapter;
-import com.mercadopago.android.px.callbacks.OnDiscountRetrieved;
 import com.mercadopago.android.px.callbacks.OnSelectedCallback;
 import com.mercadopago.android.px.codediscount.CodeDiscountDialog;
 import com.mercadopago.android.px.controllers.CheckoutTimer;
@@ -61,7 +60,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class InstallmentsActivity extends MercadoPagoBaseActivity
-    implements InstallmentsActivityView, OnDiscountRetrieved, TimerObserver {
+    implements InstallmentsActivityView, CodeDiscountDialog.OnDiscountRetrieved, TimerObserver {
 
     protected InstallmentsPresenter presenter;
 
@@ -511,6 +510,7 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity
 
     @Override
     public void onDiscountRetrieved() {
-        //TODO actualizar cuotas
+        //TODO update installments and groups
+        presenter.showAmount();
     }
 }
