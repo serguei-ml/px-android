@@ -2,7 +2,8 @@ package com.mercadopago.android.px.tracking.services;
 
 import android.content.Context;
 import android.util.Log;
-import com.mercadopago.android.px.tracking.core.Settings;
+
+import com.mercadopago.android.px.core.Settings;
 import com.mercadopago.android.px.tracking.model.EventTrackIntent;
 import com.mercadopago.android.px.tracking.model.PaymentIntent;
 import com.mercadopago.android.px.tracking.model.TrackingIntent;
@@ -13,10 +14,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-/**
- * Created by vaserber on 6/5/17.
- */
 
 public class MPTrackingServiceImpl implements MPTrackingService {
 

@@ -3,7 +3,8 @@ package com.mercadopago.android.px.tracking.utils;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import com.mercadopago.android.px.tracking.core.Settings;
+
+import com.mercadopago.android.px.services.core.Settings;
 import com.mercadopago.android.px.tracking.core.TLSSocketFactory;
 import java.io.File;
 import java.util.concurrent.TimeUnit;

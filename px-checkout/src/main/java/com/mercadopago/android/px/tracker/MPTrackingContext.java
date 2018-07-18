@@ -3,7 +3,7 @@ package com.mercadopago.android.px.tracker;
 import android.content.Context;
 import android.os.Build;
 import com.mercadopago.android.px.model.Fingerprint;
-import com.mercadopago.android.px.services.core.Settings;
+import com.mercadopago.android.px.core.Settings;
 import com.mercadopago.android.px.tracking.model.AppInformation;
 import com.mercadopago.android.px.tracking.model.DeviceInfo;
 import com.mercadopago.android.px.tracking.model.Event;

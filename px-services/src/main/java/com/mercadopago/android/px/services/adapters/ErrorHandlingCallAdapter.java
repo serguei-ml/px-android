@@ -8,7 +8,6 @@ import com.mercadopago.android.px.model.Payment;
 import com.mercadopago.android.px.model.Token;
 import com.mercadopago.android.px.services.callbacks.Callback;
 import com.mercadopago.android.px.services.util.ApiUtil;
-import com.mercadopago.android.px.tracking.tracker.MPTracker;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
@@ -81,12 +80,14 @@ public class ErrorHandlingCallAdapter {
 
                                     if (!mPayment.isCardPaymentType(mPayment.getPaymentTypeId())) {
                                         //FIXME no puede ser Long
-                                        MPTracker.getInstance()
-                                            .trackPayment(new Long(mPayment.getId()), mPayment.getPaymentTypeId());
+                                        //FIXME 18/07/2018 ver donde trackear ésto.
+                                        /*MPTracker.getInstance()
+                                            .trackPayment(new Long(mPayment.getId()), mPayment.getPaymentTypeId());*/
                                     }
                                 } else if (body instanceof Token) {
                                     Token mToken = (Token) body;
-                                    MPTracker.getInstance().trackToken(mToken.getId());
+                                    //FIXME 18/07/2018 ver donde trackear ésto.
+                                    //MPTracker.getInstance().trackToken(mToken.getId());
                                 }
                                 callback.success(body);
                             } else {
