@@ -22,7 +22,7 @@ import com.mercadopago.android.px.model.PaymentMethod;
 import com.mercadopago.android.px.plugins.model.PaymentMethodInfo;
 import com.mercadopago.android.px.tracker.FlowHandler;
 import com.mercadopago.android.px.tracker.MPTrackingContext;
-import com.mercadopago.android.px.tracking.model.ScreenViewEvent;
+import com.mercadopago.android.px.tracking.internal.model.ScreenViewEvent;
 
 public class PaymentMethodPluginActivity extends AppCompatActivity implements ActionDispatcher {
 

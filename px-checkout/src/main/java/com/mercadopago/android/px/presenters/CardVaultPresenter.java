@@ -20,7 +20,7 @@ import com.mercadopago.android.px.mvp.MvpPresenter;
 import com.mercadopago.android.px.mvp.TaggedCallback;
 import com.mercadopago.android.px.providers.CardVaultProvider;
 import com.mercadopago.android.px.services.exceptions.ApiException;
-import com.mercadopago.android.px.tracking.utils.TrackingUtil;
+import com.mercadopago.android.px.tracking.internal.utils.TrackingUtil;
 import com.mercadopago.android.px.views.CardVaultView;
 import com.mercadopago.android.px.util.ApiUtil;
 import com.mercadopago.android.px.util.TextUtils;

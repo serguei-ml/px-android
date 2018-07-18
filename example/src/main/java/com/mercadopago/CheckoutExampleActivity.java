@@ -11,7 +11,7 @@ import com.mercadopago.android.px.core.CheckoutLazyBuilder;
 import com.mercadopago.android.px.core.MercadoPagoCheckout;
 import com.mercadopago.android.px.customviews.MPButton;
 import com.mercadopago.android.px.core.Settings;
-import com.mercadopago.android.px.tracking.constants.TrackingEnvironments;
+import com.mercadopago.android.px.tracking.internal.constants.TrackingEnvironments;
 import com.mercadopago.android.px.utils.ExamplesUtils;
 import com.mercadopago.example.R;
 

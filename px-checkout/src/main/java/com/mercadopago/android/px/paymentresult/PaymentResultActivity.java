@@ -48,7 +48,7 @@ import com.mercadopago.android.px.preferences.PaymentResultScreenPreference;
 import com.mercadopago.android.px.preferences.ServicePreference;
 import com.mercadopago.android.px.services.exceptions.ApiException;
 import com.mercadopago.android.px.tracker.MPTrackingContext;
-import com.mercadopago.android.px.tracking.model.ScreenViewEvent;
+import com.mercadopago.android.px.tracking.internal.model.ScreenViewEvent;
 import com.mercadopago.android.px.util.ApiUtil;
 import com.mercadopago.android.px.util.ErrorUtil;
 import com.mercadopago.android.px.util.JsonUtil;

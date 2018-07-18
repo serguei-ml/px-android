@@ -11,7 +11,7 @@ import com.mercadopago.android.px.model.PaymentResult;
 import com.mercadopago.android.px.model.Sites;
 import com.mercadopago.android.px.mvp.TaggedCallback;
 import com.mercadopago.android.px.services.exceptions.ApiException;
-import com.mercadopago.android.px.tracking.model.ScreenViewEvent;
+import com.mercadopago.android.px.tracking.internal.model.ScreenViewEvent;
 import java.math.BigDecimal;
 import junit.framework.Assert;
 import org.junit.Test;

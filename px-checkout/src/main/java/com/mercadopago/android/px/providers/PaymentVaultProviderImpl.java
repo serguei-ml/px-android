@@ -8,7 +8,7 @@ import com.mercadopago.android.px.core.MercadoPagoServicesAdapter;
 import com.mercadopago.android.px.model.PaymentMethodSearch;
 import com.mercadopago.android.px.model.PaymentMethodSearchItem;
 import com.mercadopago.android.px.tracker.Tracker;
-import com.mercadopago.android.px.tracking.tracker.MPTracker;
+import com.mercadopago.android.px.tracking.MPTracker;
 import com.mercadopago.android.px.util.MercadoPagoESC;
 import com.mercadopago.android.px.util.MercadoPagoESCImpl;
 import com.mercadopago.android.px.util.TextUtils;

@@ -1,6 +1,6 @@
 package com.mercadopago.android.px.core;
 
-import com.mercadopago.android.px.tracking.constants.TrackingEnvironments;
+import com.mercadopago.android.px.tracking.internal.constants.TrackingEnvironments;
 
 public class Settings {
 
