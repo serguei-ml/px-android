@@ -4,11 +4,12 @@ import android.content.Context;
 import android.util.Log;
 
 import com.mercadopago.android.px.core.Settings;
+import com.mercadopago.android.px.services.util.HttpClientUtil;
 import com.mercadopago.android.px.tracking.model.EventTrackIntent;
 import com.mercadopago.android.px.tracking.model.PaymentIntent;
 import com.mercadopago.android.px.tracking.model.TrackingIntent;
-import com.mercadopago.android.px.tracking.utils.HttpClientUtil;
 import com.mercadopago.android.px.tracking.utils.JsonConverter;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -21,10 +22,10 @@ public class MPTrackingServiceImpl implements MPTrackingService {
 
     private Retrofit getRetrofit(Context context) {
         return new Retrofit.Builder()
-            .client(HttpClientUtil.getClient(context))
-            .addConverterFactory(GsonConverterFactory.create(JsonConverter.getInstance().getGson()))
-            .baseUrl(BASE_URL)
-            .build();
+                .client(HttpClientUtil.getClient(context, 20, 20, 20))
+                .addConverterFactory(GsonConverterFactory.create(JsonConverter.getInstance().getGson()))
+                .baseUrl(BASE_URL)
+                .build();
     }
 
     @Override
@@ -77,7 +78,7 @@ public class MPTrackingServiceImpl implements MPTrackingService {
         TrackingService service = retrofit.create(TrackingService.class);
 
         Call<Void> call =
-            service.trackEvents(Settings.eventsTrackingVersion, Settings.servicesVersion, publicKey, eventTrackIntent);
+                service.trackEvents(Settings.eventsTrackingVersion, Settings.servicesVersion, publicKey, eventTrackIntent);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -95,11 +96,11 @@ public class MPTrackingServiceImpl implements MPTrackingService {
 
     @Override
     public void trackEvents(String publicKey, EventTrackIntent eventTrackIntent, Context context,
-        Callback<Void> callback) {
+                            Callback<Void> callback) {
         Retrofit retrofit = getRetrofit(context);
         TrackingService service = retrofit.create(TrackingService.class);
         Call<Void> call =
-            service.trackEvents(Settings.eventsTrackingVersion, Settings.servicesVersion, publicKey, eventTrackIntent);
+                service.trackEvents(Settings.eventsTrackingVersion, Settings.servicesVersion, publicKey, eventTrackIntent);
         call.enqueue(callback);
     }
 }
