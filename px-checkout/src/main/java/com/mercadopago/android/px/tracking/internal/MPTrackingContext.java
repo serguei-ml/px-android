@@ -8,7 +8,7 @@ import com.mercadopago.android.px.tracking.internal.model.Event;
 import com.mercadopago.android.px.tracking.internal.model.Fingerprint;
 import com.mercadopago.android.px.tracking.MPTracker;
 
-public class MPTrackingContext {
+/* default */ class MPTrackingContext {
 
     private Context context;
     private String publicKey;
@@ -17,13 +17,13 @@ public class MPTrackingContext {
     private String trackingStrategy;
 
     private MPTrackingContext(Builder builder) {
-        this.context = builder.context;
-        this.publicKey = builder.publicKey;
-        this.deviceInfo = initializeDeviceInfo();
-        this.trackingStrategy = builder.trackingStrategy;
+        context = builder.context;
+        publicKey = builder.publicKey;
+        deviceInfo = initializeDeviceInfo();
+        trackingStrategy = builder.trackingStrategy;
 
         if (!builder.publicKey.isEmpty() && builder.version != null) {
-            this.appInformation = initializeAppInformation(builder.version);
+            appInformation = initializeAppInformation(builder.version);
         }
     }
 
@@ -45,36 +45,36 @@ public class MPTrackingContext {
             .build();
     }
 
-    public void trackEvent(Event event) {
+    /* default */ void trackEvent(Event event) {
         MPTracker.getInstance().trackEvent(publicKey, appInformation, deviceInfo, event, context, trackingStrategy);
     }
 
-    public void clearExpiredTracks() {
+    /* default */ void clearExpiredTracks() {
         MPTracker.getInstance().clearExpiredTracks();
     }
 
-    public static class Builder {
+    /* default */ static class Builder {
         private Context context;
         private String publicKey;
         private String version;
         private String trackingStrategy;
 
-        public Builder(Context context, String publicKey) {
+        /* default */ Builder(Context context, String publicKey) {
             this.context = context;
             this.publicKey = publicKey;
         }
 
-        public Builder setVersion(String version) {
+        /* default */ Builder setVersion(String version) {
             this.version = version;
             return this;
         }
 
-        public Builder setTrackingStrategy(String trackingStrategy) {
+        /* default */ Builder setTrackingStrategy(String trackingStrategy) {
             this.trackingStrategy = trackingStrategy;
             return this;
         }
 
-        public MPTrackingContext build() {
+        /* default */ MPTrackingContext build() {
             return new MPTrackingContext(this);
         }
     }

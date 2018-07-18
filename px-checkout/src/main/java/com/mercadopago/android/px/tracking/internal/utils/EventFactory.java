@@ -4,10 +4,6 @@ import com.mercadopago.android.px.tracking.internal.model.ActionEvent;
 import com.mercadopago.android.px.tracking.internal.model.Event;
 import com.mercadopago.android.px.tracking.internal.model.ScreenViewEvent;
 
-/**
- * Created by marlanti on 8/7/17.
- */
-
 public class EventFactory {
 
     private static String NO_TRACKING_SUPPORTED_ERROR_MESSAGE = "Tracking not supported for that event type";

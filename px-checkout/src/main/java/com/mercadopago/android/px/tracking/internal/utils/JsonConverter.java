@@ -4,10 +4,6 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-/**
- * Created by vaserber on 6/5/17.
- */
-
 public class JsonConverter {
 
     private static JsonConverter mInstance = null;
