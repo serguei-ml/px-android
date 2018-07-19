@@ -1,9 +1,11 @@
 package com.mercadopago.android.px.presenters;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.mercadopago.android.px.callbacks.FailureRecovery;
 import com.mercadopago.android.px.callbacks.OnSelectedCallback;
+import com.mercadopago.android.px.callbacks.OnViewUpdated;
 import com.mercadopago.android.px.constants.PaymentMethods;
 import com.mercadopago.android.px.core.CheckoutStore;
 import com.mercadopago.android.px.core.MercadoPagoComponents;
@@ -79,14 +81,13 @@ public class PaymentVaultPresenter extends MvpPresenter<PaymentVaultView, Paymen
     public void initialize() {
         try {
             validateParameters();
-            initPaymentVaultFlow();
+            initPaymentVaultFlow(null);
         } catch (final IllegalStateException exception) {
             getView().showError(new MercadoPagoError(exception.getMessage(), false), "");
         }
     }
 
-    public void initPaymentVaultFlow() {
-
+    public void initPaymentVaultFlow(@Nullable final OnViewUpdated onViewUpdated) {
         initializeAmountRow();
 
         groupsRepository.getGroups().enqueue(new Callback<PaymentMethodSearch>() {
@@ -100,13 +101,16 @@ public class PaymentVaultPresenter extends MvpPresenter<PaymentVaultView, Paymen
 
             @Override
             public void failure(final ApiException apiException) {
-                getView()
-                        .showError(new MercadoPagoError(apiException, ApiException.ErrorCodes.PAYMENT_METHOD_NOT_FOUND),
-                                ApiException.ErrorCodes.PAYMENT_METHOD_NOT_FOUND);
+                if (onViewUpdated != null) {
+                    onViewUpdated.onFailure();
+                } else {
+                    getView().showError(new MercadoPagoError(apiException, ApiException.ErrorCodes.PAYMENT_METHOD_NOT_FOUND), ApiException.ErrorCodes.PAYMENT_METHOD_NOT_FOUND);
+                }
+
                 setFailureRecovery(new FailureRecovery() {
                     @Override
                     public void recover() {
-                        initPaymentVaultFlow();
+                        initPaymentVaultFlow(onViewUpdated);
                     }
                 });
             }
@@ -275,7 +279,7 @@ public class PaymentVaultPresenter extends MvpPresenter<PaymentVaultView, Paymen
         return selectedCard;
     }
 
-    private Card getCardById(final List<Card> savedCards, final String cardId) {
+    private Card getCardById(final Iterable<Card> savedCards, final String cardId) {
         Card foundCard = null;
         for (final Card card : savedCards) {
             if (card.getId().equals(cardId)) {
@@ -505,8 +509,14 @@ public class PaymentVaultPresenter extends MvpPresenter<PaymentVaultView, Paymen
         getView().finishPaymentMethodSelection(userSelectionRepository.getPaymentMethod());
     }
 
-    public void showAmount() {
-        initPaymentVaultFlow();
+    public void onDiscountRetrieved(final OnViewUpdated onViewUpdated) {
+        //TODO call to 
+        getView().cleanPaymentMethodOptions();
+        initPaymentVaultFlow(onViewUpdated);
+        onViewUpdated.onSuccess(discountRepository.getDiscount());
+    }
+
+    public void updateAmount() {
         getView().showAmount(discountRepository, configuration.getCheckoutPreference().getTotalAmount(), configuration.getCheckoutPreference().getSite());
     }
 }

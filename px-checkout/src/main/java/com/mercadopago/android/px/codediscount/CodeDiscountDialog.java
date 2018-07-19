@@ -14,6 +14,8 @@ import com.mercadolibre.android.ui.widgets.MeliDialog;
 import com.mercadolibre.android.ui.widgets.MeliSpinner;
 import com.mercadolibre.android.ui.widgets.TextField;
 import com.mercadopago.android.px.R;
+import com.mercadopago.android.px.callbacks.OnViewUpdated;
+import com.mercadopago.android.px.components.Action;
 import com.mercadopago.android.px.internal.di.Session;
 import com.mercadopago.android.px.model.Discount;
 import com.mercadopago.android.px.services.util.TextUtil;
@@ -35,10 +37,10 @@ public class CodeDiscountDialog extends MeliDialog implements View.OnClickListen
     private CodeDiscountPresenter presenter;
 
     protected OnDiscountRetrieved onDiscountRetrieved;
+    protected OnViewUpdated onViewUpdated;
 
     public interface OnDiscountRetrieved {
-
-        void onDiscountRetrieved();
+        void onDiscountRetrieved(OnViewUpdated onViewUpdated);
     }
 
     public static void showDialog(@NonNull final FragmentManager supportFragmentManager) {
@@ -59,11 +61,6 @@ public class CodeDiscountDialog extends MeliDialog implements View.OnClickListen
         final Session session = Session.getSession(view.getContext());
         presenter = new CodeDiscountPresenter(session.getDiscountRepository(), session.getAmountRepository());
         presenter.attachView(this);
-    }
-
-    @Override
-    public void showCodeError() {
-        input.setError(R.string.px_discount_error_check_this_data);
     }
 
     private boolean isValidInput() {
@@ -87,22 +84,39 @@ public class CodeDiscountDialog extends MeliDialog implements View.OnClickListen
             showLoading();
             presenter.getDiscountForCode(input.getText());
         } else {
-            showCodeError();
+            processCodeError();
         }
     }
 
-    @Override
-    public void processError() {
+    public void processError(@NonNull final String errorMessage) {
         confirmButton.setState(NORMAL);
         input.setEnabled(true);
         progress.setVisibility(View.GONE);
-        showCodeError();
+        input.setError(errorMessage);
     }
 
     @Override
     public void onAttach(final Context context) {
         onDiscountRetrieved = (OnDiscountRetrieved) context;
+        onViewUpdated = new OnViewUpdated() {
+            @Override
+            public void onSuccess(@NonNull final Discount discount) {
+                final View back = new CongratsCodeDiscount(new CongratsCodeDiscount.Props(discount), new Actions()).render(container);
+                FlipModalAnimationUtil.flipView(container, inputLayout, back);
+            }
+
+            @Override
+            public void onFailure() {
+                processError(getString(R.string.px_error_something_went_wrong_try_again));
+                //TODO add retry
+            }
+        };
         super.onAttach(context);
+    }
+
+    @Override
+    public void processCodeError() {
+        processError(getString(R.string.px_discount_error_check_this_data));
     }
 
     @Override
@@ -114,11 +128,8 @@ public class CodeDiscountDialog extends MeliDialog implements View.OnClickListen
     @Override
     public void processSuccess(@NonNull final Discount discount) {
         if (onDiscountRetrieved != null) {
-            onDiscountRetrieved.onDiscountRetrieved();
+            onDiscountRetrieved.onDiscountRetrieved(onViewUpdated);
         }
-
-        final View back = new CongratsCodeDiscount(new CongratsCodeDiscount.Props(discount), new Actions()).render(container);
-        FlipModalAnimationUtil.flipView(container, inputLayout, back);
     }
 
     @Override

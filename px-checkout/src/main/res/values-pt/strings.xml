@@ -239,6 +239,7 @@
     <string name="px_get_your_discount_amount">Agora pague sua compra e ganhe\n %1$s de desconto</string>
     <string name="px_get_your_discount_percent">Agora pague sua compra e ganhe %1$s%% de desconto</string>
     <string name="px_discount_error_check_this_data">Verificar esses dados</string>
+    <string name="px_error_something_went_wrong_try_again">Algo saiu errado, tente novamente.</string>
 
     <!-- Unlock Card -->
     <string name="px_text_unlock_card_start">Lembre-se de</string>

@@ -76,12 +76,6 @@ public class FullSummary extends Component<SummaryComponent.SummaryProps, Void> 
             summaryBuilder.addSummaryProductDetail(props.summaryModel.getItemsAmount(), getItemTitle(),
                 provider.getDefaultTextColor());
 
-            if (isValidAmount(props.summaryModel.getPayerCostTotalAmount()) &&
-                getPayerCostChargesAmount().compareTo(BigDecimal.ZERO) > 0) {
-                summaryBuilder.addSummaryChargeDetail(getPayerCostChargesAmount(), provider.getSummaryChargesTitle(),
-                    provider.getDefaultTextColor());
-            }
-
             if (!isEmpty(reviewAndConfirmPreferences.getDisclaimerText())) {
                 summaryBuilder.setDisclaimerText(reviewAndConfirmPreferences.getDisclaimerText())
                     .setDisclaimerColor(provider.getDisclaimerTextColor());

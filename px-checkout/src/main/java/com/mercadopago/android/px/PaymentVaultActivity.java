@@ -15,7 +15,9 @@ import android.view.View;
 
 import com.mercadopago.android.px.adapters.PaymentMethodSearchItemAdapter;
 import com.mercadopago.android.px.callbacks.OnSelectedCallback;
+import com.mercadopago.android.px.callbacks.OnViewUpdated;
 import com.mercadopago.android.px.codediscount.CodeDiscountDialog;
+import com.mercadopago.android.px.codediscount.CodeDiscountDialog.OnDiscountRetrieved;
 import com.mercadopago.android.px.controllers.CheckoutTimer;
 import com.mercadopago.android.px.core.CheckoutStore;
 import com.mercadopago.android.px.core.MercadoPagoCheckout;
@@ -70,7 +72,7 @@ import java.util.List;
 import java.util.Map;
 
 public class PaymentVaultActivity extends MercadoPagoBaseActivity
-        implements PaymentVaultView, CodeDiscountDialog.OnDiscountRetrieved, TimerObserver {
+        implements PaymentVaultView, OnDiscountRetrieved, TimerObserver {
 
     public static final int COLUMN_SPACING_DP_VALUE = 20;
     public static final int COLUMNS = 2;
@@ -325,9 +327,8 @@ public class PaymentVaultActivity extends MercadoPagoBaseActivity
     }
 
     @Override
-    public void onActivityResult(final int requestCode, final int resultCode,final Intent data) {
-        presenter.showAmount();
-
+    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        presenter.updateAmount();
         if (requestCode == MercadoPagoComponents.Activities.CARD_VAULT_REQUEST_CODE) {
             resolveCardRequest(resultCode, data);
         } else if (requestCode == MercadoPagoComponents.Activities.PAYMENT_METHODS_REQUEST_CODE) {
@@ -352,7 +353,7 @@ public class PaymentVaultActivity extends MercadoPagoBaseActivity
         }
     }
 
-    private void resolveErrorRequest(final int resultCode,final Intent data) {
+    private void resolveErrorRequest(final int resultCode, final Intent data) {
         presenter.onHookReset();
         if (resultCode == RESULT_OK) {
             recoverFromFailure();
@@ -583,8 +584,6 @@ public class PaymentVaultActivity extends MercadoPagoBaseActivity
 
     @Override
     protected void onResume() {
-        //TODO put this method in onActivityResult
-        //presenter.showAmount();
         mActivityActive = true;
         super.onResume();
     }
@@ -665,8 +664,7 @@ public class PaymentVaultActivity extends MercadoPagoBaseActivity
     }
 
     @Override
-    public void onDiscountRetrieved() {
-        //TODO update groups. Service groups could fail.
-        presenter.showAmount();
+    public void onDiscountRetrieved(final OnViewUpdated onViewUpdated) {
+        presenter.onDiscountRetrieved(onViewUpdated);
     }
 }

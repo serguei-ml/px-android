@@ -42,7 +42,7 @@ class CodeDiscountPresenter extends MvpPresenter<CodeDiscountView, DiscountRepos
                     @Override
                     public void failure(final ApiException apiException) {
                         if (isViewAttached()) {
-                            getView().processError();
+                            getView().processCodeError();
                         }
                     }
                 });
