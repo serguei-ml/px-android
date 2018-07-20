@@ -81,13 +81,13 @@ public class PaymentVaultPresenter extends MvpPresenter<PaymentVaultView, Paymen
     public void initialize() {
         try {
             validateParameters();
-            initPaymentVaultFlow(null);
+            initPaymentVaultFlow();
         } catch (final IllegalStateException exception) {
             getView().showError(new MercadoPagoError(exception.getMessage(), false), "");
         }
     }
 
-    public void initPaymentVaultFlow(@Nullable final OnViewUpdated onViewUpdated) {
+    public void initPaymentVaultFlow() {
         initializeAmountRow();
 
         groupsRepository.getGroups().enqueue(new Callback<PaymentMethodSearch>() {
@@ -101,23 +101,44 @@ public class PaymentVaultPresenter extends MvpPresenter<PaymentVaultView, Paymen
 
             @Override
             public void failure(final ApiException apiException) {
-                if (onViewUpdated != null) {
-                    onViewUpdated.onFailure();
-                } else {
-                    getView().showError(new MercadoPagoError(apiException, ApiException.ErrorCodes.PAYMENT_METHOD_NOT_FOUND), ApiException.ErrorCodes.PAYMENT_METHOD_NOT_FOUND);
-                }
-
+                getView().showError(new MercadoPagoError(apiException, ApiException.ErrorCodes.PAYMENT_METHOD_NOT_FOUND), ApiException.ErrorCodes.PAYMENT_METHOD_NOT_FOUND);
                 setFailureRecovery(new FailureRecovery() {
                     @Override
                     public void recover() {
-                        initPaymentVaultFlow(onViewUpdated);
+                        initPaymentVaultFlow();
                     }
                 });
             }
         });
     }
 
-    /* default */ void setFailureRecovery(FailureRecovery failureRecovery) {
+    public void initPaymentVaultFlow(@NonNull final OnViewUpdated onViewUpdated) {
+        initializeAmountRow();
+
+        groupsRepository.getGroups().enqueue(new Callback<PaymentMethodSearch>() {
+            @Override
+            public void success(final PaymentMethodSearch paymentMethodSearch) {
+                if (isViewAttached()) {
+                    PaymentVaultPresenter.this.paymentMethodSearch = paymentMethodSearch;
+                    onViewUpdated.onSuccess(discountRepository.getDiscount());
+                    initPaymentMethodSearch();
+                }
+            }
+
+            @Override
+            public void failure(final ApiException apiException) {
+                setFailureRecovery(new FailureRecovery() {
+                    @Override
+                    public void recover() {
+                        initPaymentVaultFlow(onViewUpdated);
+                    }
+                });
+                onViewUpdated.onFailure();
+            }
+        });
+    }
+
+    /* default */ void setFailureRecovery(final FailureRecovery failureRecovery) {
         this.failureRecovery = failureRecovery;
     }
 
@@ -507,13 +528,6 @@ public class PaymentVaultPresenter extends MvpPresenter<PaymentVaultView, Paymen
 
     public void onPaymentMethodReturned() {
         getView().finishPaymentMethodSelection(userSelectionRepository.getPaymentMethod());
-    }
-
-    public void onDiscountRetrieved(final OnViewUpdated onViewUpdated) {
-        //TODO call to 
-        getView().cleanPaymentMethodOptions();
-        initPaymentVaultFlow(onViewUpdated);
-        onViewUpdated.onSuccess(discountRepository.getDiscount());
     }
 
     public void updateAmount() {

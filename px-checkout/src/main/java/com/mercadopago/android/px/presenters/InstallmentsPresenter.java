@@ -147,6 +147,36 @@ public class InstallmentsPresenter extends MvpPresenter<InstallmentsActivityView
                 });
     }
 
+    private void getInstallmentsAsync(final OnViewUpdated onViewUpdated) {
+        getResourcesProvider().getInstallments(bin, amountRepository.getAmountToPay(), issuerId, paymentMethod.getId(),
+                new TaggedCallback<List<Installment>>(ApiUtil.RequestOrigin.GET_INSTALLMENTS) {
+                    @Override
+                    public void onSuccess(final List<Installment> installments) {
+                        if (installments.size() == 0) {
+                            getView().showError(getResourcesProvider().getNoInstallmentsFoundError(), "");
+                        } else if (installments.size() == 1) {
+                            resolvePayerCosts(installments.get(0).getPayerCosts());
+                            onViewUpdated.onSuccess(discountRepository.getDiscount());
+                        } else {
+                            getView().showError(getResourcesProvider().getMultipleInstallmentsFoundForAnIssuerError(), "");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(final MercadoPagoError mercadoPagoError) {
+                        setFailureRecovery(new FailureRecovery() {
+                            @Override
+                            public void recover() {
+                                getInstallmentsAsync(onViewUpdated);
+                            }
+                        });
+
+                        onViewUpdated.onFailure();
+                        getView().showError(mercadoPagoError, ApiUtil.RequestOrigin.GET_INSTALLMENTS);
+                    }
+                });
+    }
+
     public void setPaymentMethod(final PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
@@ -263,11 +293,7 @@ public class InstallmentsPresenter extends MvpPresenter<InstallmentsActivityView
     }
 
     public void onDiscountRetrieved(final OnViewUpdated onViewUpdated) {
-        onViewUpdated.onSuccess(discountRepository.getDiscount());
-        getInstallmentsAsync();
+        getInstallmentsAsync(onViewUpdated);
         getView().showAmount(discountRepository, amountRepository.getItemsPlusCharges(), configuration.getCheckoutPreference().getSite());
-
-        //TODO
-        //onViewUpdated.onFailure();
     }
 }

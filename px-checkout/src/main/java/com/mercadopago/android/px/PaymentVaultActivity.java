@@ -665,6 +665,7 @@ public class PaymentVaultActivity extends MercadoPagoBaseActivity
 
     @Override
     public void onDiscountRetrieved(final OnViewUpdated onViewUpdated) {
-        presenter.onDiscountRetrieved(onViewUpdated);
+        cleanPaymentMethodOptions();
+        presenter.initPaymentVaultFlow(onViewUpdated);
     }
 }
