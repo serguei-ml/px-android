@@ -153,7 +153,7 @@ public final class ExamplesUtils {
     }
 
     public static Builder createBase() {
-        return new Builder(DUMMY_MERCHANT_PUBLIC_KEY, DUMMY_PREFERENCE_ID);
+        return new Builder("APP_USR-2e257493-3b80-4b71-8547-c841d035e8f2", "241261708-cd353b1b-940f-493b-b960-10106a24203c");
     }
 
     private static Builder createBaseWithDecimals() {

@@ -72,6 +72,7 @@ public final class HttpClientUtil {
         final HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(Settings.OKHTTP_LOGGING);
 
+
         final OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder()
             .connectTimeout(connectTimeout, TimeUnit.SECONDS)
             .writeTimeout(writeTimeout, TimeUnit.SECONDS)

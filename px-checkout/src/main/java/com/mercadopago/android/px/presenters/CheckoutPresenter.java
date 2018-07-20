@@ -615,6 +615,7 @@ public class CheckoutPresenter extends MvpPresenter<CheckoutView, CheckoutProvid
         paymentData.setPayerCost(userSelectionRepository.getPayerCost());
         paymentData.setIssuer(state.selectedIssuer);
         paymentData.setDiscount(discountRepository.getDiscount());
+        paymentData.setCouponCode(discountRepository.getDiscountCode());
         paymentData.setToken(state.createdToken);
         paymentData.setTransactionAmount(amountRepository.getAmountToPay());
         final Payer payer = createPayerFrom(getCheckoutPreference().getPayer(), state.collectedPayer);

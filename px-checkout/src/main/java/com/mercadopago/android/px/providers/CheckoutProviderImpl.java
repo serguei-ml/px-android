@@ -7,6 +7,7 @@ import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.v4.provider.FontRequest;
 import android.support.v4.provider.FontsContractCompat;
+
 import com.mercadopago.android.px.R;
 import com.mercadopago.android.px.core.MercadoPagoServicesAdapter;
 import com.mercadopago.android.px.exceptions.ExceptionHandler;
@@ -38,9 +39,9 @@ public class CheckoutProviderImpl implements CheckoutProvider {
     private Handler mHandler;
 
     public CheckoutProviderImpl(Context context,
-        @NonNull String publicKey,
-        @NonNull String privateKey,
-        @NonNull final MercadoPagoESC mercadoPagoESC) {
+                                @NonNull String publicKey,
+                                @NonNull String privateKey,
+                                @NonNull final MercadoPagoESC mercadoPagoESC) {
         this.context = context;
         this.publicKey = publicKey;
         mercadoPagoServicesAdapter = new MercadoPagoServicesAdapter(context, publicKey, privateKey);
@@ -62,9 +63,9 @@ public class CheckoutProviderImpl implements CheckoutProvider {
 
     @Override
     public boolean manageEscForPayment(final PaymentData paymentData, final String paymentStatus,
-        final String paymentStatusDetail) {
+                                       final String paymentStatusDetail) {
         if (EscUtil.shouldDeleteEsc(paymentData, paymentStatus,
-            paymentStatusDetail)) {
+                paymentStatusDetail)) {
             mercadoPagoESC.deleteESC(paymentData.getToken().getCardId());
         } else if (EscUtil.shouldStoreESC(paymentData, paymentStatus, paymentStatusDetail)) {
             mercadoPagoESC.saveESC(paymentData.getToken().getCardId(), paymentData.getToken().getEsc());
@@ -83,7 +84,7 @@ public class CheckoutProviderImpl implements CheckoutProvider {
 
     private void fetchRegularFont() {
         FontsContractCompat.FontRequestCallback regularFontCallback = new FontsContractCompat
-            .FontRequestCallback() {
+                .FontRequestCallback() {
             @Override
             public void onTypefaceRetrieved(Typeface typeface) {
                 FontCache.setTypeface(FontCache.CUSTOM_REGULAR_FONT, typeface);
@@ -95,15 +96,15 @@ public class CheckoutProviderImpl implements CheckoutProvider {
             }
         };
         FontsContractCompat.requestFont(context,
-            getFontRequest(FontCache.FONT_ROBOTO, QueryBuilder.WIDTH_DEFAULT,
-                QueryBuilder.WEIGHT_DEFAULT, QueryBuilder.ITALIC_DEFAULT),
-            regularFontCallback,
-            getHandlerThreadHandler());
+                getFontRequest(FontCache.FONT_ROBOTO, QueryBuilder.WIDTH_DEFAULT,
+                        QueryBuilder.WEIGHT_DEFAULT, QueryBuilder.ITALIC_DEFAULT),
+                regularFontCallback,
+                getHandlerThreadHandler());
     }
 
     private void fetchLightFont() {
         FontsContractCompat.FontRequestCallback lightFontCallback = new FontsContractCompat
-            .FontRequestCallback() {
+                .FontRequestCallback() {
             @Override
             public void onTypefaceRetrieved(Typeface typeface) {
                 FontCache.setTypeface(FontCache.CUSTOM_LIGHT_FONT, typeface);
@@ -115,15 +116,15 @@ public class CheckoutProviderImpl implements CheckoutProvider {
             }
         };
         FontsContractCompat.requestFont(context,
-            getFontRequest(FontCache.FONT_ROBOTO, QueryBuilder.WIDTH_DEFAULT,
-                QueryBuilder.WEIGHT_LIGHT, QueryBuilder.ITALIC_DEFAULT),
-            lightFontCallback,
-            getHandlerThreadHandler());
+                getFontRequest(FontCache.FONT_ROBOTO, QueryBuilder.WIDTH_DEFAULT,
+                        QueryBuilder.WEIGHT_LIGHT, QueryBuilder.ITALIC_DEFAULT),
+                lightFontCallback,
+                getHandlerThreadHandler());
     }
 
     private void fetchMonoFont() {
         FontsContractCompat.FontRequestCallback monoFontCallback = new FontsContractCompat
-            .FontRequestCallback() {
+                .FontRequestCallback() {
             @Override
             public void onTypefaceRetrieved(Typeface typeface) {
                 FontCache.setTypeface(FontCache.CUSTOM_MONO_FONT, typeface);
@@ -135,25 +136,25 @@ public class CheckoutProviderImpl implements CheckoutProvider {
             }
         };
         FontsContractCompat.requestFont(context,
-            getFontRequest(FontCache.FONT_ROBOTO_MONO, QueryBuilder.WIDTH_DEFAULT,
-                QueryBuilder.WEIGHT_DEFAULT, QueryBuilder.ITALIC_DEFAULT),
-            monoFontCallback,
-            getHandlerThreadHandler());
+                getFontRequest(FontCache.FONT_ROBOTO_MONO, QueryBuilder.WIDTH_DEFAULT,
+                        QueryBuilder.WEIGHT_DEFAULT, QueryBuilder.ITALIC_DEFAULT),
+                monoFontCallback,
+                getHandlerThreadHandler());
     }
 
     private FontRequest getFontRequest(String fontName, int width, int weight, float italic) {
         QueryBuilder queryBuilder = new QueryBuilder(fontName)
-            .withWidth(width)
-            .withWeight(weight)
-            .withItalic(italic)
-            .withBestEffort(true);
+                .withWidth(width)
+                .withWeight(weight)
+                .withItalic(italic)
+                .withBestEffort(true);
         String query = queryBuilder.build();
 
         return new FontRequest(
-            "com.google.android.gms.fonts",
-            "com.google.android.gms",
-            query,
-            R.array.com_google_android_gms_fonts_certs);
+                "com.google.android.gms.fonts",
+                "com.google.android.gms",
+                query,
+                R.array.com_google_android_gms_fonts_certs);
     }
 
     private Handler getHandlerThreadHandler() {
@@ -167,7 +168,7 @@ public class CheckoutProviderImpl implements CheckoutProvider {
 
     @Override
     public void getCheckoutPreference(String checkoutPreferenceId,
-        final TaggedCallback<CheckoutPreference> taggedCallback) {
+                                      final TaggedCallback<CheckoutPreference> taggedCallback) {
         mercadoPagoServicesAdapter.getCheckoutPreference(checkoutPreferenceId, new Callback<CheckoutPreference>() {
             @Override
             public void success(CheckoutPreference checkoutPreference) {
@@ -193,24 +194,25 @@ public class CheckoutProviderImpl implements CheckoutProvider {
 
     @Override
     public void createPayment(String transactionId, CheckoutPreference checkoutPreference, PaymentData paymentData,
-        Boolean binaryMode, String customerId, TaggedCallback<Payment> taggedCallback) {
+                              Boolean binaryMode, String customerId, TaggedCallback<Payment> taggedCallback) {
         createPaymentInMercadoPago(transactionId, checkoutPreference, paymentData, binaryMode, customerId,
-            taggedCallback);
+                taggedCallback);
     }
 
-    private void createPaymentInMercadoPago(String transactionId,
-        CheckoutPreference checkoutPreference,
-        PaymentData paymentData,
-        Boolean binaryMode, String customerId,
-        final TaggedCallback<Payment> taggedCallback) {
-        PaymentBody paymentBody =
-            createPaymentBody(transactionId, checkoutPreference, paymentData, binaryMode, customerId);
+    private void createPaymentInMercadoPago(final String transactionId,
+                                            final CheckoutPreference checkoutPreference,
+                                            final PaymentData paymentData,
+                                            final Boolean binaryMode,
+                                            final String customerId,
+                                            final TaggedCallback<Payment> taggedCallback) {
+        final PaymentBody paymentBody =
+                createPaymentBody(transactionId, checkoutPreference, paymentData, binaryMode, customerId);
         mercadoPagoServicesAdapter.createPayment(paymentBody, taggedCallback);
     }
 
-    private PaymentBody createPaymentBody(String transactionId, CheckoutPreference checkoutPreference,
-        PaymentData paymentData, Boolean binaryMode, String customerId) {
-        PaymentBody paymentBody = new PaymentBody();
+    private PaymentBody createPaymentBody(final String transactionId, final CheckoutPreference checkoutPreference,
+                                          final PaymentData paymentData, final Boolean binaryMode, final String customerId) {
+        final PaymentBody paymentBody = new PaymentBody();
         paymentBody.setPrefId(checkoutPreference.getId());
         paymentBody.setPublicKey(publicKey);
         paymentBody.setPaymentMethodId(paymentData.getPaymentMethod().getId());
@@ -218,7 +220,7 @@ public class CheckoutProviderImpl implements CheckoutProvider {
 
         Payer payer = paymentData.getPayer();
         if (!TextUtils.isEmpty(customerId) &&
-            MercadoPagoUtil.isCard(paymentData.getPaymentMethod().getPaymentTypeId())) {
+                MercadoPagoUtil.isCard(paymentData.getPaymentMethod().getPaymentTypeId())) {
             payer.setId(customerId);
         }
         paymentBody.setPayer(payer);
@@ -237,6 +239,7 @@ public class CheckoutProviderImpl implements CheckoutProvider {
         if (discount != null) {
             paymentBody.setCampaignId(discount.getId());
             paymentBody.setCouponAmount(discount.getCouponAmount().floatValue());
+            paymentBody.setCouponCode(paymentData.getCouponCode());
         }
 
         paymentBody.setTransactionId(transactionId);
