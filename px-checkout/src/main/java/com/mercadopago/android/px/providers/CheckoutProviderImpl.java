@@ -30,6 +30,8 @@ import com.mercadopago.android.px.util.MercadoPagoUtil;
 import com.mercadopago.android.px.util.QueryBuilder;
 import com.mercadopago.android.px.util.TextUtils;
 
+import static com.mercadopago.android.px.util.TextUtils.isEmpty;
+
 public class CheckoutProviderImpl implements CheckoutProvider {
 
     private final Context context;
@@ -217,8 +219,8 @@ public class CheckoutProviderImpl implements CheckoutProvider {
         paymentBody.setPaymentMethodId(paymentData.getPaymentMethod().getId());
         paymentBody.setBinaryMode(binaryMode);
 
-        Payer payer = paymentData.getPayer();
-        if (!TextUtils.isEmpty(customerId) &&
+        final Payer payer = paymentData.getPayer();
+        if (!isEmpty(customerId) &&
                 MercadoPagoUtil.isCard(paymentData.getPaymentMethod().getPaymentTypeId())) {
             payer.setId(customerId);
         }
@@ -234,11 +236,13 @@ public class CheckoutProviderImpl implements CheckoutProvider {
             paymentBody.setIssuerId(paymentData.getIssuer().getId());
         }
 
-        Discount discount = paymentData.getDiscount();
+        final Discount discount = paymentData.getDiscount();
         if (discount != null) {
             paymentBody.setCampaignId(discount.getId());
             paymentBody.setCouponAmount(discount.getCouponAmount().floatValue());
-            paymentBody.setCouponCode(paymentData.getCouponCode());
+            if (!isEmpty(paymentData.getCouponCode())) {
+                paymentBody.setCouponCode(paymentData.getCouponCode());
+            }
         }
 
         paymentBody.setTransactionId(transactionId);
