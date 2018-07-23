@@ -205,8 +205,7 @@ public class CheckoutProviderImpl implements CheckoutProvider {
                                             final Boolean binaryMode,
                                             final String customerId,
                                             final TaggedCallback<Payment> taggedCallback) {
-        final PaymentBody paymentBody =
-                createPaymentBody(transactionId, checkoutPreference, paymentData, binaryMode, customerId);
+        final PaymentBody paymentBody = createPaymentBody(transactionId, checkoutPreference, paymentData, binaryMode, customerId);
         mercadoPagoServicesAdapter.createPayment(paymentBody, taggedCallback);
     }
 

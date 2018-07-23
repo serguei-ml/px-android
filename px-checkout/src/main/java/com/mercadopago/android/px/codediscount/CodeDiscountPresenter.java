@@ -34,6 +34,7 @@ class CodeDiscountPresenter extends MvpPresenter<CodeDiscountView, DiscountRepos
                     public void success(final Discount discount) {
                         if (isViewAttached()) {
                             final Campaign campaign = getCampaign(discount.getId());
+                            discountRepository.saveDiscountCode(input);
                             discountRepository.configureDiscountManually(discount, campaign);
                             getView().processSuccess(discount);
                         }
