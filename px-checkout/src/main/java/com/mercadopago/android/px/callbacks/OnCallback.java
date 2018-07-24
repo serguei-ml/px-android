@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.mercadopago.android.px.model.Discount;
 
-public interface OnViewUpdated {
+public interface OnCallback {
     void onSuccess(@NonNull final Discount discount);
 
     void onFailure();

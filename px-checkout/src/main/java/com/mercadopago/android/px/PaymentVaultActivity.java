@@ -15,7 +15,7 @@ import android.view.View;
 
 import com.mercadopago.android.px.adapters.PaymentMethodSearchItemAdapter;
 import com.mercadopago.android.px.callbacks.OnSelectedCallback;
-import com.mercadopago.android.px.callbacks.OnViewUpdated;
+import com.mercadopago.android.px.callbacks.OnCallback;
 import com.mercadopago.android.px.codediscount.CodeDiscountDialog;
 import com.mercadopago.android.px.codediscount.CodeDiscountDialog.OnDiscountRetrieved;
 import com.mercadopago.android.px.controllers.CheckoutTimer;
@@ -328,7 +328,7 @@ public class PaymentVaultActivity extends MercadoPagoBaseActivity
 
     @Override
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
-        presenter.updateAmount();
+        presenter.initializeAmountRow();
         if (requestCode == MercadoPagoComponents.Activities.CARD_VAULT_REQUEST_CODE) {
             resolveCardRequest(resultCode, data);
         } else if (requestCode == MercadoPagoComponents.Activities.PAYMENT_METHODS_REQUEST_CODE) {
@@ -664,8 +664,9 @@ public class PaymentVaultActivity extends MercadoPagoBaseActivity
     }
 
     @Override
-    public void onDiscountRetrieved(final OnViewUpdated onViewUpdated) {
+    public void onDiscountRetrieved(final OnCallback onViewUpdated) {
         cleanPaymentMethodOptions();
         presenter.getGroups(onViewUpdated);
+
     }
 }

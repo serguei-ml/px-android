@@ -14,8 +14,7 @@ import com.mercadolibre.android.ui.widgets.MeliDialog;
 import com.mercadolibre.android.ui.widgets.MeliSpinner;
 import com.mercadolibre.android.ui.widgets.TextField;
 import com.mercadopago.android.px.R;
-import com.mercadopago.android.px.callbacks.OnViewUpdated;
-import com.mercadopago.android.px.components.Action;
+import com.mercadopago.android.px.callbacks.OnCallback;
 import com.mercadopago.android.px.internal.di.Session;
 import com.mercadopago.android.px.model.Discount;
 import com.mercadopago.android.px.services.util.TextUtil;
@@ -37,10 +36,10 @@ public class CodeDiscountDialog extends MeliDialog implements View.OnClickListen
     private CodeDiscountPresenter presenter;
 
     protected OnDiscountRetrieved onDiscountRetrieved;
-    protected OnViewUpdated onViewUpdated;
+    protected OnCallback onCallback;
 
     public interface OnDiscountRetrieved {
-        void onDiscountRetrieved(OnViewUpdated onViewUpdated);
+        void onDiscountRetrieved(OnCallback onViewUpdated);
     }
 
     public static void showDialog(@NonNull final FragmentManager supportFragmentManager) {
@@ -98,7 +97,7 @@ public class CodeDiscountDialog extends MeliDialog implements View.OnClickListen
     @Override
     public void onAttach(final Context context) {
         onDiscountRetrieved = (OnDiscountRetrieved) context;
-        onViewUpdated = new OnViewUpdated() {
+        onCallback = new OnCallback() {
             @Override
             public void onSuccess(@NonNull final Discount discount) {
                 final View back = new CongratsCodeDiscount(new CongratsCodeDiscount.Props(discount), new Actions()).render(container);
@@ -127,7 +126,7 @@ public class CodeDiscountDialog extends MeliDialog implements View.OnClickListen
     @Override
     public void processSuccess(@NonNull final Discount discount) {
         if (onDiscountRetrieved != null) {
-            onDiscountRetrieved.onDiscountRetrieved(onViewUpdated);
+            onDiscountRetrieved.onDiscountRetrieved(onCallback);
         }
     }
 

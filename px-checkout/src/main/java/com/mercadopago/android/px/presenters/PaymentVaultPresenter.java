@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.mercadopago.android.px.callbacks.FailureRecovery;
 import com.mercadopago.android.px.callbacks.OnSelectedCallback;
-import com.mercadopago.android.px.callbacks.OnViewUpdated;
+import com.mercadopago.android.px.callbacks.OnCallback;
 import com.mercadopago.android.px.constants.PaymentMethods;
 import com.mercadopago.android.px.core.CheckoutStore;
 import com.mercadopago.android.px.core.MercadoPagoComponents;
@@ -111,7 +111,7 @@ public class PaymentVaultPresenter extends MvpPresenter<PaymentVaultView, Paymen
         });
     }
 
-    public void getGroups(@NonNull final OnViewUpdated onViewUpdated) {
+    public void getGroups(@NonNull final OnCallback onViewUpdated) {
         initializeAmountRow();
 
         groupsRepository.getGroups().enqueue(new Callback<PaymentMethodSearch>() {
@@ -521,9 +521,5 @@ public class PaymentVaultPresenter extends MvpPresenter<PaymentVaultView, Paymen
 
     public void onPaymentMethodReturned() {
         getView().finishPaymentMethodSelection(userSelectionRepository.getPaymentMethod());
-    }
-
-    public void updateAmount() {
-        getView().showAmount(discountRepository, configuration.getCheckoutPreference().getTotalAmount(), configuration.getCheckoutPreference().getSite());
     }
 }

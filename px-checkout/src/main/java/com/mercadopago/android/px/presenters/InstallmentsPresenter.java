@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.mercadopago.android.px.callbacks.FailureRecovery;
 import com.mercadopago.android.px.callbacks.OnSelectedCallback;
-import com.mercadopago.android.px.callbacks.OnViewUpdated;
+import com.mercadopago.android.px.callbacks.OnCallback;
 import com.mercadopago.android.px.controllers.PaymentMethodGuessingController;
 import com.mercadopago.android.px.exceptions.MercadoPagoError;
 import com.mercadopago.android.px.internal.repository.AmountRepository;
@@ -149,7 +149,7 @@ public class InstallmentsPresenter extends MvpPresenter<InstallmentsActivityView
                 });
     }
 
-    private void getInstallmentsAsync(final OnViewUpdated onViewUpdated) {
+    private void getInstallmentsAsync(final OnCallback onCallback) {
         getResourcesProvider().getInstallments(bin, amountRepository.getAmountToPay(), issuerId, paymentMethod.getId(),
                 new TaggedCallback<List<Installment>>(ApiUtil.RequestOrigin.GET_INSTALLMENTS) {
                     @Override
@@ -158,7 +158,7 @@ public class InstallmentsPresenter extends MvpPresenter<InstallmentsActivityView
                             getView().showError(getResourcesProvider().getNoInstallmentsFoundError(), "");
                         } else if (installments.size() == 1) {
                             resolvePayerCosts(installments.get(0).getPayerCosts());
-                            onViewUpdated.onSuccess(discountRepository.getDiscount());
+                            onCallback.onSuccess(discountRepository.getDiscount());
                         } else {
                             getView().showError(getResourcesProvider().getMultipleInstallmentsFoundForAnIssuerError(), "");
                         }
@@ -166,7 +166,7 @@ public class InstallmentsPresenter extends MvpPresenter<InstallmentsActivityView
 
                     @Override
                     public void onFailure(final MercadoPagoError mercadoPagoError) {
-                        onViewUpdated.onFailure();
+                        onCallback.onFailure();
                         getView().showError(mercadoPagoError, ApiUtil.RequestOrigin.GET_INSTALLMENTS);
                     }
                 });
@@ -287,7 +287,7 @@ public class InstallmentsPresenter extends MvpPresenter<InstallmentsActivityView
         getView().showDiscountInputDialog();
     }
 
-    public void onDiscountRetrieved(final OnViewUpdated onViewUpdated) {
+    public void onDiscountRetrieved(final OnCallback onViewUpdated) {
         getInstallmentsAsync(onViewUpdated);
         getView().showAmount(discountRepository, amountRepository.getItemsPlusCharges(), configuration.getCheckoutPreference().getSite());
     }

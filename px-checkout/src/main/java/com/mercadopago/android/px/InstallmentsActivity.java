@@ -15,7 +15,7 @@ import android.widget.LinearLayout;
 import com.google.gson.reflect.TypeToken;
 import com.mercadopago.android.px.adapters.PayerCostsAdapter;
 import com.mercadopago.android.px.callbacks.OnSelectedCallback;
-import com.mercadopago.android.px.callbacks.OnViewUpdated;
+import com.mercadopago.android.px.callbacks.OnCallback;
 import com.mercadopago.android.px.codediscount.CodeDiscountDialog;
 import com.mercadopago.android.px.controllers.CheckoutTimer;
 import com.mercadopago.android.px.core.MercadoPagoCheckout;
@@ -510,7 +510,7 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity
     }
 
     @Override
-    public void onDiscountRetrieved(final OnViewUpdated onViewUpdated) {
-        presenter.onDiscountRetrieved(onViewUpdated);
+    public void onDiscountRetrieved(final OnCallback onCallback) {
+        presenter.onDiscountRetrieved(onCallback);
     }
 }
