@@ -287,8 +287,8 @@ public class InstallmentsPresenter extends MvpPresenter<InstallmentsActivityView
         getView().showDiscountInputDialog();
     }
 
-    public void onDiscountRetrieved(final OnCallback onViewUpdated) {
-        getInstallmentsAsync(onViewUpdated);
-        getView().showAmount(discountRepository, amountRepository.getItemsPlusCharges(), configuration.getCheckoutPreference().getSite());
+    public void onDiscountRetrieved(final OnCallback onCallback) {
+        getInstallmentsAsync(onCallback);
+        initializeAmountRow();
     }
 }

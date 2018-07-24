@@ -667,6 +667,5 @@ public class PaymentVaultActivity extends MercadoPagoBaseActivity
     public void onDiscountRetrieved(final OnCallback onViewUpdated) {
         cleanPaymentMethodOptions();
         presenter.getGroups(onViewUpdated);
-
     }
 }
