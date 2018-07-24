@@ -395,8 +395,7 @@ public class CheckoutPresenter extends MvpPresenter<CheckoutView, CheckoutProvid
 
                     @Override
                     public void onFailure(final MercadoPagoError error) {
-                        //TODO borrar
-                        MercadoPagoError error1 = error;
+                        MercadoPagoError mercadoPagoError = error;
 
                         if (isViewAttached()) {
                             getView().hideProgress();

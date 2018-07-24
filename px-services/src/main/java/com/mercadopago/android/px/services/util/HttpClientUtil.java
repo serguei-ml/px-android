@@ -72,7 +72,6 @@ public final class HttpClientUtil {
         final HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(Settings.OKHTTP_LOGGING);
 
-
         final OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder()
             .connectTimeout(connectTimeout, TimeUnit.SECONDS)
             .writeTimeout(writeTimeout, TimeUnit.SECONDS)
@@ -80,6 +79,7 @@ public final class HttpClientUtil {
 
         // Set cache size
         if (context != null) {
+            okHttpClientBuilder.addInterceptor(interceptor);
             okHttpClientBuilder.addInterceptor(getConnectionInterceptor(context));
             try {
                 final Cache cache =
