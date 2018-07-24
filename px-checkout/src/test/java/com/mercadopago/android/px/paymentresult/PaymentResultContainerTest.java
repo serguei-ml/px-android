@@ -72,7 +72,7 @@ public class PaymentResultContainerTest {
         final PaymentResult paymentResult = PaymentResults.getStatusInProcessContingencyPaymentResult();
         final HeaderProps headerProps = getHeaderPropsFromContainerWith(paymentResult);
 
-        Assert.assertEquals(headerProps.background, R.color.px_ui_components_warning_color);
+        Assert.assertEquals(headerProps.background, R.color.ui_components_warning_color);
     }
 
     @Test
@@ -99,7 +99,7 @@ public class PaymentResultContainerTest {
         final PaymentResult paymentResult = PaymentResults.getStatusCallForAuthPaymentResult();
         final HeaderProps headerProps = getHeaderPropsFromContainerWith(paymentResult);
 
-        Assert.assertEquals(headerProps.background, R.color.px_ui_components_warning_color);
+        Assert.assertEquals(headerProps.background, R.color.ui_components_warning_color);
     }
 
     @Test
@@ -108,7 +108,7 @@ public class PaymentResultContainerTest {
         final PaymentResult paymentResult = PaymentResults.getStatusRejectedInsufficientAmountPaymentResult();
         final HeaderProps headerProps = getHeaderPropsFromContainerWith(paymentResult);
 
-        Assert.assertEquals(headerProps.background, R.color.px_ui_components_warning_color);
+        Assert.assertEquals(headerProps.background, R.color.ui_components_warning_color);
     }
 
     @Test
@@ -117,7 +117,7 @@ public class PaymentResultContainerTest {
         final PaymentResult paymentResult = PaymentResults.getStatusRejectedBadFilledSecuPaymentResult();
         final HeaderProps headerProps = getHeaderPropsFromContainerWith(paymentResult);
 
-        Assert.assertEquals(headerProps.background, R.color.px_ui_components_warning_color);
+        Assert.assertEquals(headerProps.background, R.color.ui_components_warning_color);
     }
 
     @Test
@@ -126,7 +126,7 @@ public class PaymentResultContainerTest {
         final PaymentResult paymentResult = PaymentResults.getStatusRejectedBadFilledDatePaymentResult();
         final HeaderProps headerProps = getHeaderPropsFromContainerWith(paymentResult);
 
-        Assert.assertEquals(headerProps.background, R.color.px_ui_components_warning_color);
+        Assert.assertEquals(headerProps.background, R.color.ui_components_warning_color);
     }
 
     @Test
@@ -135,7 +135,7 @@ public class PaymentResultContainerTest {
         final PaymentResult paymentResult = PaymentResults.getStatusRejectedBadFilledFormPaymentResult();
         final HeaderProps headerProps = getHeaderPropsFromContainerWith(paymentResult);
 
-        Assert.assertEquals(headerProps.background, R.color.px_ui_components_warning_color);
+        Assert.assertEquals(headerProps.background, R.color.ui_components_warning_color);
     }
 
     @Test

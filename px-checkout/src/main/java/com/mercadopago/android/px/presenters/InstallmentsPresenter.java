@@ -22,10 +22,10 @@ import com.mercadopago.android.px.mvp.MvpPresenter;
 import com.mercadopago.android.px.mvp.TaggedCallback;
 import com.mercadopago.android.px.preferences.PaymentPreference;
 import com.mercadopago.android.px.providers.InstallmentsProvider;
-import com.mercadopago.android.px.views.AmountView;
-import com.mercadopago.android.px.views.InstallmentsActivityView;
 import com.mercadopago.android.px.util.ApiUtil;
 import com.mercadopago.android.px.util.InstallmentsUtil;
+import com.mercadopago.android.px.views.AmountView;
+import com.mercadopago.android.px.views.InstallmentsActivityView;
 
 import java.util.List;
 
@@ -98,18 +98,21 @@ public class InstallmentsPresenter extends MvpPresenter<InstallmentsActivityView
         return payerCosts != null;
     }
 
-    private void resolvePayerCosts(final List<PayerCost> payerCosts) {
-        PayerCost defaultPayerCost =
+    private void resolvePayerCosts(List<PayerCost> payerCosts) {
+        final PayerCost defaultPayerCost =
                 paymentPreference == null ? null : paymentPreference.getDefaultInstallments(payerCosts);
         this.payerCosts =
                 paymentPreference == null ? payerCosts : paymentPreference.getInstallmentsBelowMax(payerCosts);
 
         if (defaultPayerCost != null) {
+            userSelectionRepository.select(defaultPayerCost);
             getView().finishWithResult(defaultPayerCost);
         } else if (this.payerCosts.isEmpty()) {
             getView().showError(getResourcesProvider().getNoPayerCostFoundError(), "");
         } else if (this.payerCosts.size() == 1) {
-            getView().finishWithResult(payerCosts.get(0));
+            final PayerCost payerCost = payerCosts.get(0);
+            userSelectionRepository.select(payerCost);
+            getView().finishWithResult(payerCost);
         } else {
             getView().showHeader();
             getView().showInstallments(this.payerCosts, getDpadSelectionCallback());
@@ -119,7 +122,6 @@ public class InstallmentsPresenter extends MvpPresenter<InstallmentsActivityView
 
     private void getInstallmentsAsync() {
         getView().showLoadingView();
-
         getResourcesProvider().getInstallments(bin, amountRepository.getAmountToPay(), issuerId, paymentMethod.getId(),
                 new TaggedCallback<List<Installment>>(ApiUtil.RequestOrigin.GET_INSTALLMENTS) {
                     @Override
@@ -256,7 +258,7 @@ public class InstallmentsPresenter extends MvpPresenter<InstallmentsActivityView
     }
 
     public void onItemSelected(int position) {
-        PayerCost selectedPayerCost = payerCosts.get(position);
+        final PayerCost selectedPayerCost = payerCosts.get(position);
         userSelectionRepository.select(selectedPayerCost);
         if (isInstallmentsReviewEnabled() && isInstallmentsReviewRequired(selectedPayerCost)) {
             getView().hideInstallmentsRecyclerView();

@@ -215,7 +215,7 @@ public class BusinessPayment implements PluginPayment, Parcelable {
         REJECTED("REJECTED", R.color.ui_components_error_color,
             R.drawable.px_badge_error,
             R.string.px_rejection_label),
-        PENDING("PENDING", R.color.px_ui_components_warning_color,
+        PENDING("PENDING", R.color.ui_components_warning_color,
             R.drawable.px_badge_pending_orange, 0);
 
         public final String name;

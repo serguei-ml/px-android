@@ -36,6 +36,7 @@ import com.mercadopago.android.px.services.constants.ProcessingModes;
 import com.mercadopago.android.px.services.controllers.CustomServicesHandler;
 import com.mercadopago.android.px.services.util.HttpClientUtil;
 import com.mercadopago.android.px.services.util.JsonUtil;
+import com.mercadopago.android.px.services.util.LocaleUtil;
 import com.mercadopago.android.px.services.util.TextUtil;
 import java.math.BigDecimal;
 import java.util.List;
@@ -165,7 +166,7 @@ public class MercadoPagoServices {
 
     public void getBankDeals(final Callback<List<BankDeal>> callback) {
         BankDealService service = getDefaultRetrofit(mContext).create(BankDealService.class);
-        service.getBankDeals(this.mPublicKey, mPrivateKey, mContext.getResources().getConfiguration().locale.toString())
+        service.getBankDeals(this.mPublicKey, mPrivateKey, LocaleUtil.getLanguage(mContext))
             .enqueue(callback);
     }
 
@@ -179,7 +180,7 @@ public class MercadoPagoServices {
         PaymentService service = getDefaultRetrofit(mContext).create(PaymentService.class);
         service.getInstallments(Settings.servicesVersion, this.mPublicKey, mPrivateKey, bin, amount, issuerId,
             paymentMethodId,
-            mContext.getResources().getConfiguration().locale.toString(), mProcessingMode).enqueue(callback);
+            LocaleUtil.getLanguage(mContext), mProcessingMode).enqueue(callback);
     }
 
     public void getIssuers(String paymentMethodId, String bin, final Callback<List<Issuer>> callback) {
