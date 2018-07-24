@@ -513,7 +513,7 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity
     @Override
     public void onDiscountRetrieved(final OnCodeDiscountCallback onCodeDiscountCallback) {
         this.onCodeDiscountCallback = onCodeDiscountCallback;
-        presenter.onDiscountRetrieved(onCodeDiscountCallback);
+        presenter.onDiscountRetrieved();
     }
 
     @Override
