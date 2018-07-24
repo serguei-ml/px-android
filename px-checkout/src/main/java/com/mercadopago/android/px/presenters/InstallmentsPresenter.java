@@ -164,17 +164,14 @@ public class InstallmentsPresenter extends MvpPresenter<InstallmentsActivityView
 
                     @Override
                     public void onFailure(final MercadoPagoError mercadoPagoError) {
-                        setFailureRecovery(new FailureRecovery() {
-                            @Override
-                            public void recover() {
-                                getInstallmentsAsync(onViewUpdated);
-                            }
-                        });
-
                         onViewUpdated.onFailure();
                         getView().showError(mercadoPagoError, ApiUtil.RequestOrigin.GET_INSTALLMENTS);
                     }
                 });
+    }
+
+    private void resolveInstallmentsAsync(){
+
     }
 
     public void setPaymentMethod(final PaymentMethod paymentMethod) {

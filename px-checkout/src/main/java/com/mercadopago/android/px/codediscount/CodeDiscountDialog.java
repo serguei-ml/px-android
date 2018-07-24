@@ -108,7 +108,6 @@ public class CodeDiscountDialog extends MeliDialog implements View.OnClickListen
             @Override
             public void onFailure() {
                 processError(getString(R.string.px_error_something_went_wrong_try_again));
-                //TODO add retry
             }
         };
         super.onAttach(context);

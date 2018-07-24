@@ -1,7 +1,6 @@
 package com.mercadopago.android.px.presenters;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.mercadopago.android.px.callbacks.FailureRecovery;
 import com.mercadopago.android.px.callbacks.OnSelectedCallback;
@@ -112,7 +111,7 @@ public class PaymentVaultPresenter extends MvpPresenter<PaymentVaultView, Paymen
         });
     }
 
-    public void initPaymentVaultFlow(@NonNull final OnViewUpdated onViewUpdated) {
+    public void getGroups(@NonNull final OnViewUpdated onViewUpdated) {
         initializeAmountRow();
 
         groupsRepository.getGroups().enqueue(new Callback<PaymentMethodSearch>() {
@@ -127,12 +126,6 @@ public class PaymentVaultPresenter extends MvpPresenter<PaymentVaultView, Paymen
 
             @Override
             public void failure(final ApiException apiException) {
-                setFailureRecovery(new FailureRecovery() {
-                    @Override
-                    public void recover() {
-                        initPaymentVaultFlow(onViewUpdated);
-                    }
-                });
                 onViewUpdated.onFailure();
             }
         });
