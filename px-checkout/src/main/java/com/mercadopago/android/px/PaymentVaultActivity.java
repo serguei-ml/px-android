@@ -15,7 +15,7 @@ import android.view.View;
 
 import com.mercadopago.android.px.adapters.PaymentMethodSearchItemAdapter;
 import com.mercadopago.android.px.callbacks.OnSelectedCallback;
-import com.mercadopago.android.px.callbacks.OnCallback;
+import com.mercadopago.android.px.callbacks.OnCodeDiscountCallback;
 import com.mercadopago.android.px.codediscount.CodeDiscountDialog;
 import com.mercadopago.android.px.codediscount.CodeDiscountDialog.OnDiscountRetrieved;
 import com.mercadopago.android.px.controllers.CheckoutTimer;
@@ -108,6 +108,7 @@ public class PaymentVaultActivity extends MercadoPagoBaseActivity
     protected Map<String, String> mMerchantGetCustomerAdditionalInfo;
 
     private AmountView amountView;
+    private OnCodeDiscountCallback onCodeDiscountCallback;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -664,8 +665,23 @@ public class PaymentVaultActivity extends MercadoPagoBaseActivity
     }
 
     @Override
-    public void onDiscountRetrieved(final OnCallback onViewUpdated) {
+    public void onDiscountRetrieved(final OnCodeDiscountCallback onCodeDiscountCallback) {
+        this.onCodeDiscountCallback = onCodeDiscountCallback;
         cleanPaymentMethodOptions();
-        presenter.getGroups(onViewUpdated);
+        presenter.initPaymentVaultFlow();
+    }
+
+    @Override
+    public void onSuccessCodeDiscountCallback(final Discount discount) {
+        if (onCodeDiscountCallback != null) {
+            onCodeDiscountCallback.onSuccess(discount);
+        }
+    }
+
+    @Override
+    public void onFailureCodeDiscountCallback() {
+        if (onCodeDiscountCallback != null){
+            onCodeDiscountCallback.onFailure();
+        }
     }
 }

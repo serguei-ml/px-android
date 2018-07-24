@@ -15,7 +15,7 @@ import android.widget.LinearLayout;
 import com.google.gson.reflect.TypeToken;
 import com.mercadopago.android.px.adapters.PayerCostsAdapter;
 import com.mercadopago.android.px.callbacks.OnSelectedCallback;
-import com.mercadopago.android.px.callbacks.OnCallback;
+import com.mercadopago.android.px.callbacks.OnCodeDiscountCallback;
 import com.mercadopago.android.px.codediscount.CodeDiscountDialog;
 import com.mercadopago.android.px.controllers.CheckoutTimer;
 import com.mercadopago.android.px.core.MercadoPagoCheckout;
@@ -97,6 +97,7 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity
 
     private AmountView amountView;
     private PaymentSettingRepository configuration;
+    private OnCodeDiscountCallback onCodeDiscountCallback;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -510,7 +511,22 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity
     }
 
     @Override
-    public void onDiscountRetrieved(final OnCallback onCallback) {
-        presenter.onDiscountRetrieved(onCallback);
+    public void onDiscountRetrieved(final OnCodeDiscountCallback onCodeDiscountCallback) {
+        this.onCodeDiscountCallback = onCodeDiscountCallback;
+        presenter.onDiscountRetrieved(onCodeDiscountCallback);
+    }
+
+    @Override
+    public void onSuccessCodeDiscountCallback(final Discount discount) {
+        if (onCodeDiscountCallback != null) {
+            onCodeDiscountCallback.onSuccess(discount);
+        }
+    }
+
+    @Override
+    public void onFailureCodeDiscountCallback() {
+        if (onCodeDiscountCallback != null){
+            onCodeDiscountCallback.onFailure();
+        }
     }
 }

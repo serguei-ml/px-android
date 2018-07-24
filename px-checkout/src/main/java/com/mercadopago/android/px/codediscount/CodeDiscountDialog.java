@@ -14,7 +14,7 @@ import com.mercadolibre.android.ui.widgets.MeliDialog;
 import com.mercadolibre.android.ui.widgets.MeliSpinner;
 import com.mercadolibre.android.ui.widgets.TextField;
 import com.mercadopago.android.px.R;
-import com.mercadopago.android.px.callbacks.OnCallback;
+import com.mercadopago.android.px.callbacks.OnCodeDiscountCallback;
 import com.mercadopago.android.px.internal.di.Session;
 import com.mercadopago.android.px.model.Discount;
 import com.mercadopago.android.px.services.util.TextUtil;
@@ -36,10 +36,10 @@ public class CodeDiscountDialog extends MeliDialog implements View.OnClickListen
     private CodeDiscountPresenter presenter;
 
     protected OnDiscountRetrieved onDiscountRetrieved;
-    protected OnCallback onCallback;
+    protected OnCodeDiscountCallback onCodeDiscountCallback;
 
     public interface OnDiscountRetrieved {
-        void onDiscountRetrieved(OnCallback onViewUpdated);
+        void onDiscountRetrieved(OnCodeDiscountCallback onViewUpdated);
     }
 
     public static void showDialog(@NonNull final FragmentManager supportFragmentManager) {
@@ -97,7 +97,7 @@ public class CodeDiscountDialog extends MeliDialog implements View.OnClickListen
     @Override
     public void onAttach(final Context context) {
         onDiscountRetrieved = (OnDiscountRetrieved) context;
-        onCallback = new OnCallback() {
+        onCodeDiscountCallback = new OnCodeDiscountCallback() {
             @Override
             public void onSuccess(@NonNull final Discount discount) {
                 final View back = new CongratsCodeDiscount(new CongratsCodeDiscount.Props(discount), new Actions()).render(container);
@@ -126,7 +126,7 @@ public class CodeDiscountDialog extends MeliDialog implements View.OnClickListen
     @Override
     public void processSuccess(@NonNull final Discount discount) {
         if (onDiscountRetrieved != null) {
-            onDiscountRetrieved.onDiscountRetrieved(onCallback);
+            onDiscountRetrieved.onDiscountRetrieved(onCodeDiscountCallback);
         }
     }
 

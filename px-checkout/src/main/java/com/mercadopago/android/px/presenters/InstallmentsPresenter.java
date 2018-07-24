@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.mercadopago.android.px.callbacks.FailureRecovery;
 import com.mercadopago.android.px.callbacks.OnSelectedCallback;
-import com.mercadopago.android.px.callbacks.OnCallback;
+import com.mercadopago.android.px.callbacks.OnCodeDiscountCallback;
 import com.mercadopago.android.px.controllers.PaymentMethodGuessingController;
 import com.mercadopago.android.px.exceptions.MercadoPagoError;
 import com.mercadopago.android.px.internal.repository.AmountRepository;
@@ -130,6 +130,7 @@ public class InstallmentsPresenter extends MvpPresenter<InstallmentsActivityView
                             getView().showError(getResourcesProvider().getNoInstallmentsFoundError(), "");
                         } else if (installments.size() == 1) {
                             resolvePayerCosts(installments.get(0).getPayerCosts());
+                            getView().onSuccessCodeDiscountCallback(discountRepository.getDiscount());
                         } else {
                             getView().showError(getResourcesProvider().getMultipleInstallmentsFoundForAnIssuerError(), "");
                         }
@@ -145,29 +146,7 @@ public class InstallmentsPresenter extends MvpPresenter<InstallmentsActivityView
                             }
                         });
                         getView().showError(mercadoPagoError, ApiUtil.RequestOrigin.GET_INSTALLMENTS);
-                    }
-                });
-    }
-
-    private void getInstallmentsAsync(final OnCallback onCallback) {
-        getResourcesProvider().getInstallments(bin, amountRepository.getAmountToPay(), issuerId, paymentMethod.getId(),
-                new TaggedCallback<List<Installment>>(ApiUtil.RequestOrigin.GET_INSTALLMENTS) {
-                    @Override
-                    public void onSuccess(final List<Installment> installments) {
-                        if (installments.size() == 0) {
-                            getView().showError(getResourcesProvider().getNoInstallmentsFoundError(), "");
-                        } else if (installments.size() == 1) {
-                            resolvePayerCosts(installments.get(0).getPayerCosts());
-                            onCallback.onSuccess(discountRepository.getDiscount());
-                        } else {
-                            getView().showError(getResourcesProvider().getMultipleInstallmentsFoundForAnIssuerError(), "");
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(final MercadoPagoError mercadoPagoError) {
-                        onCallback.onFailure();
-                        getView().showError(mercadoPagoError, ApiUtil.RequestOrigin.GET_INSTALLMENTS);
+                        getView().onFailureCodeDiscountCallback();
                     }
                 });
     }
@@ -287,8 +266,8 @@ public class InstallmentsPresenter extends MvpPresenter<InstallmentsActivityView
         getView().showDiscountInputDialog();
     }
 
-    public void onDiscountRetrieved(final OnCallback onCallback) {
-        getInstallmentsAsync(onCallback);
+    public void onDiscountRetrieved(final OnCodeDiscountCallback onCodeDiscountCallback) {
+        getInstallmentsAsync(onCodeDiscountCallback);
         initializeAmountRow();
     }
 }

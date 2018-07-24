@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.mercadopago.android.px.callbacks.FailureRecovery;
 import com.mercadopago.android.px.callbacks.OnSelectedCallback;
-import com.mercadopago.android.px.callbacks.OnCallback;
+import com.mercadopago.android.px.callbacks.OnCodeDiscountCallback;
 import com.mercadopago.android.px.constants.PaymentMethods;
 import com.mercadopago.android.px.core.CheckoutStore;
 import com.mercadopago.android.px.core.MercadoPagoComponents;
@@ -94,6 +94,7 @@ public class PaymentVaultPresenter extends MvpPresenter<PaymentVaultView, Paymen
             public void success(final PaymentMethodSearch paymentMethodSearch) {
                 if (isViewAttached()) {
                     PaymentVaultPresenter.this.paymentMethodSearch = paymentMethodSearch;
+                    getView().onSuccessCodeDiscountCallback(discountRepository.getDiscount());
                     initPaymentMethodSearch();
                 }
             }
@@ -107,26 +108,7 @@ public class PaymentVaultPresenter extends MvpPresenter<PaymentVaultView, Paymen
                         initPaymentVaultFlow();
                     }
                 });
-            }
-        });
-    }
-
-    public void getGroups(@NonNull final OnCallback onViewUpdated) {
-        initializeAmountRow();
-
-        groupsRepository.getGroups().enqueue(new Callback<PaymentMethodSearch>() {
-            @Override
-            public void success(final PaymentMethodSearch paymentMethodSearch) {
-                if (isViewAttached()) {
-                    PaymentVaultPresenter.this.paymentMethodSearch = paymentMethodSearch;
-                    onViewUpdated.onSuccess(discountRepository.getDiscount());
-                    initPaymentMethodSearch();
-                }
-            }
-
-            @Override
-            public void failure(final ApiException apiException) {
-                onViewUpdated.onFailure();
+                getView().onFailureCodeDiscountCallback();
             }
         });
     }
