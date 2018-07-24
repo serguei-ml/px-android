@@ -170,10 +170,6 @@ public class InstallmentsPresenter extends MvpPresenter<InstallmentsActivityView
                 });
     }
 
-    private void resolveInstallmentsAsync(){
-
-    }
-
     public void setPaymentMethod(final PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
