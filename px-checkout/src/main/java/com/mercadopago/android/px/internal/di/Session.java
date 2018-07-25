@@ -27,6 +27,10 @@ import com.mercadopago.android.px.util.MercadoPagoESCImpl;
 public final class Session extends ApplicationModule
     implements AmountComponent {
 
+    /**
+     * This singleton instance is safe because session will work with
+     * application context. Application context it's never leaking.
+     */
     @SuppressLint("StaticFieldLeak") private static Session instance;
 
     // mem cache - lazy init.
@@ -37,7 +41,7 @@ public final class Session extends ApplicationModule
     private GroupsCache groupsCache;
 
     private Session(@NonNull final Context context) {
-        super(context);
+        super(context.getApplicationContext());
     }
 
     public static Session getSession(final Context context) {
