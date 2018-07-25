@@ -684,6 +684,7 @@ public class PaymentVaultActivity extends MercadoPagoBaseActivity
     public void onFailureCodeDiscountCallback() {
         if (getCodeDiscountDialogInstance() != null && onCodeDiscountCallback != null) {
             onCodeDiscountCallback.onFailure();
+            presenter.initializeAmountRow();
         }
     }
 
