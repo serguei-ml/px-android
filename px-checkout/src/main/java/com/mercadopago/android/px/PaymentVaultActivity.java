@@ -1,6 +1,7 @@
 package com.mercadopago.android.px;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -673,15 +674,20 @@ public class PaymentVaultActivity extends MercadoPagoBaseActivity
 
     @Override
     public void onSuccessCodeDiscountCallback(final Discount discount) {
-        if (onCodeDiscountCallback != null) {
+        if (getCodeDiscountDialogInstance() != null && onCodeDiscountCallback != null) {
             onCodeDiscountCallback.onSuccess(discount);
         }
     }
 
+
     @Override
     public void onFailureCodeDiscountCallback() {
-        if (onCodeDiscountCallback != null){
+        if (getCodeDiscountDialogInstance() != null && onCodeDiscountCallback != null) {
             onCodeDiscountCallback.onFailure();
         }
+    }
+
+    private android.support.v4.app.Fragment getCodeDiscountDialogInstance() {
+        return getSupportFragmentManager().findFragmentByTag(CodeDiscountDialog.class.getName());
     }
 }
