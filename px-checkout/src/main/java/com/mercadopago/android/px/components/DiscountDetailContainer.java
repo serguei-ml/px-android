@@ -30,7 +30,7 @@ public class DiscountDetailContainer extends CompactComponent<DiscountDetailCont
         }
 
         public enum DialogTitleType {
-            BIG,SMALL
+            BIG, SMALL
         }
     }
 
@@ -55,12 +55,19 @@ public class DiscountDetailContainer extends CompactComponent<DiscountDetailCont
 
     private void addDiscountTitle(final ViewGroup parent) {
         MPTextView title = getTitleTextView(parent);
-        configureOffMessage(title);
-
+        if (props.campaign.isUsedUpDiscount()) {
+            configureUsedUpDiscountTitle(title);
+        } else {
+            configureOffTitle(title);
+        }
         parent.addView(title);
     }
 
-    private void configureOffMessage(final MPTextView textView) {
+    private void configureUsedUpDiscountTitle(final MPTextView textView) {
+        textView.setText(R.string.px_used_up_discount_title);
+    }
+
+    private void configureOffTitle(final MPTextView textView) {
         if (props.discount.hasPercentOff()) {
             textView.setText(textView.getContext()
                     .getString(R.string.px_discount_percent_off, props.discount.getPercentOff()));

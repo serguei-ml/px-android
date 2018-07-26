@@ -80,12 +80,13 @@ public class Campaign implements Serializable, Parcelable {
         return CODE_TYPE_NONE.contains(codeType);
     }
 
-    public boolean isOneShotDiscount() {
-        return maxRedeemPerUser == 1;
-    }
-
     public boolean isAlwaysOnDiscount() {
         return maxRedeemPerUser > 1;
+    }
+
+    //TODO falta firma de Instore al recibir error de MKTools.
+    public boolean isUsedUpDiscount() {
+        return false;
     }
 
     /* default */ Campaign(final Parcel in) {

@@ -38,12 +38,20 @@ public class DiscountDetail extends CompactComponent<DiscountDetail.Props, Void>
         final View mainContainer = inflate(parent, R.layout.px_view_discount_detail);
         configureSubtitleMessage(mainContainer);
         configureDetailMessage(mainContainer);
+        configureSubDetailsMessage(mainContainer);
         return mainContainer;
+    }
+
+    private void configureSubDetailsMessage(View mainContainer) {
+        if (props.campaign.isUsedUpDiscount()) {
+            mainContainer.findViewById(R.id.px_discount_detail_line).setVisibility(View.GONE);
+            mainContainer.findViewById(R.id.px_discount_sub_details).setVisibility(View.GONE);
+        }
     }
 
     private void configureSubtitleMessage(final View mainContainer) {
         final TextView subtitleMessage = mainContainer.findViewById(R.id.subtitle);
-        if (props.campaign.hasMaxCouponAmount()) {
+        if (isMaxCouponAmountSubtitleApplicable()) {
             TextFormatter.withCurrencyId(props.discount.getCurrencyId())
                     .withSpace()
                     .amount(props.campaign.getMaxCouponAmount())
@@ -58,7 +66,9 @@ public class DiscountDetail extends CompactComponent<DiscountDetail.Props, Void>
     private void configureDetailMessage(final View mainContainer) {
         final TextView detailTextView = mainContainer.findViewById(R.id.detail);
         if (props.campaign.hasMaxCouponAmount()) {
-            if (props.campaign.isAlwaysOnDiscount()) {
+            if (props.campaign.isUsedUpDiscount()) {
+                setDetailMessage(detailTextView, R.string.px_used_up_discount_detail, mainContainer);
+            } else if (props.campaign.isAlwaysOnDiscount()) {
                 setDetailMessage(detailTextView, R.string.px_always_on_discount_detail, mainContainer);
             } else {
                 setDetailMessage(detailTextView, R.string.px_one_shot_discount_detail, mainContainer);
@@ -69,17 +79,22 @@ public class DiscountDetail extends CompactComponent<DiscountDetail.Props, Void>
     }
 
     private void setDetailMessage(TextView detailTextView, int detailId, View view) {
-
         String detailMessage = view.getResources().getString(detailId);
 
-        if (props.campaign.hasEndDate()) {
+        if (isEndDateApplicable()) {
             String endDateMessage = view.getResources().getString(R.string.px_discount_detail_end_date,
                     props.campaign.getPrettyEndDate());
-
             detailTextView.setText(String.format(Locale.getDefault(), "%s %s", detailMessage, endDateMessage));
-
         } else {
             detailTextView.setText(detailMessage);
         }
+    }
+
+    private boolean isEndDateApplicable() {
+        return props.campaign.hasEndDate() && !props.campaign.isUsedUpDiscount();
+    }
+
+    private boolean isMaxCouponAmountSubtitleApplicable() {
+        return props.campaign.hasMaxCouponAmount() && !props.campaign.isUsedUpDiscount();
     }
 }
