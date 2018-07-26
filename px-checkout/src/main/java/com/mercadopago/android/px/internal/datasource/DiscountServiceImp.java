@@ -43,6 +43,11 @@ public class DiscountServiceImp implements DiscountRepository {
         discountStorageService.reset();
     }
 
+    @Override
+    public boolean isUsedUpDiscount() {
+        return getCampaign().isUsedUpDiscount();
+    }
+
     @NonNull
     @Override
     public MPCall<Boolean> configureDiscountAutomatically(final BigDecimal amountToPay) {

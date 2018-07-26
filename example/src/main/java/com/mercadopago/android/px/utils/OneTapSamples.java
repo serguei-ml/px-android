@@ -3,6 +3,8 @@ package com.mercadopago.android.px.utils;
 import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 import com.mercadopago.android.px.core.MercadoPagoCheckout;
+import com.mercadopago.android.px.model.Campaign;
+import com.mercadopago.android.px.model.Discount;
 import com.mercadopago.android.px.model.Item;
 import com.mercadopago.android.px.model.Payment;
 import com.mercadopago.android.px.model.PaymentData;
@@ -88,11 +90,17 @@ public final class OneTapSamples {
         final GenericPayment payment = new GenericPayment(123L, Payment.StatusCodes.STATUS_APPROVED,
             Payment.StatusDetail.STATUS_DETAIL_ACCREDITED, getPaymentDataWithAccountMoneyPlugin(new BigDecimal(120)));
         final MainPaymentProcessor mainPaymentProcessor = new MainPaymentProcessor(payment);
+        //TODO borrar cuando esten los usrs one tap + campaña de descuentos
+        Discount discount = new Discount.Builder("id","ARS", new BigDecimal(50 )).setPercentOff(new BigDecimal(50)).build();
+        Campaign campaign = new Campaign.Builder("12344").setMaxCouponAmount(new BigDecimal(500)).build();
+
         return new MercadoPagoCheckout.Builder(ONE_TAP_MERCHANT_PUBLIC_KEY,
             getCheckoutPreferenceWithPayerEmail(new ArrayList<String>(), 120))
             .setPaymentProcessor(mainPaymentProcessor)
             .addPaymentMethodPlugin(new SamplePaymentMethodPlugin(), mainPaymentProcessor)
-            .setPrivateKey(ONE_TAP_PAYER_1_ACCESS_TOKEN);
+            .setPrivateKey(ONE_TAP_PAYER_1_ACCESS_TOKEN)
+            .setDiscount(discount, campaign);
+
     }
 
     // It should suggest one tap with account money

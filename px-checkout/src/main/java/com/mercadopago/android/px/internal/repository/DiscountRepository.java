@@ -34,4 +34,6 @@ public interface DiscountRepository extends ResourcesProvider {
     void saveDiscountCode(@NonNull final String code);
 
     void reset();
+
+    boolean isUsedUpDiscount();
 }
