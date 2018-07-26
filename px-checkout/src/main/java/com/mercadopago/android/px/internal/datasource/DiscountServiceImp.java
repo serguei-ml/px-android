@@ -96,6 +96,11 @@ public class DiscountServiceImp implements DiscountRepository {
         return discountStorageService.hasCodeCampaign();
     }
 
+    @Override
+    public boolean hasValidDiscount(){
+        return getDiscount() != null && getCampaign() != null;
+    }
+
     private class AutomaticDiscountCall implements MPCall<Boolean> {
 
         /* default */ final BigDecimal amountToPay;

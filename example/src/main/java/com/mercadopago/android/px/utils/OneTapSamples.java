@@ -88,7 +88,6 @@ public final class OneTapSamples {
         final GenericPayment payment = new GenericPayment(123L, Payment.StatusCodes.STATUS_APPROVED,
             Payment.StatusDetail.STATUS_DETAIL_ACCREDITED, getPaymentDataWithAccountMoneyPlugin(new BigDecimal(120)));
         final MainPaymentProcessor mainPaymentProcessor = new MainPaymentProcessor(payment);
-
         return new MercadoPagoCheckout.Builder(ONE_TAP_MERCHANT_PUBLIC_KEY,
             getCheckoutPreferenceWithPayerEmail(new ArrayList<String>(), 120))
             .setPaymentProcessor(mainPaymentProcessor)

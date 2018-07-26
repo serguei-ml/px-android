@@ -36,6 +36,8 @@ public interface DiscountRepository extends ResourcesProvider {
 
     boolean hasCodeCampaign();
 
+    boolean hasValidDiscount();
+
     void saveDiscountCode(@NonNull final String code);
 
     void reset();
