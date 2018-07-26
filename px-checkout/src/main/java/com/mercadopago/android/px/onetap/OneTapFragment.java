@@ -45,8 +45,6 @@ public class OneTapFragment extends Fragment implements OneTap.View {
     private BigDecimal amountToPay;
     private boolean hasDiscount;
 
-    private View view;
-
     public static OneTapFragment getInstance(@NonNull final OneTapModel oneTapModel) {
         final OneTapFragment oneTapFragment = new OneTapFragment();
         final Bundle bundle = new Bundle();
@@ -74,8 +72,13 @@ public class OneTapFragment extends Fragment implements OneTap.View {
     public void onResume() {
         super.onResume();
         final Bundle arguments = getArguments();
-        final OneTapModel model = (OneTapModel) arguments.getSerializable(ARG_ONE_TAP_MODEL);
-        configureView(getView(), presenter, model);
+
+        if (arguments != null) {
+
+            final OneTapModel model = (OneTapModel) arguments.getSerializable(ARG_ONE_TAP_MODEL);
+            configureView(getView(), presenter, model);
+            presenter.attachView(this);
+        }
     }
 
     @Override
@@ -132,6 +135,7 @@ public class OneTapFragment extends Fragment implements OneTap.View {
     private void configureView(final View view, final OneTap.Actions actions, final OneTapModel model) {
         final ViewGroup container = view.findViewById(R.id.main_container);
         final Toolbar toolbar = view.findViewById(R.id.toolbar);
+        container.removeAllViews();
         configureToolbar(toolbar);
         new OneTapContainer(model, actions).render(container);
     }
