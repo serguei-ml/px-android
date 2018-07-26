@@ -243,6 +243,7 @@
     <string name="px_discount_detail_end_date">Válido hasta el %s.</string>
     <string name="px_used_up_discount_title">Descuento no disponible</string>
     <string name="px_used_up_discount_detail">Este descuento ya no aplica porque alcanzaste el tope máximo.</string>
+    <string name="px_used_up_discount_amount_view">Alcanzaste el tope de descuento</string>
 
     <!-- Unlock Card -->
     <string name="px_text_unlock_card_start">Recuerda</string>

@@ -86,7 +86,7 @@ public class Campaign implements Serializable, Parcelable {
 
     //TODO falta firma de Instore al recibir error de MKTools.
     public boolean isUsedUpDiscount() {
-        return false;
+        return true;
     }
 
     /* default */ Campaign(final Parcel in) {
