@@ -73,7 +73,6 @@ public class OneTapFragment extends Fragment implements OneTap.View {
         super.onResume();
         final OneTapModel model = (OneTapModel) getArguments().getSerializable(ARG_ONE_TAP_MODEL);
         configureView(getView(), presenter, model);
-        presenter.attachView(this);
     }
 
     @Override
