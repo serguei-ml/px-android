@@ -257,6 +257,7 @@
     <string name="px_get_your_discount_amount">Now pay your purchase and get\n %1$s discount</string>
     <string name="px_get_your_discount_percent">Now pay your purchase and get %1$s%% discount</string>
     <string name="px_discount_error_check_this_data">Check this data</string>
+    <string name="px_error_something_went_wrong_try_again">Something went wrong, try again.</string>
 
     <!-- Unlock Card -->
     <string name="px_text_unlock_card_start">Remember to</string>
@@ -268,7 +269,6 @@
     <string name="px_error_message_detail_multiple_installments">Multiple installments found for an issuer at InstallmentsActivity</string>
     <string name="px_error_message_detail_issuers">No issuers found at IssuersActivity</string>
     <string name="px_error_message_detail_no_payment_method_list">No payment method list found at ReviewPaymentMethodsActivity</string>
-
 
     <!-- Boleto -->
     <string name="px_fill_your_data">Enter your data…</string>

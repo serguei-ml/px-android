@@ -12,10 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+
 import com.google.gson.reflect.TypeToken;
 import com.mercadopago.android.px.adapters.PayerCostsAdapter;
-import com.mercadopago.android.px.callbacks.OnDiscountRetrieved;
 import com.mercadopago.android.px.callbacks.OnSelectedCallback;
+import com.mercadopago.android.px.callbacks.OnCodeDiscountCallback;
 import com.mercadopago.android.px.codediscount.CodeDiscountDialog;
 import com.mercadopago.android.px.controllers.CheckoutTimer;
 import com.mercadopago.android.px.core.MercadoPagoCheckout;
@@ -56,12 +57,13 @@ import com.mercadopago.android.px.util.ErrorUtil;
 import com.mercadopago.android.px.util.JsonUtil;
 import com.mercadopago.android.px.util.ScaleUtil;
 import com.mercadopago.android.px.util.ViewUtils;
+
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.List;
 
 public class InstallmentsActivity extends MercadoPagoBaseActivity
-    implements InstallmentsActivityView, OnDiscountRetrieved, TimerObserver {
+        implements InstallmentsActivityView, CodeDiscountDialog.OnDiscountRetrieved, TimerObserver {
 
     protected InstallmentsPresenter presenter;
 
@@ -97,6 +99,7 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity
 
     private AmountView amountView;
     private PaymentSettingRepository configuration;
+    private OnCodeDiscountCallback onCodeDiscountCallback;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -106,8 +109,8 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity
         final ConfigurationModule configurationModule = session.getConfigurationModule();
         configuration = configurationModule.getPaymentSettings();
         presenter = new InstallmentsPresenter(session.getAmountRepository(), configuration,
-            configurationModule.getUserSelectionRepository(),
-            session.getDiscountRepository());
+                configurationModule.getUserSelectionRepository(),
+                session.getDiscountRepository());
         privateKey = configuration.getCheckoutPreference().getPayer().getAccessToken();
         getActivityParameters();
         presenter.attachView(this);
@@ -131,7 +134,7 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity
         publicKey = intent.getStringExtra("merchantPublicKey");
 
         final PaymentMethod paymentMethod =
-            JsonUtil.getInstance().fromJson(intent.getStringExtra("paymentMethod"), PaymentMethod.class);
+                JsonUtil.getInstance().fromJson(intent.getStringExtra("paymentMethod"), PaymentMethod.class);
 
         presenter.setPaymentMethod(paymentMethod);
         presenter.setIssuer(JsonUtil.getInstance().fromJson(intent.getStringExtra("issuer"), Issuer.class));
@@ -148,7 +151,7 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity
 
         presenter.setPayerCosts(payerCosts);
         presenter.setPaymentPreference(
-            JsonUtil.getInstance().fromJson(intent.getStringExtra("paymentPreference"), PaymentPreference.class));
+                JsonUtil.getInstance().fromJson(intent.getStringExtra("paymentPreference"), PaymentPreference.class));
         presenter.setInstallmentsReviewEnabled(intent.getBooleanExtra("installmentsReviewEnabled", true));
         presenter.setPayerEmail(intent.getStringExtra("payerEmail"));
     }
@@ -204,7 +207,7 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity
 
         if (CheckoutTimer.getInstance().isTimerEnabled()) {
             Toolbar.LayoutParams marginParams =
-                new Toolbar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                    new Toolbar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             marginParams.setMargins(0, 0, 0, 6);
             mLowResTitleToolbar.setLayoutParams(marginParams);
             mLowResTitleToolbar.setTextSize(19);
@@ -230,15 +233,15 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity
 
     protected void trackScreen() {
         MPTrackingContext mTrackingContext = new MPTrackingContext.Builder(this, publicKey)
-            .setVersion(BuildConfig.VERSION_NAME)
-            .build();
+                .setVersion(BuildConfig.VERSION_NAME)
+                .build();
 
         ScreenViewEvent event = new ScreenViewEvent.Builder()
-            .setFlowId(FlowHandler.getInstance().getFlowId())
-            .setScreenId(TrackingUtil.SCREEN_ID_INSTALLMENTS)
-            .setScreenName(TrackingUtil.SCREEN_NAME_CARD_FORM_INSTALLMENTS)
-            .addProperty(TrackingUtil.PROPERTY_PAYMENT_METHOD_ID, presenter.getPaymentMethod().getId())
-            .build();
+                .setFlowId(FlowHandler.getInstance().getFlowId())
+                .setScreenId(TrackingUtil.SCREEN_ID_INSTALLMENTS)
+                .setScreenName(TrackingUtil.SCREEN_NAME_CARD_FORM_INSTALLMENTS)
+                .addProperty(TrackingUtil.PROPERTY_PAYMENT_METHOD_ID, presenter.getPaymentMethod().getId())
+                .build();
 
         mTrackingContext.trackEvent(event);
     }
@@ -353,12 +356,12 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity
         view.setAdapter(adapter);
         view.setLayoutManager(new LinearLayoutManager(this));
         view.addOnItemTouchListener(new RecyclerItemClickListener(this,
-            new RecyclerItemClickListener.OnItemClickListener() {
-                @Override
-                public void onItemClick(View view, int position) {
-                    presenter.onItemSelected(position);
-                }
-            }));
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        presenter.onItemSelected(position);
+                    }
+                }));
     }
 
     @Override
@@ -452,10 +455,10 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity
     @Override
     public void initInstallmentsReviewView(final PayerCost payerCost) {
         final InstallmentsReviewView installmentsReviewView = new MercadoPagoUI.Views.InstallmentsReviewViewBuilder()
-            .setContext(this)
-            .setCurrencyId(configuration.getCheckoutPreference().getSite().getCurrencyId())
-            .setPayerCost(payerCost)
-            .build();
+                .setContext(this)
+                .setCurrencyId(configuration.getCheckoutPreference().getSite().getCurrencyId())
+                .setPayerCost(payerCost)
+                .build();
 
         installmentsReviewView.inflateInParent(mInstallmentsReview, true);
         installmentsReviewView.initializeControls();
@@ -494,7 +497,7 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity
 
     @Override
     public void showAmount(@NonNull final DiscountRepository discountRepository,
-        @NonNull final BigDecimal itemsPlusCharges, @NonNull final Site site) {
+                           @NonNull final BigDecimal itemsPlusCharges, @NonNull final Site site) {
         amountView.setOnClickListener(presenter);
         amountView.show(discountRepository, itemsPlusCharges, site);
     }
@@ -510,7 +513,27 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity
     }
 
     @Override
-    public void onDiscountRetrieved() {
-        //TODO actualizar cuotas
+    public void onDiscountRetrieved(final OnCodeDiscountCallback onCodeDiscountCallback) {
+        this.onCodeDiscountCallback = onCodeDiscountCallback;
+        presenter.onDiscountRetrieved();
+    }
+
+    @Override
+    public void onSuccessCodeDiscountCallback(final Discount discount) {
+        if (getCodeDiscountDialogInstance() != null && onCodeDiscountCallback != null) {
+            onCodeDiscountCallback.onSuccess(discount);
+        }
+    }
+
+    @Override
+    public void onFailureCodeDiscountCallback() {
+        if (getCodeDiscountDialogInstance() != null && onCodeDiscountCallback != null) {
+            onCodeDiscountCallback.onFailure();
+            presenter.initializeAmountRow();
+        }
+    }
+
+    private android.support.v4.app.Fragment getCodeDiscountDialogInstance() {
+        return getSupportFragmentManager().findFragmentByTag(CodeDiscountDialog.class.getName());
     }
 }

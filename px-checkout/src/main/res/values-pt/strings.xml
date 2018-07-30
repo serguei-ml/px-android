@@ -238,6 +238,7 @@
     <string name="px_get_your_discount_amount">Agora pague sua compra e ganhe\n %1$s de desconto</string>
     <string name="px_get_your_discount_percent">Agora pague sua compra e ganhe %1$s%% de desconto</string>
     <string name="px_discount_error_check_this_data">Verificar esses dados</string>
+    <string name="px_error_something_went_wrong_try_again">Algo saiu errado, tente novamente.</string>
     <string name="px_always_on_discount_detail">A cada pagamento para esta marca, você terá descontos até atingir o limite.</string>
     <string name="px_one_shot_discount_detail">Limite disponível para consumo em um único pagamento.</string>
     <string name="px_discount_detail_end_date">Válido até %s.</string>

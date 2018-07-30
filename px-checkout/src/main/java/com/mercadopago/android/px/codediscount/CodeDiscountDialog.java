@@ -8,12 +8,13 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.mercadolibre.android.ui.widgets.MeliButton;
 import com.mercadolibre.android.ui.widgets.MeliDialog;
 import com.mercadolibre.android.ui.widgets.MeliSpinner;
 import com.mercadolibre.android.ui.widgets.TextField;
 import com.mercadopago.android.px.R;
-import com.mercadopago.android.px.callbacks.OnDiscountRetrieved;
+import com.mercadopago.android.px.callbacks.OnCodeDiscountCallback;
 import com.mercadopago.android.px.internal.di.Session;
 import com.mercadopago.android.px.model.Discount;
 import com.mercadopago.android.px.services.util.TextUtil;
@@ -34,7 +35,12 @@ public class CodeDiscountDialog extends MeliDialog implements View.OnClickListen
 
     private CodeDiscountPresenter presenter;
 
-    private OnDiscountRetrieved onDiscountRetrieved;
+    protected OnDiscountRetrieved onDiscountRetrieved;
+    protected OnCodeDiscountCallback onCodeDiscountCallback;
+
+    public interface OnDiscountRetrieved {
+        void onDiscountRetrieved(OnCodeDiscountCallback onViewUpdated);
+    }
 
     public static void showDialog(@NonNull final FragmentManager supportFragmentManager) {
         final DialogFragment codeDiscountDialog = new CodeDiscountDialog();
@@ -54,11 +60,6 @@ public class CodeDiscountDialog extends MeliDialog implements View.OnClickListen
         final Session session = Session.getSession(view.getContext());
         presenter = new CodeDiscountPresenter(session.getDiscountRepository(), session.getAmountRepository());
         presenter.attachView(this);
-    }
-
-    @Override
-    public void showCodeError() {
-        input.setError(R.string.px_discount_error_check_this_data);
     }
 
     private boolean isValidInput() {
@@ -82,22 +83,39 @@ public class CodeDiscountDialog extends MeliDialog implements View.OnClickListen
             showLoading();
             presenter.getDiscountForCode(input.getText());
         } else {
-            showCodeError();
+            processCodeError();
         }
     }
 
-    @Override
-    public void processError() {
+    public void processError(@NonNull final String errorMessage) {
         confirmButton.setState(NORMAL);
         input.setEnabled(true);
         progress.setVisibility(View.GONE);
-        showCodeError();
+        input.setError(errorMessage);
     }
 
     @Override
     public void onAttach(final Context context) {
         onDiscountRetrieved = (OnDiscountRetrieved) context;
+        onCodeDiscountCallback = new OnCodeDiscountCallback() {
+            @Override
+            public void onSuccess(@NonNull final Discount discount) {
+                final View back = new CongratsCodeDiscount(new CongratsCodeDiscount.Props(discount), new Actions()).render(container);
+                FlipModalAnimationUtil.flipView(container, inputLayout, back);
+            }
+
+            @Override
+            public void onFailure() {
+                presenter.discountRepository.reset();
+                processError(getString(R.string.px_error_something_went_wrong_try_again));
+            }
+        };
         super.onAttach(context);
+    }
+
+    @Override
+    public void processCodeError() {
+        processError(getString(R.string.px_discount_error_check_this_data));
     }
 
     @Override
@@ -109,12 +127,8 @@ public class CodeDiscountDialog extends MeliDialog implements View.OnClickListen
     @Override
     public void processSuccess(@NonNull final Discount discount) {
         if (onDiscountRetrieved != null) {
-            onDiscountRetrieved.onDiscountRetrieved();
+            onDiscountRetrieved.onDiscountRetrieved(onCodeDiscountCallback);
         }
-
-        final View back = new CongratsCodeDiscount(new CongratsCodeDiscount.Props(discount), new Actions())
-            .render(container);
-        FlipModalAnimationUtil.flipView(container, inputLayout, back);
     }
 
     @Override
@@ -124,7 +138,7 @@ public class CodeDiscountDialog extends MeliDialog implements View.OnClickListen
     }
 
     public class Actions {
-        public void closeDialog() {
+        public void onButtonClicked() {
             dismiss();
         }
     }

@@ -67,6 +67,8 @@ public class AmountView extends LinearLayoutCompat {
         final Campaign campaign = discountRepository.getCampaign();
         if (discountRepository.hasValidDiscount()) {
             show(discount, campaign, totalAmount, site);
+        } else if (discountRepository.hasCodeCampaign()) {
+            showCouponInput(totalAmount, site);
         } else {
             show(totalAmount, site);
         }
@@ -99,7 +101,6 @@ public class AmountView extends LinearLayoutCompat {
                       @NonNull final Campaign campaign,
                       @NonNull final BigDecimal totalAmount,
                       @NonNull final Site site) {
-
         BigDecimal effectiveAmount = totalAmount;
 
         if (campaign.isUsedUpDiscount()) {
@@ -110,6 +111,21 @@ public class AmountView extends LinearLayoutCompat {
         }
 
         showEffectiveAmount(effectiveAmount, site);
+    }
+
+
+    private void showCouponInput(final BigDecimal totalAmount, final Site site) {
+        show(totalAmount, site);
+        configureDiscountCouponAmountDescription();
+        configureViewsVisibilityDefault();
+        mainContainer.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                if (callback != null) {
+                    callback.onInputRequestClicked();
+                }
+            }
+        });
     }
 
     private void showUsedUpDiscount(@NonNull final Discount discount, @NonNull final Campaign campaign) {

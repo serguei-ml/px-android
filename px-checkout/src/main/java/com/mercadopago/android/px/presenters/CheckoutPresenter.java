@@ -192,7 +192,7 @@ public class CheckoutPresenter extends MvpPresenter<CheckoutView, CheckoutProvid
             final Discount discount = state.paymentDataInput.getDiscount();
             //TODO add campaign
             if (discount != null) {
-                discountRepository.configureDiscountManually(discount, new Campaign.Builder(discount.getId()).build());
+                discountRepository.configureMerchantDiscountManually(discount, new Campaign.Builder(discount.getId()).build());
             }
         } else if (state.paymentResultInput != null && state.paymentResultInput.getPaymentData() != null) {
             userSelectionRepository.select(state.paymentResultInput.getPaymentData().getPaymentMethod());
@@ -202,7 +202,7 @@ public class CheckoutPresenter extends MvpPresenter<CheckoutView, CheckoutProvid
             final Discount discount = state.paymentResultInput.getPaymentData().getDiscount();
             //TODO add campaign
             if (discount != null) {
-                discountRepository.configureDiscountManually(discount, new Campaign.Builder(discount.getId()).build());
+                discountRepository.configureMerchantDiscountManually(discount, new Campaign.Builder(discount.getId()).build());
             }
         }
     }
@@ -395,6 +395,8 @@ public class CheckoutPresenter extends MvpPresenter<CheckoutView, CheckoutProvid
 
                     @Override
                     public void onFailure(final MercadoPagoError error) {
+                        MercadoPagoError mercadoPagoError = error;
+
                         if (isViewAttached()) {
                             getView().hideProgress();
                             resolvePaymentError(error, paymentData);
@@ -615,6 +617,7 @@ public class CheckoutPresenter extends MvpPresenter<CheckoutView, CheckoutProvid
         paymentData.setPayerCost(userSelectionRepository.getPayerCost());
         paymentData.setIssuer(state.selectedIssuer);
         paymentData.setDiscount(discountRepository.getDiscount());
+        paymentData.setCouponCode(discountRepository.getDiscountCode());
         paymentData.setToken(state.createdToken);
         paymentData.setTransactionAmount(amountRepository.getAmountToPay());
         final Payer payer = createPayerFrom(getCheckoutPreference().getPayer(), state.collectedPayer);

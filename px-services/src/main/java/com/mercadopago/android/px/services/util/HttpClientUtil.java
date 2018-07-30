@@ -79,6 +79,7 @@ public final class HttpClientUtil {
 
         // Set cache size
         if (context != null) {
+            okHttpClientBuilder.addInterceptor(interceptor);
             okHttpClientBuilder.addInterceptor(getConnectionInterceptor(context));
             try {
                 final Cache cache =

@@ -63,7 +63,7 @@ class CongratsCodeDiscount extends CompactComponent<CongratsCodeDiscount.Props, 
             @Override
             public void onClick(final View v) {
                 if (getActions() != null) {
-                    getActions().closeDialog();
+                    getActions().onButtonClicked();
                 }
             }
         });
