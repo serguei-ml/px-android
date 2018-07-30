@@ -23,7 +23,7 @@ import com.mercadopago.android.px.util.FlipModalAnimationUtil;
 import static android.graphics.Typeface.NORMAL;
 import static com.mercadolibre.android.ui.widgets.MeliButton.State.DISABLED;
 
-public class CodeDiscountDialog extends MeliDialog implements View.OnClickListener, CodeDiscountView, OnCodeDiscountCallback {
+public class CodeDiscountDialog extends MeliDialog implements View.OnClickListener, CodeDiscountView, OnCodeDiscountCallback, CongratsCodeDiscount.Action {
 
     private static final String TAG = CodeDiscountDialog.class.getName();
 
@@ -43,7 +43,7 @@ public class CodeDiscountDialog extends MeliDialog implements View.OnClickListen
 
     @Override
     public void onSuccess(@NonNull final Discount discount) {
-        final View back = new CongratsCodeDiscount(new CongratsCodeDiscount.Props(discount), new Actions()).render(container);
+        final View back = new CongratsCodeDiscount(new CongratsCodeDiscount.Props(discount), this).render(container);
         FlipModalAnimationUtil.flipView(container, inputLayout, back);
     }
 
@@ -51,6 +51,11 @@ public class CodeDiscountDialog extends MeliDialog implements View.OnClickListen
     public void onFailure() {
         presenter.discountRepository.reset();
         processError(getString(R.string.px_error_something_went_wrong_try_again));
+    }
+
+    @Override
+    public void onButtonClicked() {
+        dismiss();
     }
 
     public static void showDialog(@NonNull final FragmentManager supportFragmentManager) {
@@ -133,11 +138,5 @@ public class CodeDiscountDialog extends MeliDialog implements View.OnClickListen
     public void onDestroy() {
         presenter.detachView();
         super.onDestroy();
-    }
-
-    public class Actions {
-        public void onButtonClicked() {
-            dismiss();
-        }
     }
 }
