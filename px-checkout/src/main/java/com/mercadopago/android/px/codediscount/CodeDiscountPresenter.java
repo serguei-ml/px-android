@@ -11,8 +11,6 @@ import com.mercadopago.android.px.mvp.MvpPresenter;
 import com.mercadopago.android.px.services.callbacks.Callback;
 import com.mercadopago.android.px.services.exceptions.ApiException;
 
-import java.math.BigDecimal;
-
 class CodeDiscountPresenter extends MvpPresenter<CodeDiscountView, DiscountRepository> {
 
     @NonNull

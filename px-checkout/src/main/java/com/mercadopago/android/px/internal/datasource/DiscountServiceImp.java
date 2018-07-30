@@ -83,7 +83,15 @@ public class DiscountServiceImp implements DiscountRepository {
     @Nullable
     @Override
     public Campaign getCampaign(final String discountId) {
-        return discountStorageService.getCampaign(discountId);
+        Campaign discountCampaign = null;
+
+        for (final Campaign campaign : discountStorageService.getCampaigns()) {
+            if (campaign.getId() != null && campaign.getId().equals(discountId)) {
+                discountCampaign = campaign;
+            }
+        }
+
+        return discountCampaign;
     }
 
     @Override
@@ -97,7 +105,7 @@ public class DiscountServiceImp implements DiscountRepository {
     }
 
     @Override
-    public boolean hasValidDiscount(){
+    public boolean hasValidDiscount() {
         return getDiscount() != null && getCampaign() != null;
     }
 
