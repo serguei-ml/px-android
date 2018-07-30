@@ -18,7 +18,7 @@ import com.mercadopago.android.px.adapters.PaymentMethodSearchItemAdapter;
 import com.mercadopago.android.px.callbacks.OnSelectedCallback;
 import com.mercadopago.android.px.callbacks.OnCodeDiscountCallback;
 import com.mercadopago.android.px.codediscount.CodeDiscountDialog;
-import com.mercadopago.android.px.codediscount.CodeDiscountDialog.OnDiscountRetrieved;
+import com.mercadopago.android.px.codediscount.CodeDiscountDialog.DiscountListener;
 import com.mercadopago.android.px.controllers.CheckoutTimer;
 import com.mercadopago.android.px.core.CheckoutStore;
 import com.mercadopago.android.px.core.MercadoPagoCheckout;
@@ -73,7 +73,7 @@ import java.util.List;
 import java.util.Map;
 
 public class PaymentVaultActivity extends MercadoPagoBaseActivity
-        implements PaymentVaultView, OnDiscountRetrieved, TimerObserver {
+        implements PaymentVaultView, DiscountListener, TimerObserver {
 
     public static final int COLUMN_SPACING_DP_VALUE = 20;
     public static final int COLUMNS = 2;
@@ -666,7 +666,7 @@ public class PaymentVaultActivity extends MercadoPagoBaseActivity
     }
 
     @Override
-    public void onDiscountRetrieved(final OnCodeDiscountCallback onCodeDiscountCallback) {
+    public void discountListener(final OnCodeDiscountCallback onCodeDiscountCallback) {
         this.onCodeDiscountCallback = onCodeDiscountCallback;
         cleanPaymentMethodOptions();
         presenter.initPaymentVaultFlow();

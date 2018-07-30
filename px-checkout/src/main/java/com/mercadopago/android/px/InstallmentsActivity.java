@@ -64,7 +64,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class InstallmentsActivity extends MercadoPagoBaseActivity
-        implements InstallmentsActivityView, CodeDiscountDialog.OnDiscountRetrieved, TimerObserver {
+        implements InstallmentsActivityView, CodeDiscountDialog.DiscountListener, TimerObserver {
 
     protected InstallmentsPresenter presenter;
 
@@ -514,7 +514,7 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity
     }
 
     @Override
-    public void onDiscountRetrieved(final OnCodeDiscountCallback onCodeDiscountCallback) {
+    public void discountListener(final OnCodeDiscountCallback onCodeDiscountCallback) {
         this.onCodeDiscountCallback = onCodeDiscountCallback;
         presenter.onDiscountRetrieved();
     }

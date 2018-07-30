@@ -35,10 +35,10 @@ public class CodeDiscountDialog extends MeliDialog implements View.OnClickListen
 
     private CodeDiscountPresenter presenter;
 
-    protected OnDiscountRetrieved onDiscountRetrieved;
+    protected DiscountListener discountListener;
 
-    public interface OnDiscountRetrieved {
-        void onDiscountRetrieved(OnCodeDiscountCallback onViewUpdated);
+    public interface DiscountListener {
+        void discountListener(OnCodeDiscountCallback onCodeDiscountCallback);
     }
 
     @Override
@@ -107,7 +107,7 @@ public class CodeDiscountDialog extends MeliDialog implements View.OnClickListen
 
     @Override
     public void onAttach(final Context context) {
-        onDiscountRetrieved = (OnDiscountRetrieved) context;
+        discountListener = (DiscountListener) context;
         super.onAttach(context);
     }
 
@@ -118,14 +118,14 @@ public class CodeDiscountDialog extends MeliDialog implements View.OnClickListen
 
     @Override
     public void onDetach() {
-        onDiscountRetrieved = null;
+        discountListener = null;
         super.onDetach();
     }
 
     @Override
     public void processSuccess(@NonNull final Discount discount) {
-        if (onDiscountRetrieved != null) {
-            onDiscountRetrieved.onDiscountRetrieved(this);
+        if (discountListener != null) {
+            discountListener.discountListener(this);
         }
     }
 
