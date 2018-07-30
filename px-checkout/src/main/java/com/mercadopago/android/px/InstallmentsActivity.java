@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -520,20 +521,28 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity
 
     @Override
     public void onSuccessCodeDiscountCallback(final Discount discount) {
-        if (getCodeDiscountDialogInstance() != null && onCodeDiscountCallback != null) {
+        if (isCodeDiscountDialogActive()) {
             onCodeDiscountCallback.onSuccess(discount);
         }
     }
 
     @Override
     public void onFailureCodeDiscountCallback() {
-        if (getCodeDiscountDialogInstance() != null && onCodeDiscountCallback != null) {
+        if (isCodeDiscountDialogActive()) {
             onCodeDiscountCallback.onFailure();
             presenter.initializeAmountRow();
         }
     }
 
-    private android.support.v4.app.Fragment getCodeDiscountDialogInstance() {
+    private boolean isCodeDiscountDialogActive() {
+        return isCodeDiscountDialogAvailable() && onCodeDiscountCallback != null;
+    }
+
+    private boolean isCodeDiscountDialogAvailable() {
+        return getCodeDiscountDialogInstance() != null && getCodeDiscountDialogInstance().isVisible();
+    }
+
+    private Fragment getCodeDiscountDialogInstance() {
         return getSupportFragmentManager().findFragmentByTag(CodeDiscountDialog.class.getName());
     }
 }
