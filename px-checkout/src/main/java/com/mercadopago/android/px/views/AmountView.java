@@ -65,7 +65,10 @@ public class AmountView extends LinearLayoutCompat {
                      @NonNull final BigDecimal totalAmount, @NonNull final Site site) {
         final Discount discount = discountRepository.getDiscount();
         final Campaign campaign = discountRepository.getCampaign();
-        if (discountRepository.hasValidDiscount()) {
+
+        if (discountRepository.isUsedUpDiscount()) {
+            showUsedUpDiscount(discount, campaign, totalAmount, site);
+        } else if (discountRepository.hasValidDiscount()) {
             show(discount, campaign, totalAmount, site);
         } else if (discountRepository.hasCodeCampaign()) {
             showCouponInput(totalAmount, site);
@@ -101,16 +104,9 @@ public class AmountView extends LinearLayoutCompat {
                       @NonNull final Campaign campaign,
                       @NonNull final BigDecimal totalAmount,
                       @NonNull final Site site) {
-        BigDecimal effectiveAmount = totalAmount;
 
-        if (campaign.isUsedUpDiscount()) {
-            showUsedUpDiscount(discount, campaign);
-        } else {
-            showDiscount(discount, campaign, totalAmount, site);
-            effectiveAmount = totalAmount.subtract(discount.getCouponAmount());
-        }
-
-        showEffectiveAmount(effectiveAmount, site);
+        showDiscount(discount, campaign, totalAmount, site);
+        showEffectiveAmount(totalAmount.subtract(discount.getCouponAmount()), site);
     }
 
 
@@ -128,10 +124,12 @@ public class AmountView extends LinearLayoutCompat {
         });
     }
 
-    private void showUsedUpDiscount(@NonNull final Discount discount, @NonNull final Campaign campaign) {
+    private void showUsedUpDiscount(@NonNull final Discount discount, @NonNull final Campaign campaign, @NonNull final BigDecimal totalAmount,
+                                    @NonNull final Site site) {
         configureViewsVisibilityWhenUsedUpDiscount(discount, campaign);
-        amountDescription.setText(R.string.px_used_up_discount_amount_view);
+        amountDescription.setText(R.string.px_used_up_discount_title);
         amountDescription.setTextColor(getResources().getColor(R.color.px_form_text));
+        showEffectiveAmount(totalAmount, site);
     }
 
     private void show(@NonNull final BigDecimal totalAmount, @NonNull final Site site) {

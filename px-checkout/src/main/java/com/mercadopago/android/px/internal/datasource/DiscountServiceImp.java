@@ -50,6 +50,7 @@ public class DiscountServiceImp implements DiscountRepository {
         discountStorageService.reset();
     }
 
+    //TODO falta firma de Instore al recibir error de MKTools.
     @Override
     public boolean isUsedUpDiscount() {
         return getCampaign().isUsedUpDiscount();

@@ -54,7 +54,7 @@ class Amount extends CompactComponent<Amount.Props, OneTap.Actions> {
         }
 
         /* default */ boolean hasDiscount() {
-            return discountRepository.getDiscount() != null;
+            return discountRepository.getDiscount() != null && !discountRepository.isUsedUpDiscount();
         }
 
         /* default */ boolean shouldShowPercentOff() {
@@ -111,7 +111,7 @@ class Amount extends CompactComponent<Amount.Props, OneTap.Actions> {
         discountMaxLabel.setVisibility(View.GONE);
 
         discountMessage.setTextColor(discountLayout.getContext().getResources().getColor(R.color.px_color_payer_costs));
-        discountMessage.setText(R.string.px_used_up_discount_amount_view);
+        discountMessage.setText(R.string.px_used_up_discount_title);
     }
 
     private void resolveArrow(@NonNull final View content) {
