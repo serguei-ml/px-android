@@ -176,7 +176,7 @@ public class PaymentVaultPresenter extends MvpPresenter<PaymentVaultView, Paymen
     private void resolveAvailablePaymentMethods() {
         if (noPaymentMethodsAvailable()) {
             showEmptyPaymentMethodsError();
-        } else if (isOnlyOneItemAvailable()) {
+        } else if (isOnlyOneItemAvailable() && !isDiscountAvailable()) {
             if (CheckoutStore.getInstance().hasEnabledPaymentMethodPlugin()) {
                 selectPluginPaymentMethod(CheckoutStore.getInstance().getFirstEnabledPlugin());
             } else if (paymentMethodSearch.getGroups() != null && !paymentMethodSearch.getGroups().isEmpty()) {
@@ -503,5 +503,9 @@ public class PaymentVaultPresenter extends MvpPresenter<PaymentVaultView, Paymen
 
     public void onPaymentMethodReturned() {
         getView().finishPaymentMethodSelection(userSelectionRepository.getPaymentMethod());
+    }
+
+    private boolean isDiscountAvailable() {
+        return discountRepository.getDiscount() != null || discountRepository.hasCodeCampaign();
     }
 }
