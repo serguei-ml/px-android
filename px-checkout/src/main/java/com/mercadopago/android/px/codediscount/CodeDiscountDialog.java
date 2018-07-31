@@ -38,7 +38,7 @@ public class CodeDiscountDialog extends MeliDialog implements View.OnClickListen
     protected DiscountListener discountListener;
 
     public interface DiscountListener {
-        void discountListener(OnCodeDiscountCallback onCodeDiscountCallback);
+        void onDiscountRetrieved(OnCodeDiscountCallback onCodeDiscountCallback);
     }
 
     @Override
@@ -130,7 +130,7 @@ public class CodeDiscountDialog extends MeliDialog implements View.OnClickListen
     @Override
     public void processSuccess(@NonNull final Discount discount) {
         if (discountListener != null) {
-            discountListener.discountListener(this);
+            discountListener.onDiscountRetrieved(this);
         }
     }
 

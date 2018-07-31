@@ -666,7 +666,7 @@ public class PaymentVaultActivity extends MercadoPagoBaseActivity
     }
 
     @Override
-    public void discountListener(final OnCodeDiscountCallback onCodeDiscountCallback) {
+    public void onDiscountRetrieved(final OnCodeDiscountCallback onCodeDiscountCallback) {
         this.onCodeDiscountCallback = onCodeDiscountCallback;
         cleanPaymentMethodOptions();
         presenter.initPaymentVaultFlow();
