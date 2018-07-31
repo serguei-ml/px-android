@@ -86,7 +86,7 @@ public class DiscountServiceImp implements DiscountRepository {
         Campaign discountCampaign = null;
 
         for (final Campaign campaign : discountStorageService.getCampaigns()) {
-            if (campaign.getId() != null && campaign.getId().equals(discountId)) {
+            if (campaign.getId().equals(discountId)) {
                 discountCampaign = campaign;
             }
         }
