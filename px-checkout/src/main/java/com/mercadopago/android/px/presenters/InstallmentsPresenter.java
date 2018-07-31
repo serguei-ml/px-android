@@ -130,8 +130,7 @@ public class InstallmentsPresenter extends MvpPresenter<InstallmentsActivityView
                             getView().showError(getResourcesProvider().getNoInstallmentsFoundError(), "");
                         } else if (installments.size() == 1) {
                             resolvePayerCosts(installments.get(0).getPayerCosts());
-                            getView().onFailureCodeDiscountCallback();
-                            //getView().onSuccessCodeDiscountCallback(discountRepository.getDiscount());
+                            getView().onSuccessCodeDiscountCallback(discountRepository.getDiscount());
                         } else {
                             getView().showError(getResourcesProvider().getMultipleInstallmentsFoundForAnIssuerError(), "");
                         }
