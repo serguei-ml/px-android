@@ -35,7 +35,8 @@ public class CodeDiscountDialog extends MeliDialog implements View.OnClickListen
 
     private CodeDiscountPresenter presenter;
 
-    protected DiscountListener discountListener;
+    @Nullable
+    private DiscountListener discountListener;
 
     public interface DiscountListener {
         void onDiscountRetrieved(OnCodeDiscountCallback onCodeDiscountCallback);
