@@ -535,14 +535,7 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity
     }
 
     private boolean isCodeDiscountDialogActive() {
-        return isCodeDiscountDialogAvailable() && onCodeDiscountCallback != null;
-    }
-
-    private boolean isCodeDiscountDialogAvailable() {
-        return getCodeDiscountDialogInstance() != null && getCodeDiscountDialogInstance().isVisible();
-    }
-
-    private Fragment getCodeDiscountDialogInstance() {
-        return getSupportFragmentManager().findFragmentByTag(CodeDiscountDialog.class.getName());
+        final Fragment fragment = getSupportFragmentManager().findFragmentByTag(CodeDiscountDialog.class.getName());
+        return fragment != null && fragment.isVisible() && onCodeDiscountCallback != null;
     }
 }
