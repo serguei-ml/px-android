@@ -27,7 +27,7 @@ public final class OneTapSamples {
     private static final String ONE_TAP_PAYER_1_ACCESS_TOKEN =
             "APP_USR-6519316523937252-070516-964fafa7e2c91a2c740155fcb5474280__LA_LD__-261748045";
     private static final String ONE_TAP_PAYER_2_ACCESS_TOKEN =
-            "TEST-2367246934815731-061117-0a4740ec66830d1fb6e864ad98265728-265106322";
+        "APP_USR-3456261032857473-073011-c49291f53879f65accfaf28764e55f3e-340764447";
     private static final String ONE_TAP_PAYER_3_ACCESS_TOKEN =
             "TEST-244508097630521-031308-7b8b58d617aec50b3e528ca98606b116__LC_LA__-150216849";
     private static final String ONE_TAP_PAYER_4_ACCESS_TOKEN =
@@ -35,7 +35,7 @@ public final class OneTapSamples {
     private static final String ONE_TAP_PAYER_5_ACCESS_TOKEN =
             "APP_USR-7548115878322835-070311-e172a5d11f7f782622163724dbecb9cf-333082950";
     private static final String ONE_TAP_PAYER_6_ACCESS_TOKEN =
-            "TEST-589615544091125-101916-bbf30b188510c83dd9d9c985a7b9083f__LA_LC__-137787120";
+        "APP_USR-2962379700180713-073014-662103afe87bd62b4172af7e9599573c-340790299";
     private static final String ONE_TAP_PAYER_7_ACCESS_TOKEN =
             "TEST-7779559135594958-090815-348ca6a8851b34c17bf23a24b19a7b99__LA_LD__-227815697";
     private static final String ONE_TAP_PAYER_8_ACCESS_TOKEN =
@@ -320,6 +320,7 @@ public final class OneTapSamples {
             @NonNull final List<String> excludedPaymentTypes, int amount) {
         final List<Item> items = new ArrayList<>();
         final Item item = new Item("description", 1, new BigDecimal(amount));
+        item.setTitle("Titulo del item");
         item.setId("1234");
         item.setCurrencyId(Sites.ARGENTINA.getCurrencyId());
         items.add(item);

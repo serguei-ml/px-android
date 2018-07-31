@@ -216,10 +216,6 @@ public class CheckoutPresenter extends MvpPresenter<CheckoutView, CheckoutProvid
 
     private void retrievePaymentMethodSearch() {
         if (isViewAttached()) {
-            final CheckoutPreference checkoutPreference = getCheckoutPreference();
-            final Payer payer = new Payer();
-            payer.setAccessToken(checkoutPreference.getPayer().getAccessToken());
-
             groupsRepository.getGroups().enqueue(new Callback<PaymentMethodSearch>() {
                 @Override
                 public void success(final PaymentMethodSearch paymentMethodSearch) {
