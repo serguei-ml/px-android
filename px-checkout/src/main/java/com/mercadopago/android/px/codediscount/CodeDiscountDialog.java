@@ -113,7 +113,10 @@ public class CodeDiscountDialog extends MeliDialog implements View.OnClickListen
 
     @Override
     public void onAttach(final Context context) {
-        discountListener = (DiscountListener) context;
+        if (context instanceof DiscountListener) {
+            discountListener = (DiscountListener) context;
+        }
+
         super.onAttach(context);
     }
 
