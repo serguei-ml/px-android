@@ -3,11 +3,9 @@ package com.mercadopago;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ProgressBar;
-import com.mercadopago.android.px.core.CheckoutLazyBuilder;
 import com.mercadopago.android.px.core.MercadoPagoCheckout;
 import com.mercadopago.android.px.customviews.MPButton;
 import com.mercadopago.android.px.services.core.Settings;
@@ -22,7 +20,6 @@ public class CheckoutExampleActivity extends AppCompatActivity {
     private ProgressBar mProgressBar;
     private View mRegularLayout;
     private MPButton continueSimpleCheckout;
-    private CheckoutLazyBuilder checkoutLazyBuilder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,30 +53,17 @@ public class CheckoutExampleActivity extends AppCompatActivity {
             }
         });
 
-        checkoutLazyBuilder = new CheckoutLazyBuilder(ExamplesUtils.createBase()) {
-
+        continueSimpleCheckout.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void fail(@NonNull final MercadoPagoCheckout mercadoPagoCheckout) {
-                continueSimpleCheckout.setEnabled(true);
-                continueSimpleCheckout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mercadoPagoCheckout.startForPayment(CheckoutExampleActivity.this);
-                    }
-                });
+            public void onClick(View v) {
+                onContinueClicked();
             }
+        });
+    }
 
-            @Override
-            public void success(@NonNull final MercadoPagoCheckout mercadoPagoCheckout) {
-                continueSimpleCheckout.setEnabled(true);
-                continueSimpleCheckout.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mercadoPagoCheckout.startForPayment(CheckoutExampleActivity.this);
-                    }
-                });
-            }
-        };
+    private void onContinueClicked() {
+        MercadoPagoCheckout.Builder builder = ExamplesUtils.createBase();
+        builder.build().startForPayment(this);
     }
 
     @Override
@@ -92,9 +76,6 @@ public class CheckoutExampleActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         showRegularLayout();
-        continueSimpleCheckout.setEnabled(false);
-        checkoutLazyBuilder.cancel();
-        checkoutLazyBuilder.fetch(this);
     }
 
     private void showRegularLayout() {
