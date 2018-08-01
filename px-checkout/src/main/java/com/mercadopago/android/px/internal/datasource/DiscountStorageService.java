@@ -60,19 +60,6 @@ public class DiscountStorageService {
         return jsonUtil.fromJson(sharedPreferences.getString(PREF_CAMPAIGN, ""), Campaign.class);
     }
 
-    @Nullable
-    public Campaign getCampaign(final String discountId) {
-        Campaign discountCampaign = null;
-
-        for (final Campaign campaign : getCampaigns()) {
-            if (campaign.getId() != null && campaign.getId().equals(discountId)) {
-                discountCampaign = campaign;
-            }
-        }
-
-        return discountCampaign;
-    }
-
     private void configure(@Nullable final Discount discount) {
         if (discount == null) {
             sharedPreferences.edit().remove(PREF_DISCOUNT).apply();

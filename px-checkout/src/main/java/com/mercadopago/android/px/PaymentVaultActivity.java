@@ -1,6 +1,7 @@
 package com.mercadopago.android.px;
 
 import android.app.Activity;
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,7 +18,7 @@ import com.mercadopago.android.px.adapters.PaymentMethodSearchItemAdapter;
 import com.mercadopago.android.px.callbacks.OnSelectedCallback;
 import com.mercadopago.android.px.callbacks.OnCodeDiscountCallback;
 import com.mercadopago.android.px.codediscount.CodeDiscountDialog;
-import com.mercadopago.android.px.codediscount.CodeDiscountDialog.OnDiscountRetrieved;
+import com.mercadopago.android.px.codediscount.CodeDiscountDialog.DiscountListener;
 import com.mercadopago.android.px.controllers.CheckoutTimer;
 import com.mercadopago.android.px.core.CheckoutStore;
 import com.mercadopago.android.px.core.MercadoPagoCheckout;
@@ -72,7 +73,7 @@ import java.util.List;
 import java.util.Map;
 
 public class PaymentVaultActivity extends MercadoPagoBaseActivity
-        implements PaymentVaultView, OnDiscountRetrieved, TimerObserver {
+        implements PaymentVaultView, DiscountListener, TimerObserver {
 
     public static final int COLUMN_SPACING_DP_VALUE = 20;
     public static final int COLUMNS = 2;
@@ -673,21 +674,28 @@ public class PaymentVaultActivity extends MercadoPagoBaseActivity
 
     @Override
     public void onSuccessCodeDiscountCallback(final Discount discount) {
-        if (getCodeDiscountDialogInstance() != null && onCodeDiscountCallback != null) {
+        if (isCodeDiscountDialogActive()) {
             onCodeDiscountCallback.onSuccess(discount);
         }
     }
 
-
     @Override
     public void onFailureCodeDiscountCallback() {
-        if (getCodeDiscountDialogInstance() != null && onCodeDiscountCallback != null) {
+        if (isCodeDiscountDialogActive()) {
             onCodeDiscountCallback.onFailure();
             presenter.initializeAmountRow();
         }
     }
 
-    private android.support.v4.app.Fragment getCodeDiscountDialogInstance() {
+    private boolean isCodeDiscountDialogActive() {
+        return isCodeDiscountDialogAvailable() && onCodeDiscountCallback != null;
+    }
+
+    private boolean isCodeDiscountDialogAvailable() {
+        return getCodeDiscountDialogInstance() != null && getCodeDiscountDialogInstance().isVisible();
+    }
+
+    private Fragment getCodeDiscountDialogInstance() {
         return getSupportFragmentManager().findFragmentByTag(CodeDiscountDialog.class.getName());
     }
 }

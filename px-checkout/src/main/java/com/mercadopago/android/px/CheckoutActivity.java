@@ -98,8 +98,8 @@ public class CheckoutActivity extends MercadoPagoBaseActivity implements Checkou
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.px_activity_checkout);
         if (savedInstanceState == null) {
-            setContentView(R.layout.px_activity_checkout);
             presenter = getActivityParameters();
             configurePresenter();
             presenter.initialize();
@@ -141,8 +141,8 @@ public class CheckoutActivity extends MercadoPagoBaseActivity implements Checkou
             merchantPublicKey = savedInstanceState.getString(EXTRA_PUBLIC_KEY);
             requestedResultCode = savedInstanceState.getInt(EXTRA_RESULT_CODE);
             configurePresenter();
+            presenter.initialize();
         }
-        super.onRestoreInstanceState(savedInstanceState);
     }
 
     protected CheckoutPresenter getActivityParameters() {

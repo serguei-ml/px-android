@@ -71,14 +71,8 @@ public class OneTapFragment extends Fragment implements OneTap.View {
     @Override
     public void onResume() {
         super.onResume();
-        final Bundle arguments = getArguments();
-
-        if (arguments != null) {
-
-            final OneTapModel model = (OneTapModel) arguments.getSerializable(ARG_ONE_TAP_MODEL);
-            configureView(getView(), presenter, model);
-            presenter.attachView(this);
-        }
+        final OneTapModel model = (OneTapModel) getArguments().getSerializable(ARG_ONE_TAP_MODEL);
+        configureView(getView(), presenter, model);
     }
 
     @Override
