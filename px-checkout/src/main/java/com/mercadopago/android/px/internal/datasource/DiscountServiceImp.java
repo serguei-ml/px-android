@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import com.mercadopago.android.px.core.CheckoutStore;
 import com.mercadopago.android.px.internal.repository.DiscountRepository;
 import com.mercadopago.android.px.model.Campaign;
+import com.mercadopago.android.px.model.CampaignError;
 import com.mercadopago.android.px.model.Discount;
 import com.mercadopago.android.px.services.adapters.MPCall;
 import com.mercadopago.android.px.services.callbacks.Callback;
@@ -53,7 +54,7 @@ public class DiscountServiceImp implements DiscountRepository {
     //TODO falta firma de Instore al recibir error de MKTools.
     @Override
     public boolean isUsedUpDiscount() {
-        return getCampaign().isUsedUpDiscount();
+        return true;
     }
 
     @NonNull
@@ -98,6 +99,13 @@ public class DiscountServiceImp implements DiscountRepository {
         }
 
         return discountCampaign;
+    }
+
+    //TODO retornar atributo campaignError seteado desde MercadoPagoCheckout y guardado en el store.
+    @Nullable
+    @Override
+    public CampaignError getCampaignError() {
+        return new CampaignError("");
     }
 
     @Override

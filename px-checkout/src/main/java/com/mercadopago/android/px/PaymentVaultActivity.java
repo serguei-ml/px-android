@@ -1,6 +1,7 @@
 package com.mercadopago.android.px;
 
 import android.app.Activity;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -33,6 +34,7 @@ import com.mercadopago.android.px.internal.di.Session;
 import com.mercadopago.android.px.internal.repository.DiscountRepository;
 import com.mercadopago.android.px.internal.repository.PaymentSettingRepository;
 import com.mercadopago.android.px.model.Campaign;
+import com.mercadopago.android.px.model.CampaignError;
 import com.mercadopago.android.px.model.Card;
 import com.mercadopago.android.px.model.CustomSearchItem;
 import com.mercadopago.android.px.model.Discount;
@@ -648,8 +650,9 @@ public class PaymentVaultActivity extends MercadoPagoBaseActivity
     }
 
     @Override
-    public void showDetailDialog(@NonNull final Discount discount, @NonNull final Campaign campaign) {
-        DiscountDetailDialog.showDialog(discount, campaign, getSupportFragmentManager());
+    public void showDetailDialog(@NonNull final Discount discount, @NonNull final Campaign campaign, @Nullable
+        CampaignError campaignError) {
+        DiscountDetailDialog.showDialog(discount, campaign, campaignError, getSupportFragmentManager());
     }
 
     @Override

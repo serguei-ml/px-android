@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.mercadopago.android.px.model.Campaign;
+import com.mercadopago.android.px.model.CampaignError;
 import com.mercadopago.android.px.model.Discount;
 import com.mercadopago.android.px.mvp.ResourcesProvider;
 import com.mercadopago.android.px.services.adapters.MPCall;
@@ -33,6 +34,9 @@ public interface DiscountRepository extends ResourcesProvider {
 
     @Nullable
     Campaign getCampaign(String discountId);
+
+    @Nullable
+    CampaignError getCampaignError();
 
     boolean hasCodeCampaign();
 

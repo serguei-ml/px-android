@@ -2,6 +2,7 @@ package com.mercadopago.android.px.presenters;
 
 import android.support.annotation.NonNull;
 
+import android.support.annotation.Nullable;
 import com.mercadopago.android.px.callbacks.FailureRecovery;
 import com.mercadopago.android.px.callbacks.OnSelectedCallback;
 import com.mercadopago.android.px.callbacks.OnCodeDiscountCallback;
@@ -12,6 +13,7 @@ import com.mercadopago.android.px.internal.repository.DiscountRepository;
 import com.mercadopago.android.px.internal.repository.PaymentSettingRepository;
 import com.mercadopago.android.px.internal.repository.UserSelectionRepository;
 import com.mercadopago.android.px.model.Campaign;
+import com.mercadopago.android.px.model.CampaignError;
 import com.mercadopago.android.px.model.CardInfo;
 import com.mercadopago.android.px.model.Discount;
 import com.mercadopago.android.px.model.Installment;
@@ -257,8 +259,9 @@ public class InstallmentsPresenter extends MvpPresenter<InstallmentsActivityView
     }
 
     @Override
-    public void onDetailClicked(@NonNull final Discount discount, @NonNull final Campaign campaign) {
-        getView().showDetailDialog(discount, campaign);
+    public void onDetailClicked(@NonNull final Discount discount, @NonNull final Campaign campaign, @Nullable final
+        CampaignError campaignError) {
+        getView().showDetailDialog(discount, campaign, campaignError);
     }
 
     @Override

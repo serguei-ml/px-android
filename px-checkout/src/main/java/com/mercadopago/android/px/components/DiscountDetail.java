@@ -7,12 +7,14 @@ import android.widget.TextView;
 
 import com.mercadopago.android.px.R;
 import com.mercadopago.android.px.model.Campaign;
+import com.mercadopago.android.px.model.CampaignError;
 import com.mercadopago.android.px.model.Discount;
 import com.mercadopago.android.px.util.textformatter.TextFormatter;
 
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class DiscountDetail extends CompactComponent<DiscountDetail.Props, Void> {
 
@@ -22,10 +24,18 @@ public class DiscountDetail extends CompactComponent<DiscountDetail.Props, Void>
         private final Discount discount;
         @NonNull
         private final Campaign campaign;
+        @Nullable
+        private final CampaignError campaignError;
 
-        public Props(@NonNull final Discount discount, @NonNull final Campaign campaign) {
+        public Props(@NonNull final Discount discount, @NonNull final Campaign campaign,
+            @Nullable final CampaignError campaignError) {
             this.discount = discount;
             this.campaign = campaign;
+            this.campaignError = campaignError;
+        }
+
+        /* default */ boolean isUsedUpDiscount(){
+            return campaignError != null;
         }
     }
 
@@ -43,7 +53,7 @@ public class DiscountDetail extends CompactComponent<DiscountDetail.Props, Void>
     }
 
     private void configureSubDetailsMessage(View mainContainer) {
-        if (props.campaign.isUsedUpDiscount()) {
+        if (props.isUsedUpDiscount()) {
             mainContainer.findViewById(R.id.px_discount_detail_line).setVisibility(View.GONE);
             mainContainer.findViewById(R.id.px_discount_sub_details).setVisibility(View.GONE);
         }
@@ -66,7 +76,7 @@ public class DiscountDetail extends CompactComponent<DiscountDetail.Props, Void>
     private void configureDetailMessage(final View mainContainer) {
         final TextView detailTextView = mainContainer.findViewById(R.id.detail);
         if (props.campaign.hasMaxCouponAmount()) {
-            if (props.campaign.isUsedUpDiscount()) {
+            if (props.isUsedUpDiscount()) {
                 setDetailMessage(detailTextView, R.string.px_used_up_discount_detail, mainContainer);
             } else if (props.campaign.isAlwaysOnDiscount()) {
                 setDetailMessage(detailTextView, R.string.px_always_on_discount_detail, mainContainer);
@@ -91,10 +101,10 @@ public class DiscountDetail extends CompactComponent<DiscountDetail.Props, Void>
     }
 
     private boolean isEndDateApplicable() {
-        return props.campaign.hasEndDate() && !props.campaign.isUsedUpDiscount();
+        return props.campaign.hasEndDate() && !props.isUsedUpDiscount();
     }
 
     private boolean isMaxCouponAmountSubtitleApplicable() {
-        return props.campaign.hasMaxCouponAmount() && !props.campaign.isUsedUpDiscount();
+        return props.campaign.hasMaxCouponAmount() && !props.isUsedUpDiscount();
     }
 }

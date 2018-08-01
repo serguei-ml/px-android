@@ -84,11 +84,6 @@ public class Campaign implements Serializable, Parcelable {
         return maxRedeemPerUser > 1;
     }
 
-    //TODO falta firma de Instore al recibir error de MKTools.
-    public boolean isUsedUpDiscount() {
-        return true;
-    }
-
     /* default */ Campaign(final Parcel in) {
         id = in.readString();
         maxCouponAmount = ParcelableUtil.getOptionalBigDecimal(in);

@@ -7,10 +7,12 @@ import android.view.ViewGroup;
 import com.mercadopago.android.px.R;
 import com.mercadopago.android.px.customviews.MPTextView;
 import com.mercadopago.android.px.model.Campaign;
+import com.mercadopago.android.px.model.CampaignError;
 import com.mercadopago.android.px.model.Discount;
 import com.mercadopago.android.px.util.textformatter.TextFormatter;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class DiscountDetailContainer extends CompactComponent<DiscountDetailContainer.Props, Void> {
 
@@ -21,17 +23,24 @@ public class DiscountDetailContainer extends CompactComponent<DiscountDetailCont
         /* default */ final Discount discount;
         @NonNull
         /* default */ final Campaign campaign;
+        @Nullable
+        /* default */ final CampaignError campaignError;
 
-
-        public Props(@NonNull final DialogTitleType dialogTitleType, @NonNull final Discount discount, @NonNull final Campaign campaign) {
+        public Props(@NonNull final DialogTitleType dialogTitleType, @NonNull final Discount discount, @NonNull final Campaign campaign, @Nullable CampaignError campaignError) {
             this.dialogTitleType = dialogTitleType;
             this.discount = discount;
             this.campaign = campaign;
+            this.campaignError = campaignError;
         }
 
         public enum DialogTitleType {
             BIG, SMALL
         }
+
+        /* default */ boolean isUsedUpDiscount(){
+            return campaignError != null;
+        }
+
     }
 
     public DiscountDetailContainer(@NonNull final DiscountDetailContainer.Props props) {
@@ -47,7 +56,7 @@ public class DiscountDetailContainer extends CompactComponent<DiscountDetailCont
 
     private void addDiscountDetail(@NonNull final ViewGroup parent) {
         final View discountView =
-                new DiscountDetail(new DiscountDetail.Props(props.discount, props.campaign))
+                new DiscountDetail(new DiscountDetail.Props(props.discount, props.campaign, props.campaignError))
                         .render(parent);
 
         parent.addView(discountView);
@@ -55,7 +64,7 @@ public class DiscountDetailContainer extends CompactComponent<DiscountDetailCont
 
     private void addDiscountTitle(final ViewGroup parent) {
         MPTextView title = getTitleTextView(parent);
-        if (props.campaign.isUsedUpDiscount()) {
+        if (props.isUsedUpDiscount()) {
             configureUsedUpDiscountTitle(title);
         } else {
             configureOffTitle(title);
