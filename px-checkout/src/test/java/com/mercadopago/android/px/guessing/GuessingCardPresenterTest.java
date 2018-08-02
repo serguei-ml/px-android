@@ -4,6 +4,7 @@ import com.mercadopago.android.px.controllers.PaymentMethodGuessingController;
 import com.mercadopago.android.px.exceptions.MercadoPagoError;
 import com.mercadopago.android.px.internal.repository.AmountRepository;
 import com.mercadopago.android.px.internal.repository.GroupsRepository;
+import com.mercadopago.android.px.internal.repository.PaymentSettingRepository;
 import com.mercadopago.android.px.internal.repository.UserSelectionRepository;
 import com.mercadopago.android.px.mocks.BankDeals;
 import com.mercadopago.android.px.mocks.Cards;
@@ -35,10 +36,10 @@ import com.mercadopago.android.px.services.exceptions.ApiException;
 import com.mercadopago.android.px.services.exceptions.CardTokenException;
 import com.mercadopago.android.px.tracker.MPTrackingContext;
 import com.mercadopago.android.px.uicontrollers.card.CardView;
+import com.mercadopago.android.px.util.ApiUtil;
 import com.mercadopago.android.px.utils.CardTestUtils;
 import com.mercadopago.android.px.utils.StubSuccessMpCall;
 import com.mercadopago.android.px.views.GuessingCardActivityView;
-import com.mercadopago.android.px.util.ApiUtil;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +66,7 @@ public class GuessingCardPresenterTest {
     @Mock private UserSelectionRepository userSelectionRepository;
     @Mock private GroupsRepository groupsRepository;
     @Mock private PaymentMethodSearch paymentMethodSearch;
+    @Mock private PaymentSettingRepository paymentSettingRepository;
 
     @Before
     public void setUp() {
@@ -72,7 +74,8 @@ public class GuessingCardPresenterTest {
         final List<PaymentMethod> pm = PaymentMethods.getPaymentMethodListMLA();
         when(groupsRepository.getGroups()).thenReturn(new StubSuccessMpCall<>(paymentMethodSearch));
         when(paymentMethodSearch.getPaymentMethods()).thenReturn(pm);
-        presenter = new GuessingCardPresenter(amountRepository, userSelectionRepository, groupsRepository);
+        presenter = new GuessingCardPresenter(amountRepository, userSelectionRepository, paymentSettingRepository,
+            groupsRepository);
         presenter.attachView(mockedView);
         presenter.attachResourcesProvider(provider);
     }
@@ -804,7 +807,8 @@ public class GuessingCardPresenterTest {
         final PaymentPreference paymentPreference = new PaymentPreference();
         paymentPreference.setExcludedPaymentMethodIds(excludedPaymentMethodIds);
 
-        presenter = new GuessingCardPresenter(amountRepository, userSelectionRepository, groupsRepository);
+        presenter = new GuessingCardPresenter(amountRepository, userSelectionRepository, paymentSettingRepository,
+            groupsRepository);
         presenter.attachView(mockedView);
         presenter.attachResourcesProvider(provider);
 
@@ -1347,6 +1351,7 @@ public class GuessingCardPresenterTest {
 
         @Override
         public void getInstallmentsAsync(String bin, BigDecimal amount, Long issuerId, String paymentMethodId,
+            Integer diff,
             TaggedCallback<List<Installment>> taggedCallback) {
             if (shouldFail) {
                 taggedCallback.onFailure(failedResponse);

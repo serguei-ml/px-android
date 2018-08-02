@@ -1,6 +1,7 @@
 package com.mercadopago.android.px.providers;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import com.mercadopago.android.px.R;
 import com.mercadopago.android.px.core.MercadoPagoServicesAdapter;
 import com.mercadopago.android.px.exceptions.MercadoPagoError;
@@ -20,9 +21,13 @@ public class InstallmentsProviderImpl implements InstallmentsProvider {
     }
 
     @Override
-    public void getInstallments(String bin, BigDecimal amount, Long issuerId, String paymentMethodId,
+    public void getInstallments(final String bin,
+        final BigDecimal amount,
+        final Long issuerId,
+        final String paymentMethodId,
+        @Nullable final Integer differentialPricingId,
         final TaggedCallback<List<Installment>> taggedCallback) {
-        mercadoPago.getInstallments(bin, amount, issuerId, paymentMethodId, taggedCallback);
+        mercadoPago.getInstallments(bin, amount, issuerId, paymentMethodId, differentialPricingId, taggedCallback);
     }
 
     @Override

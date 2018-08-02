@@ -8,11 +8,13 @@ import com.mercadopago.android.px.controllers.PaymentMethodGuessingController;
 import com.mercadopago.android.px.exceptions.MercadoPagoError;
 import com.mercadopago.android.px.internal.repository.AmountRepository;
 import com.mercadopago.android.px.internal.repository.GroupsRepository;
+import com.mercadopago.android.px.internal.repository.PaymentSettingRepository;
 import com.mercadopago.android.px.internal.repository.UserSelectionRepository;
 import com.mercadopago.android.px.model.BankDeal;
 import com.mercadopago.android.px.model.Bin;
 import com.mercadopago.android.px.model.CardToken;
 import com.mercadopago.android.px.model.Cardholder;
+import com.mercadopago.android.px.model.DifferentialPricing;
 import com.mercadopago.android.px.model.Identification;
 import com.mercadopago.android.px.model.IdentificationType;
 import com.mercadopago.android.px.model.Installment;
@@ -47,6 +49,7 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
     public static final int CARD_DEFAULT_IDENTIFICATION_NUMBER_LENGTH = 12;
     @NonNull private final AmountRepository amountRepository;
     @NonNull private final UserSelectionRepository userSelectionRepository;
+    @NonNull private final PaymentSettingRepository paymentSettingRepository;
     private final GroupsRepository groupsRepository;
 
     //Card controller
@@ -95,9 +98,11 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
 
     public GuessingCardPresenter(@NonNull final AmountRepository amountRepository,
         @NonNull final UserSelectionRepository userSelectionRepository,
-        final GroupsRepository groupsRepository) {
+        @NonNull final PaymentSettingRepository paymentSettingRepository,
+        @NonNull final GroupsRepository groupsRepository) {
         this.amountRepository = amountRepository;
         this.userSelectionRepository = userSelectionRepository;
+        this.paymentSettingRepository = paymentSettingRepository;
         this.groupsRepository = groupsRepository;
         mShowBankDeals = true;
         mEraseSpace = true;
@@ -939,9 +944,12 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
 
     private void getInstallments() {
 
-        getResourcesProvider()
-            .getInstallmentsAsync(mBin, amountRepository.getAmountToPay(), mIssuer.getId(),
-                userSelectionRepository.getPaymentMethod().getId(),
+        final DifferentialPricing differentialPricing =
+            paymentSettingRepository.getCheckoutPreference().getDifferentialPricing();
+        final Integer differentialPricingId = differentialPricing == null ? null : differentialPricing.getId();
+
+        getResourcesProvider().getInstallmentsAsync(mBin, amountRepository.getAmountToPay(), mIssuer.getId(),
+            userSelectionRepository.getPaymentMethod().getId(), differentialPricingId,
                 new TaggedCallback<List<Installment>>(ApiUtil.RequestOrigin.GET_INSTALLMENTS) {
                     @Override
                     public void onSuccess(List<Installment> installments) {

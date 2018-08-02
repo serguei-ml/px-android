@@ -483,6 +483,7 @@ public class InstallmentsPresenterTest {
 
         @Override
         public void getInstallments(String bin, BigDecimal amount, Long issuerId, String paymentMethodId,
+            Integer differential,
             TaggedCallback<List<Installment>> taggedCallback) {
             if (shouldFail) {
                 taggedCallback.onFailure(failedResponse);

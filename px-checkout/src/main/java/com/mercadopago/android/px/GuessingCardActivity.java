@@ -72,7 +72,6 @@ import com.mercadopago.android.px.tracking.utils.TrackingUtil;
 import com.mercadopago.android.px.uicontrollers.card.CardRepresentationModes;
 import com.mercadopago.android.px.uicontrollers.card.CardView;
 import com.mercadopago.android.px.uicontrollers.card.IdentificationCardView;
-import com.mercadopago.android.px.views.GuessingCardActivityView;
 import com.mercadopago.android.px.util.ApiUtil;
 import com.mercadopago.android.px.util.ErrorUtil;
 import com.mercadopago.android.px.util.JsonUtil;
@@ -80,6 +79,7 @@ import com.mercadopago.android.px.util.MPAnimationUtils;
 import com.mercadopago.android.px.util.MPCardMaskUtil;
 import com.mercadopago.android.px.util.ScaleUtil;
 import com.mercadopago.android.px.util.ViewUtils;
+import com.mercadopago.android.px.views.GuessingCardActivityView;
 import java.lang.reflect.Type;
 import java.util.List;
 
@@ -233,6 +233,7 @@ public class GuessingCardActivity extends MercadoPagoBaseActivity implements Gue
         final Session session = Session.getSession(this);
         mPresenter = new GuessingCardPresenter(session.getAmountRepository(),
             session.getConfigurationModule().getUserSelectionRepository(),
+            session.getConfigurationModule().getPaymentSettings(),
             session.getGroupsRepository());
         mPublicKey = intent.getStringExtra("merchantPublicKey");
         mPrivateKey = intent.getStringExtra("payerAccessToken");

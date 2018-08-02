@@ -3,6 +3,7 @@ package com.mercadopago.android.px.services.core;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.mercadopago.android.px.model.BankDeal;
 import com.mercadopago.android.px.model.CardToken;
 import com.mercadopago.android.px.model.Customer;
@@ -103,7 +104,8 @@ public class MercadoPagoServices {
     @SuppressLint("unused")
     public void getPaymentMethodSearch(final BigDecimal amount, final List<String> excludedPaymentTypes,
         final List<String> excludedPaymentMethods, final List<String> cardsWithEsc, final List<String> supportedPlugins,
-        final Payer payer, final Site site, final Callback<PaymentMethodSearch> callback) {
+        final Payer payer, final Site site, @Nullable final Integer differentialPricing,
+        final Callback<PaymentMethodSearch> callback) {
         final PayerIntent payerIntent = new PayerIntent(payer);
         final CheckoutService service = getDefaultRetrofit(mContext).create(CheckoutService.class);
 
@@ -116,7 +118,8 @@ public class MercadoPagoServices {
         service.getPaymentMethodSearch(Settings.servicesVersion,
             mContext.getResources().getConfiguration().locale.getLanguage(), this.mPublicKey, amount,
             excludedPaymentTypesAppended, excludedPaymentMethodsAppended, payerIntent, site.getId(),
-            PAYMENT_METHODS_OPTIONS_API_VERSION, mProcessingMode, cardsWithEscAppended, supportedPluginsAppended).
+            PAYMENT_METHODS_OPTIONS_API_VERSION, mProcessingMode, cardsWithEscAppended, supportedPluginsAppended,
+            differentialPricing).
             enqueue(callback);
     }
 
@@ -172,15 +175,19 @@ public class MercadoPagoServices {
 
     public void getIdentificationTypes(Callback<List<IdentificationType>> callback) {
         IdentificationService service = getDefaultRetrofit(mContext).create(IdentificationService.class);
-        service.getIdentificationTypes(this.mPublicKey, this.mPrivateKey).enqueue(callback);
+        service.getIdentificationTypes(mPublicKey, mPrivateKey).enqueue(callback);
     }
 
-    public void getInstallments(String bin, BigDecimal amount, Long issuerId, String paymentMethodId,
+    public void getInstallments(final String bin,
+        final BigDecimal amount,
+        final Long issuerId,
+        final String paymentMethodId,
+        @Nullable final Integer differentialPricingId,
         Callback<List<Installment>> callback) {
         PaymentService service = getDefaultRetrofit(mContext).create(PaymentService.class);
-        service.getInstallments(Settings.servicesVersion, this.mPublicKey, mPrivateKey, bin, amount, issuerId,
+        service.getInstallments(Settings.servicesVersion, mPublicKey, mPrivateKey, bin, amount, issuerId,
             paymentMethodId,
-            LocaleUtil.getLanguage(mContext), mProcessingMode).enqueue(callback);
+            LocaleUtil.getLanguage(mContext), mProcessingMode, differentialPricingId).enqueue(callback);
     }
 
     public void getIssuers(String paymentMethodId, String bin, final Callback<List<Issuer>> callback) {

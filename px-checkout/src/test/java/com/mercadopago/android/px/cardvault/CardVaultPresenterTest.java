@@ -776,6 +776,7 @@ public class CardVaultPresenterTest {
 
         @Override
         public void getInstallmentsAsync(String bin, Long issuerId, String paymentMethodId, BigDecimal amount,
+            Integer differential,
             TaggedCallback<List<Installment>> taggedCallback) {
             if (shouldFail) {
                 taggedCallback.onFailure(failedResponse);
