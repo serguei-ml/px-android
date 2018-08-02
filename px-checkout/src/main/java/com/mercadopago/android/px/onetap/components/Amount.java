@@ -54,7 +54,7 @@ class Amount extends CompactComponent<Amount.Props, OneTap.Actions> {
         }
 
         /* default */ boolean hasDiscount() {
-            return discountRepository.getDiscount() != null && !discountRepository.isUsedUpDiscount();
+            return discountRepository.getDiscount() != null && !discountRepository.isNotAvailableDiscount();
         }
 
         /* default */ boolean shouldShowPercentOff() {
@@ -74,8 +74,8 @@ class Amount extends CompactComponent<Amount.Props, OneTap.Actions> {
             return config.getCheckoutPreference().getSite().getCurrencyId();
         }
 
-        public boolean isUsedUpDiscount() {
-            return discountRepository.isUsedUpDiscount();
+        public boolean isNotAvailableDiscount() {
+            return discountRepository.isNotAvailableDiscount();
         }
     }
 
@@ -95,15 +95,15 @@ class Amount extends CompactComponent<Amount.Props, OneTap.Actions> {
     }
 
     private void resolveDiscount(ViewGroup discountLayout) {
-        if (props.isUsedUpDiscount()) {
-            resolveUsedUpDiscount(discountLayout);
+        if (props.isNotAvailableDiscount()) {
+            resolveNotAvailableDiscount(discountLayout);
         } else {
             resolveOffAmount(discountLayout);
             resolveMaxDiscount(discountLayout);
         }
     }
 
-    private void resolveUsedUpDiscount(ViewGroup discountLayout) {
+    private void resolveNotAvailableDiscount(ViewGroup discountLayout) {
         final TextView discountMessage = discountLayout.findViewById(R.id.discount_message);
         final TextView discountMaxLabel = discountLayout.findViewById(R.id.discount_max_label);
         discountMessage.setVisibility(View.VISIBLE);

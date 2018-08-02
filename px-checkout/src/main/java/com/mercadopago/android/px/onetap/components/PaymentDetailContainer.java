@@ -50,7 +50,7 @@ public class PaymentDetailContainer extends CompactComponent<PaymentDetailContai
         final Discount discount = props.discountRepository.getDiscount();
         final Campaign campaign = props.discountRepository.getCampaign();
         final CampaignError campaignError = props.discountRepository.getCampaignError();
-        if (props.discountRepository.hasValidDiscount()) {
+        if (props.discountRepository.hasValidDiscount() || props.discountRepository.isNotAvailableDiscount()) {
              final DiscountDetailContainer discountDetailContainer = new DiscountDetailContainer(new DiscountDetailContainer.Props(DialogTitleType.SMALL, discount, campaign, campaignError));
             discountDetailContainer.render(parent);
         }

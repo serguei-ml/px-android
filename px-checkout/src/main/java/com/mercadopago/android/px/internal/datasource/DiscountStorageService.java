@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 
 import com.google.gson.reflect.TypeToken;
 import com.mercadopago.android.px.model.Campaign;
+import com.mercadopago.android.px.model.CampaignError;
 import com.mercadopago.android.px.model.Discount;
 import com.mercadopago.android.px.util.JsonUtil;
 
@@ -21,6 +22,7 @@ public class DiscountStorageService {
     private static final String PREF_DISCOUNT = "pref_discount";
     private static final String PREF_DISCOUNT_CODE = "pref_discount_code";
     private static final String PREF_CAMPAIGNS = "pref_campaigns";
+    private static final String PREF_CAMPAIGN_ERROR = "pref_campaign_error";
 
     @NonNull
     private final SharedPreferences sharedPreferences;
@@ -28,14 +30,16 @@ public class DiscountStorageService {
     private final JsonUtil jsonUtil;
 
     public DiscountStorageService(@NonNull final SharedPreferences sharedPreferences,
-                                  @NonNull final JsonUtil jsonUtil) {
+        @NonNull final JsonUtil jsonUtil) {
         this.sharedPreferences = sharedPreferences;
         this.jsonUtil = jsonUtil;
     }
 
-    public void configureDiscountManually(@Nullable final Discount discount, @Nullable final Campaign campaign) {
+    public void configureDiscountManually(@Nullable final Discount discount, @Nullable final Campaign campaign,
+        @Nullable final CampaignError campaignError) {
         configure(campaign);
         configure(discount);
+        configure(campaignError);
     }
 
     public void reset() {
@@ -43,6 +47,7 @@ public class DiscountStorageService {
         sharedPreferences.edit().remove(PREF_CAMPAIGN).apply();
         sharedPreferences.edit().remove(PREF_DISCOUNT).apply();
         sharedPreferences.edit().remove(PREF_DISCOUNT_CODE).apply();
+        sharedPreferences.edit().remove(PREF_CAMPAIGN_ERROR).apply();
     }
 
     @Nullable
@@ -58,6 +63,11 @@ public class DiscountStorageService {
     @Nullable
     public Campaign getCampaign() {
         return jsonUtil.fromJson(sharedPreferences.getString(PREF_CAMPAIGN, ""), Campaign.class);
+    }
+
+    @Nullable
+    public CampaignError getCampaignError() {
+        return jsonUtil.fromJson(sharedPreferences.getString(PREF_CAMPAIGN_ERROR, ""), CampaignError.class);
     }
 
     private void configure(@Nullable final Discount discount) {
@@ -76,6 +86,16 @@ public class DiscountStorageService {
         } else {
             final SharedPreferences.Editor edit = sharedPreferences.edit();
             edit.putString(PREF_CAMPAIGN, jsonUtil.toJson(campaign));
+            edit.apply();
+        }
+    }
+
+    private void configure(@Nullable final CampaignError campaignError) {
+        if (campaignError == null) {
+            sharedPreferences.edit().remove(PREF_CAMPAIGN_ERROR).apply();
+        } else {
+            final SharedPreferences.Editor edit = sharedPreferences.edit();
+            edit.putString(PREF_CAMPAIGN_ERROR, jsonUtil.toJson(campaignError));
             edit.apply();
         }
     }
@@ -99,7 +119,7 @@ public class DiscountStorageService {
         final Type listType = new TypeToken<List<Campaign>>() {
         }.getType();
         return isEmpty(stringCampaigns) ? new ArrayList<Campaign>()
-                : (List<Campaign>) jsonUtil.fromJson(stringCampaigns, listType);
+            : (List<Campaign>) jsonUtil.fromJson(stringCampaigns, listType);
     }
 
     public void saveCampaigns(@NonNull final List<Campaign> campaigns) {

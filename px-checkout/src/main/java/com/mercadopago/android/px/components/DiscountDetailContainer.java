@@ -37,7 +37,7 @@ public class DiscountDetailContainer extends CompactComponent<DiscountDetailCont
             BIG, SMALL
         }
 
-        /* default */ boolean isUsedUpDiscount(){
+        /* default */ boolean isNotAvailableDiscount(){
             return campaignError != null;
         }
 
@@ -64,15 +64,15 @@ public class DiscountDetailContainer extends CompactComponent<DiscountDetailCont
 
     private void addDiscountTitle(final ViewGroup parent) {
         MPTextView title = getTitleTextView(parent);
-        if (props.isUsedUpDiscount()) {
-            configureUsedUpDiscountTitle(title);
+        if (props.isNotAvailableDiscount()) {
+            configureNotAvailableDiscountTitle(title);
         } else {
             configureOffTitle(title);
         }
         parent.addView(title);
     }
 
-    private void configureUsedUpDiscountTitle(final MPTextView textView) {
+    private void configureNotAvailableDiscountTitle(final MPTextView textView) {
         textView.setText(R.string.px_used_up_discount_title);
     }
 

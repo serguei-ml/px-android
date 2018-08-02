@@ -34,8 +34,12 @@ public class DiscountDetail extends CompactComponent<DiscountDetail.Props, Void>
             this.campaignError = campaignError;
         }
 
-        /* default */ boolean isUsedUpDiscount(){
+        /* default */ boolean isNotAvailableDiscount() {
             return campaignError != null;
+        }
+
+        public boolean hasValidDiscount() {
+            return discount != null && campaign != null;
         }
     }
 
@@ -53,7 +57,7 @@ public class DiscountDetail extends CompactComponent<DiscountDetail.Props, Void>
     }
 
     private void configureSubDetailsMessage(View mainContainer) {
-        if (props.isUsedUpDiscount()) {
+        if (props.isNotAvailableDiscount()) {
             mainContainer.findViewById(R.id.px_discount_detail_line).setVisibility(View.GONE);
             mainContainer.findViewById(R.id.px_discount_sub_details).setVisibility(View.GONE);
         }
@@ -61,13 +65,13 @@ public class DiscountDetail extends CompactComponent<DiscountDetail.Props, Void>
 
     private void configureSubtitleMessage(final View mainContainer) {
         final TextView subtitleMessage = mainContainer.findViewById(R.id.subtitle);
-        if (isMaxCouponAmountSubtitleApplicable()) {
+        if (isMaxCouponAmountApplicable()) {
             TextFormatter.withCurrencyId(props.discount.getCurrencyId())
-                    .withSpace()
-                    .amount(props.campaign.getMaxCouponAmount())
-                    .normalDecimals()
-                    .into(subtitleMessage)
-                    .holder(R.string.px_max_coupon_amount);
+                .withSpace()
+                .amount(props.campaign.getMaxCouponAmount())
+                .normalDecimals()
+                .into(subtitleMessage)
+                .holder(R.string.px_max_coupon_amount);
         } else {
             subtitleMessage.setVisibility(View.GONE);
         }
@@ -75,10 +79,10 @@ public class DiscountDetail extends CompactComponent<DiscountDetail.Props, Void>
 
     private void configureDetailMessage(final View mainContainer) {
         final TextView detailTextView = mainContainer.findViewById(R.id.detail);
-        if (props.campaign.hasMaxCouponAmount()) {
-            if (props.isUsedUpDiscount()) {
-                setDetailMessage(detailTextView, R.string.px_used_up_discount_detail, mainContainer);
-            } else if (props.campaign.isAlwaysOnDiscount()) {
+        if (props.isNotAvailableDiscount()) {
+            setDetailMessage(detailTextView, R.string.px_used_up_discount_detail, mainContainer);
+        } else if (isMaxCouponAmountApplicable()) {
+            if (isAlwaysOnApplicable()) {
                 setDetailMessage(detailTextView, R.string.px_always_on_discount_detail, mainContainer);
             } else {
                 setDetailMessage(detailTextView, R.string.px_one_shot_discount_detail, mainContainer);
@@ -93,7 +97,7 @@ public class DiscountDetail extends CompactComponent<DiscountDetail.Props, Void>
 
         if (isEndDateApplicable()) {
             String endDateMessage = view.getResources().getString(R.string.px_discount_detail_end_date,
-                    props.campaign.getPrettyEndDate());
+                props.campaign.getPrettyEndDate());
             detailTextView.setText(String.format(Locale.getDefault(), "%s %s", detailMessage, endDateMessage));
         } else {
             detailTextView.setText(detailMessage);
@@ -101,10 +105,16 @@ public class DiscountDetail extends CompactComponent<DiscountDetail.Props, Void>
     }
 
     private boolean isEndDateApplicable() {
-        return props.campaign.hasEndDate() && !props.isUsedUpDiscount();
+        return props.hasValidDiscount() ? props.campaign.hasEndDate() && !props.isNotAvailableDiscount() : false;
     }
 
-    private boolean isMaxCouponAmountSubtitleApplicable() {
-        return props.campaign.hasMaxCouponAmount() && !props.isUsedUpDiscount();
+    private boolean isMaxCouponAmountApplicable() {
+        return props.hasValidDiscount() ? props.campaign.hasMaxCouponAmount() && !props.isNotAvailableDiscount()
+            : false;
+    }
+
+    public boolean isAlwaysOnApplicable() {
+        return props.hasValidDiscount() ? props.campaign.isAlwaysOnDiscount() && !props.isNotAvailableDiscount()
+            : false;
     }
 }

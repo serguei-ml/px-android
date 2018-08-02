@@ -11,6 +11,7 @@ import com.mercadopago.android.px.callbacks.CallbackHolder;
 import com.mercadopago.android.px.hooks.CheckoutHooks;
 import com.mercadopago.android.px.internal.di.Session;
 import com.mercadopago.android.px.model.Campaign;
+import com.mercadopago.android.px.model.CampaignError;
 import com.mercadopago.android.px.model.Discount;
 import com.mercadopago.android.px.model.PaymentData;
 import com.mercadopago.android.px.model.PaymentResult;
@@ -31,6 +32,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nonnull;
 
 import static com.mercadopago.android.px.plugins.PaymentProcessor.PAYMENT_PROCESSOR_KEY;
 import static com.mercadopago.android.px.util.TextUtils.isEmpty;
@@ -70,6 +72,9 @@ public class MercadoPagoCheckout implements Serializable {
     @Nullable
     private final Campaign campaign;
 
+    @Nullable
+    private final CampaignError campaignError;
+
     private final boolean binaryMode;
 
     @Nullable
@@ -88,6 +93,7 @@ public class MercadoPagoCheckout implements Serializable {
         binaryMode = builder.binaryMode;
         discount = builder.discount;
         campaign = builder.campaign;
+        campaignError = builder.campaignError;
         charges = builder.charges;
         paymentResult = builder.paymentResult;
         paymentData = builder.paymentData;
@@ -211,6 +217,11 @@ public class MercadoPagoCheckout implements Serializable {
         return campaign;
     }
 
+    @Nullable
+    public CampaignError getCampaignError() {
+        return campaignError;
+    }
+
     @NonNull
     public List<ChargeRule> getCharges() {
         return charges;
@@ -273,6 +284,7 @@ public class MercadoPagoCheckout implements Serializable {
         PaymentResult paymentResult;
         Discount discount;
         Campaign campaign;
+        CampaignError campaignError;
         CheckoutHooks checkoutHooks;
         DataInitializationTask dataInitializationTask;
         String regularFontPath;
@@ -317,6 +329,16 @@ public class MercadoPagoCheckout implements Serializable {
         public Builder setDiscount(@NonNull final Discount discount, @NonNull final Campaign campaign) {
             this.discount = discount;
             this.campaign = campaign;
+            return this;
+        }
+
+        /**
+         * By enabling this feature you'll inform that payer's discount is no more applicable,
+         * because payer has reached the limit or it has expired.
+         * You have to set a payment processor to apply this feature.
+         */
+        public Builder setCampaignError(@Nonnull final CampaignError campaignError) {
+            this.campaignError = campaignError;
             return this;
         }
 

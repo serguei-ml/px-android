@@ -69,8 +69,8 @@ public class AmountView extends LinearLayoutCompat {
         final Campaign campaign = discountRepository.getCampaign();
         final CampaignError campaignError = discountRepository.getCampaignError();
 
-        if (discountRepository.isUsedUpDiscount()) {
-            showUsedUpDiscount(discount, campaign, campaignError, totalAmount, site);
+        if (discountRepository.isNotAvailableDiscount()) {
+            showNotAvailableDiscount(discount, campaign, campaignError, totalAmount, site);
         } else if (discountRepository.hasValidDiscount()) {
             show(discount, campaign, campaignError, totalAmount, site);
         } else if (discountRepository.hasCodeCampaign()) {
@@ -127,10 +127,10 @@ public class AmountView extends LinearLayoutCompat {
         });
     }
 
-    private void showUsedUpDiscount(@NonNull final Discount discount, @NonNull final Campaign campaign,
+    private void showNotAvailableDiscount(@NonNull final Discount discount, @NonNull final Campaign campaign,
         @NonNull final CampaignError campaignError, @NonNull final BigDecimal totalAmount,
         @NonNull final Site site) {
-        configureViewsVisibilityWhenUsedUpDiscount(discount, campaign, campaignError);
+        configureViewsVisibilityWhenNotAvailableDiscount(discount, campaign, campaignError);
         amountDescription.setText(R.string.px_used_up_discount_title);
         amountDescription.setTextColor(getResources().getColor(R.color.px_form_text));
         showEffectiveAmount(totalAmount, site);
@@ -143,7 +143,7 @@ public class AmountView extends LinearLayoutCompat {
         showEffectiveAmount(totalAmount, site);
     }
 
-    private void configureViewsVisibilityWhenUsedUpDiscount(@NonNull final Discount discount,
+    private void configureViewsVisibilityWhenNotAvailableDiscount(@NonNull final Discount discount,
         @NonNull final Campaign campaign, @Nullable final CampaignError campaignError) {
         amountBeforeDiscount.setVisibility(GONE);
         maxCouponAmount.setVisibility(GONE);

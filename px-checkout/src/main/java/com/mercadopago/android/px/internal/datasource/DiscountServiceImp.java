@@ -25,24 +25,25 @@ public class DiscountServiceImp implements DiscountRepository {
     /* default */ volatile boolean fetched;
 
     public DiscountServiceImp(@NonNull final DiscountStorageService discountStorageService,
-                              @NonNull final DiscountApiService discountApiService) {
+        @NonNull final DiscountApiService discountApiService) {
         this.discountStorageService = discountStorageService;
         this.discountApiService = discountApiService;
         fetched = false;
     }
 
     @Override
-    public void configureMerchantDiscountManually(@Nullable final Discount discount, @Nullable final Campaign campaign) {
+    public void configureMerchantDiscountManually(@Nullable final Discount discount, @Nullable final Campaign campaign,
+        @Nullable CampaignError campaignError) {
         final CheckoutStore store = CheckoutStore.getInstance();
         //TODO remove when discount signature change.
         if (store.hasPaymentProcessor() || !store.getPaymentMethodPluginList().isEmpty()) {
-            discountStorageService.configureDiscountManually(discount, campaign);
+            discountStorageService.configureDiscountManually(discount, campaign, campaignError);
         }
     }
 
     @Override
     public void configureDiscountManually(@Nullable final Discount discount, @Nullable final Campaign campaign) {
-        discountStorageService.configureDiscountManually(discount, campaign);
+        discountStorageService.configureDiscountManually(discount, campaign, null);
     }
 
     @Override
@@ -51,10 +52,9 @@ public class DiscountServiceImp implements DiscountRepository {
         discountStorageService.reset();
     }
 
-    //TODO falta firma de Instore al recibir error de MKTools.
     @Override
-    public boolean isUsedUpDiscount() {
-        return true;
+    public boolean isNotAvailableDiscount() {
+        return getCampaignError() != null;
     }
 
     @NonNull
@@ -101,11 +101,10 @@ public class DiscountServiceImp implements DiscountRepository {
         return discountCampaign;
     }
 
-    //TODO retornar atributo campaignError seteado desde MercadoPagoCheckout y guardado en el store.
     @Nullable
     @Override
     public CampaignError getCampaignError() {
-        return new CampaignError("");
+        return discountStorageService.getCampaignError();
     }
 
     @Override
@@ -191,7 +190,7 @@ public class DiscountServiceImp implements DiscountRepository {
         }
 
         private void getFromNetwork(final Callback<Boolean> callback, @NonNull final Callable campaignsCall)
-                throws Exception {
+            throws Exception {
             final List<Campaign> storage = discountStorageService.getCampaigns();
             if (storage.isEmpty()) {
                 campaignsCall.call();
@@ -201,7 +200,7 @@ public class DiscountServiceImp implements DiscountRepository {
         }
 
         /* default */ Callback<List<Campaign>> campaignCache(final Callback<Boolean> callback,
-                                                             final Callable discountCall) {
+            final Callable discountCall) {
             return new Callback<List<Campaign>>() {
                 @Override
                 public void success(final List<Campaign> campaigns) {
@@ -254,7 +253,7 @@ public class DiscountServiceImp implements DiscountRepository {
             return new Callback<Discount>() {
                 @Override
                 public void success(final Discount discount) {
-                    discountStorageService.configureDiscountManually(discount, directCampaign);
+                    discountStorageService.configureDiscountManually(discount, directCampaign, getCampaignError());
                     callback.success(true);
                 }
 
