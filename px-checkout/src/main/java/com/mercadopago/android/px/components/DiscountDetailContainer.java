@@ -11,7 +11,6 @@ import com.mercadopago.android.px.model.Discount;
 import com.mercadopago.android.px.util.textformatter.TextFormatter;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class DiscountDetailContainer extends CompactComponent<DiscountDetailContainer.Props, Void> {
 

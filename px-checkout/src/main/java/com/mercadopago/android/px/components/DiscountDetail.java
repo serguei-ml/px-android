@@ -14,7 +14,6 @@ import com.mercadopago.android.px.util.textformatter.TextFormatter;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public class DiscountDetail extends CompactComponent<DiscountDetail.Props, Void> {
 
