@@ -7,7 +7,6 @@ import android.widget.TextView;
 
 import com.mercadopago.android.px.R;
 import com.mercadopago.android.px.model.Campaign;
-import com.mercadopago.android.px.model.CampaignError;
 import com.mercadopago.android.px.model.Discount;
 import com.mercadopago.android.px.util.textformatter.TextFormatter;
 
@@ -24,18 +23,18 @@ public class DiscountDetail extends CompactComponent<DiscountDetail.Props, Void>
         private final Discount discount;
         @NonNull
         private final Campaign campaign;
-        @Nullable
-        private final CampaignError campaignError;
+
+        private final boolean notAvailableDiscount;
 
         public Props(@NonNull final Discount discount, @NonNull final Campaign campaign,
-            @Nullable final CampaignError campaignError) {
+            final boolean notAvailableDiscount) {
             this.discount = discount;
             this.campaign = campaign;
-            this.campaignError = campaignError;
+            this.notAvailableDiscount = notAvailableDiscount;
         }
 
         /* default */ boolean isNotAvailableDiscount() {
-            return campaignError != null;
+            return notAvailableDiscount;
         }
 
         public boolean hasValidDiscount() {

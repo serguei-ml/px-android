@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import com.mercadopago.android.px.R;
 import com.mercadopago.android.px.customviews.MPTextView;
 import com.mercadopago.android.px.model.Campaign;
-import com.mercadopago.android.px.model.CampaignError;
 import com.mercadopago.android.px.model.Discount;
 import com.mercadopago.android.px.util.textformatter.TextFormatter;
 
@@ -23,24 +22,25 @@ public class DiscountDetailContainer extends CompactComponent<DiscountDetailCont
         /* default */ final Discount discount;
         @NonNull
         /* default */ final Campaign campaign;
-        @Nullable
-        /* default */ final CampaignError campaignError;
 
-        public Props(@NonNull final DialogTitleType dialogTitleType, @NonNull final Discount discount, @NonNull final Campaign campaign, @Nullable CampaignError campaignError) {
+        /* default */ final boolean notAvailableDiscount;
+
+        public Props(@NonNull final DialogTitleType dialogTitleType, @NonNull final Discount discount,
+            @NonNull final Campaign campaign,
+            final boolean notAvailableDiscount) {
             this.dialogTitleType = dialogTitleType;
             this.discount = discount;
             this.campaign = campaign;
-            this.campaignError = campaignError;
+            this.notAvailableDiscount = notAvailableDiscount;
         }
 
         public enum DialogTitleType {
             BIG, SMALL
         }
 
-        /* default */ boolean isNotAvailableDiscount(){
-            return campaignError != null;
+        /* default */ boolean isNotAvailableDiscount() {
+            return notAvailableDiscount;
         }
-
     }
 
     public DiscountDetailContainer(@NonNull final DiscountDetailContainer.Props props) {
@@ -56,8 +56,8 @@ public class DiscountDetailContainer extends CompactComponent<DiscountDetailCont
 
     private void addDiscountDetail(@NonNull final ViewGroup parent) {
         final View discountView =
-                new DiscountDetail(new DiscountDetail.Props(props.discount, props.campaign, props.campaignError))
-                        .render(parent);
+            new DiscountDetail(new DiscountDetail.Props(props.discount, props.campaign, props.notAvailableDiscount))
+                .render(parent);
 
         parent.addView(discountView);
     }
@@ -79,20 +79,21 @@ public class DiscountDetailContainer extends CompactComponent<DiscountDetailCont
     private void configureOffTitle(final MPTextView textView) {
         if (props.discount.hasPercentOff()) {
             textView.setText(textView.getContext()
-                    .getString(R.string.px_discount_percent_off, props.discount.getPercentOff()));
+                .getString(R.string.px_discount_percent_off, props.discount.getPercentOff()));
         } else {
             TextFormatter.withCurrencyId(props.discount.getCurrencyId())
-                    .withSpace()
-                    .amount(props.discount.getAmountOff())
-                    .normalDecimals()
-                    .into(textView)
-                    .holder(R.string.px_discount_amount_off);
+                .withSpace()
+                .amount(props.discount.getAmountOff())
+                .normalDecimals()
+                .into(textView)
+                .holder(R.string.px_discount_amount_off);
         }
     }
 
     private MPTextView getTitleTextView(final ViewGroup parent) {
-        return props.dialogTitleType.equals(Props.DialogTitleType.BIG) ? (MPTextView) inflate(parent, R.layout.px_view_big_modal_title)
-                : (MPTextView) inflate(parent, R.layout.px_view_small_modal_title);
+        return props.dialogTitleType.equals(Props.DialogTitleType.BIG) ? (MPTextView) inflate(parent,
+            R.layout.px_view_big_modal_title)
+            : (MPTextView) inflate(parent, R.layout.px_view_small_modal_title);
     }
 }
 

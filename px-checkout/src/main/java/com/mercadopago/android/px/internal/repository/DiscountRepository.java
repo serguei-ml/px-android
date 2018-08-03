@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.mercadopago.android.px.model.Campaign;
-import com.mercadopago.android.px.model.CampaignError;
 import com.mercadopago.android.px.model.Discount;
 import com.mercadopago.android.px.mvp.ResourcesProvider;
 import com.mercadopago.android.px.services.adapters.MPCall;
@@ -14,7 +13,7 @@ import java.math.BigDecimal;
 public interface DiscountRepository extends ResourcesProvider {
 
     void configureMerchantDiscountManually(@Nullable final Discount discount, @Nullable final Campaign campaign,
-        @Nullable final CampaignError campaignError);
+        final boolean notAvailableDiscount);
 
     void configureDiscountManually(@Nullable final Discount discount, @Nullable final Campaign campaign);
 
@@ -36,8 +35,7 @@ public interface DiscountRepository extends ResourcesProvider {
     @Nullable
     Campaign getCampaign(String discountId);
 
-    @Nullable
-    CampaignError getCampaignError();
+    boolean isNotAvailableDiscount();
 
     boolean hasCodeCampaign();
 
@@ -46,6 +44,4 @@ public interface DiscountRepository extends ResourcesProvider {
     void saveDiscountCode(@NonNull final String code);
 
     void reset();
-
-    boolean isNotAvailableDiscount();
 }

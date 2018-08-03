@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import com.mercadopago.android.px.core.CheckoutStore;
 import com.mercadopago.android.px.internal.repository.DiscountRepository;
 import com.mercadopago.android.px.model.Campaign;
-import com.mercadopago.android.px.model.CampaignError;
 import com.mercadopago.android.px.model.Discount;
 import com.mercadopago.android.px.services.adapters.MPCall;
 import com.mercadopago.android.px.services.callbacks.Callback;
@@ -33,28 +32,23 @@ public class DiscountServiceImp implements DiscountRepository {
 
     @Override
     public void configureMerchantDiscountManually(@Nullable final Discount discount, @Nullable final Campaign campaign,
-        @Nullable CampaignError campaignError) {
+        final boolean notAvailableDiscount) {
         final CheckoutStore store = CheckoutStore.getInstance();
         //TODO remove when discount signature change.
         if (store.hasPaymentProcessor() || !store.getPaymentMethodPluginList().isEmpty()) {
-            discountStorageService.configureDiscountManually(discount, campaign, campaignError);
+            discountStorageService.configureDiscountManually(discount, campaign, notAvailableDiscount);
         }
     }
 
     @Override
     public void configureDiscountManually(@Nullable final Discount discount, @Nullable final Campaign campaign) {
-        discountStorageService.configureDiscountManually(discount, campaign, null);
+        discountStorageService.configureDiscountManually(discount, campaign, false);
     }
 
     @Override
     public void reset() {
         fetched = false;
         discountStorageService.reset();
-    }
-
-    @Override
-    public boolean isNotAvailableDiscount() {
-        return getCampaignError() != null;
     }
 
     @NonNull
@@ -101,10 +95,8 @@ public class DiscountServiceImp implements DiscountRepository {
         return discountCampaign;
     }
 
-    @Nullable
-    @Override
-    public CampaignError getCampaignError() {
-        return discountStorageService.getCampaignError();
+    public boolean isNotAvailableDiscount() {
+        return discountStorageService.isNotAvailableDiscount();
     }
 
     @Override
@@ -253,7 +245,8 @@ public class DiscountServiceImp implements DiscountRepository {
             return new Callback<Discount>() {
                 @Override
                 public void success(final Discount discount) {
-                    discountStorageService.configureDiscountManually(discount, directCampaign, getCampaignError());
+                    discountStorageService.configureDiscountManually(discount, directCampaign, DiscountServiceImp.this
+                        .isNotAvailableDiscount());
                     callback.success(true);
                 }
 

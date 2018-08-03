@@ -12,7 +12,6 @@ import com.mercadopago.android.px.R;
 import com.mercadopago.android.px.components.DiscountDetailContainer;
 import com.mercadopago.android.px.components.DiscountDetailContainer.Props.DialogTitleType;
 import com.mercadopago.android.px.model.Campaign;
-import com.mercadopago.android.px.model.CampaignError;
 import com.mercadopago.android.px.model.Discount;
 
 public class DiscountDetailDialog extends MeliDialog {
@@ -20,17 +19,17 @@ public class DiscountDetailDialog extends MeliDialog {
     private static final String TAG = DiscountDetailDialog.class.getName();
     private static final String ARG_DISCOUNT = "arg_discount";
     private static final String ARG_CAMPAIGN = "arg_campaign";
-    private static final String ARG_CAMPAIGN_ERROR = "arg_campaign_error";
+    private static final String ARG_NOT_AVAILABLE_DISCOUNT = "arg_not_available_discount";
 
     public static void showDialog(@NonNull final Discount discount,
         @NonNull final Campaign campaign,
-        @Nullable final CampaignError campaignError,
+        final boolean notAvailableDiscount,
         final FragmentManager supportFragmentManager) {
         DiscountDetailDialog discountDetailDialog = new DiscountDetailDialog();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_DISCOUNT, discount);
         bundle.putParcelable(ARG_CAMPAIGN, campaign);
-        bundle.putParcelable(ARG_CAMPAIGN_ERROR, campaignError);
+        bundle.putBoolean(ARG_NOT_AVAILABLE_DISCOUNT, notAvailableDiscount);
         discountDetailDialog.setArguments(bundle);
         discountDetailDialog.show(supportFragmentManager, TAG);
     }
@@ -43,10 +42,10 @@ public class DiscountDetailDialog extends MeliDialog {
         if (args != null) {
             final Discount discount = args.getParcelable(ARG_DISCOUNT);
             final Campaign campaign = args.getParcelable(ARG_CAMPAIGN);
-            final CampaignError campaignError = args.getParcelable(ARG_CAMPAIGN_ERROR);
+            final boolean notAvailableDiscount = args.getBoolean(ARG_NOT_AVAILABLE_DISCOUNT);
             final ViewGroup container = view.findViewById(R.id.main_container);
             final DiscountDetailContainer discountDetailContainer = new DiscountDetailContainer(
-                new DiscountDetailContainer.Props(DialogTitleType.BIG, discount, campaign, campaignError));
+                new DiscountDetailContainer.Props(DialogTitleType.BIG, discount, campaign, notAvailableDiscount));
             discountDetailContainer.render(container);
         } else {
             dismiss();

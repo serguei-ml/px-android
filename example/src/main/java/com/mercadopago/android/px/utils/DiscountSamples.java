@@ -4,7 +4,6 @@ import android.support.v4.util.Pair;
 
 import com.mercadopago.android.px.core.MercadoPagoCheckout;
 
-import com.mercadopago.android.px.model.CampaignError;
 import com.mercadopago.android.px.plugins.MainPaymentProcessor;
 import java.util.Collection;
 
@@ -19,7 +18,6 @@ final class DiscountSamples {
 
     private static final String PK_WITH_CODE_DISCOUNT = "APP_USR-2e257493-3b80-4b71-8547-c841d035e8f2";
     private static final String PREF_WITH_CODE_DISCOUNT = "241261708-cd353b1b-940f-493b-b960-10106a24203c";
-    private static final String CAMPAIGN_ERROR_CODE = "collector_with_applicable_campaign";
 
     private DiscountSamples() {
     }
@@ -29,15 +27,15 @@ final class DiscountSamples {
             new Pair<>("Direct discount", getMercadoPagoBuilder(PK_WITH_DIRECT_DISCOUNT, PREF_WITH_DIRECT_DISCOUNT)));
         options.add(new Pair<>("Code discount", getMercadoPagoBuilder(PK_WITH_CODE_DISCOUNT, PREF_WITH_CODE_DISCOUNT)));
         options.add(new Pair<>("Discount not available",
-            getMercadoPagoBuilderWithCampaignError(PK_WITH_DIRECT_DISCOUNT_BUDGET_3, PREF_WITH_USED_UP_BUDGET)));
+            getMercadoPagoBuilderWithNotAvailableDiscount(PK_WITH_DIRECT_DISCOUNT_BUDGET_3, PREF_WITH_USED_UP_BUDGET)));
     }
 
-    private static MercadoPagoCheckout.Builder getMercadoPagoBuilderWithCampaignError(final String publicKey,
+    private static MercadoPagoCheckout.Builder getMercadoPagoBuilderWithNotAvailableDiscount(final String publicKey,
         final String prefId) {
 
         final MainPaymentProcessor mainPaymentProcessor = new MainPaymentProcessor(getBusinessPaymentApproved());
         return getMercadoPagoBuilder(publicKey, prefId)
-            .setCampaignError(new CampaignError(CAMPAIGN_ERROR_CODE))
+            .notAvailableDiscount()
             .setPaymentProcessor(mainPaymentProcessor);
     }
 

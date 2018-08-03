@@ -9,7 +9,6 @@ import com.mercadopago.android.px.components.DiscountDetailContainer;
 import com.mercadopago.android.px.components.DiscountDetailContainer.Props.DialogTitleType;
 import com.mercadopago.android.px.internal.repository.DiscountRepository;
 import com.mercadopago.android.px.model.Campaign;
-import com.mercadopago.android.px.model.CampaignError;
 import com.mercadopago.android.px.model.Discount;
 import com.mercadopago.android.px.model.Item;
 
@@ -49,9 +48,9 @@ public class PaymentDetailContainer extends CompactComponent<PaymentDetailContai
     private void addDiscount(@NonNull final ViewGroup parent) {
         final Discount discount = props.discountRepository.getDiscount();
         final Campaign campaign = props.discountRepository.getCampaign();
-        final CampaignError campaignError = props.discountRepository.getCampaignError();
+        final boolean notAvailableDiscount = props.discountRepository.isNotAvailableDiscount();
         if (props.discountRepository.hasValidDiscount() || props.discountRepository.isNotAvailableDiscount()) {
-             final DiscountDetailContainer discountDetailContainer = new DiscountDetailContainer(new DiscountDetailContainer.Props(DialogTitleType.SMALL, discount, campaign, campaignError));
+             final DiscountDetailContainer discountDetailContainer = new DiscountDetailContainer(new DiscountDetailContainer.Props(DialogTitleType.SMALL, discount, campaign, notAvailableDiscount));
             discountDetailContainer.render(parent);
         }
     }

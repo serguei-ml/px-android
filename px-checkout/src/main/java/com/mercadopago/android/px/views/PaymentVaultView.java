@@ -7,7 +7,6 @@ import com.mercadopago.android.px.exceptions.MercadoPagoError;
 import com.mercadopago.android.px.hooks.Hook;
 import com.mercadopago.android.px.internal.repository.DiscountRepository;
 import com.mercadopago.android.px.model.Campaign;
-import com.mercadopago.android.px.model.CampaignError;
 import com.mercadopago.android.px.model.Card;
 import com.mercadopago.android.px.model.CustomSearchItem;
 import com.mercadopago.android.px.model.Discount;
@@ -63,8 +62,8 @@ public interface PaymentVaultView extends MvpView {
 
     void showHook(final Hook hook, final int code);
 
-    void showDetailDialog(@NonNull final Discount discount, @NonNull final Campaign campaign, @Nullable final
-    CampaignError campaignError);
+    void showDetailDialog(@NonNull final Discount discount, @NonNull final Campaign campaign, final
+    boolean notAvailableDiscount);
 
     void showDiscountInputDialog();
 

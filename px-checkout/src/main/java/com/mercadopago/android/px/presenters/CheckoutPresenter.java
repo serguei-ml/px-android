@@ -208,7 +208,7 @@ public class CheckoutPresenter extends MvpPresenter<CheckoutView, CheckoutProvid
         //TODO add campaign
         if (discount != null) {
             discountRepository
-                .configureMerchantDiscountManually(discount, new Campaign.Builder(discount.getId()).build(), null);
+                .configureMerchantDiscountManually(discount, new Campaign.Builder(discount.getId()).build(), false);
         }
     }
 

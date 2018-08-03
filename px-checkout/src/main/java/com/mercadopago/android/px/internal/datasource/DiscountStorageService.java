@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 
 import com.google.gson.reflect.TypeToken;
 import com.mercadopago.android.px.model.Campaign;
-import com.mercadopago.android.px.model.CampaignError;
 import com.mercadopago.android.px.model.Discount;
 import com.mercadopago.android.px.util.JsonUtil;
 
@@ -22,7 +21,7 @@ public class DiscountStorageService {
     private static final String PREF_DISCOUNT = "pref_discount";
     private static final String PREF_DISCOUNT_CODE = "pref_discount_code";
     private static final String PREF_CAMPAIGNS = "pref_campaigns";
-    private static final String PREF_CAMPAIGN_ERROR = "pref_campaign_error";
+    private static final String PREF_NOT_AVAILABLE_DISCOUNT = "pref_not_available_discount";
 
     @NonNull
     private final SharedPreferences sharedPreferences;
@@ -36,10 +35,10 @@ public class DiscountStorageService {
     }
 
     public void configureDiscountManually(@Nullable final Discount discount, @Nullable final Campaign campaign,
-        @Nullable final CampaignError campaignError) {
+        final boolean notAvailableDiscount) {
         configure(campaign);
         configure(discount);
-        configure(campaignError);
+        configure(notAvailableDiscount);
     }
 
     public void reset() {
@@ -47,7 +46,7 @@ public class DiscountStorageService {
         sharedPreferences.edit().remove(PREF_CAMPAIGN).apply();
         sharedPreferences.edit().remove(PREF_DISCOUNT).apply();
         sharedPreferences.edit().remove(PREF_DISCOUNT_CODE).apply();
-        sharedPreferences.edit().remove(PREF_CAMPAIGN_ERROR).apply();
+        sharedPreferences.edit().remove(PREF_NOT_AVAILABLE_DISCOUNT).apply();
     }
 
     @Nullable
@@ -65,9 +64,8 @@ public class DiscountStorageService {
         return jsonUtil.fromJson(sharedPreferences.getString(PREF_CAMPAIGN, ""), Campaign.class);
     }
 
-    @Nullable
-    public CampaignError getCampaignError() {
-        return jsonUtil.fromJson(sharedPreferences.getString(PREF_CAMPAIGN_ERROR, ""), CampaignError.class);
+    public boolean isNotAvailableDiscount() {
+        return sharedPreferences.getBoolean(PREF_NOT_AVAILABLE_DISCOUNT, false);
     }
 
     private void configure(@Nullable final Discount discount) {
@@ -90,14 +88,10 @@ public class DiscountStorageService {
         }
     }
 
-    private void configure(@Nullable final CampaignError campaignError) {
-        if (campaignError == null) {
-            sharedPreferences.edit().remove(PREF_CAMPAIGN_ERROR).apply();
-        } else {
+    private void configure(final boolean notAvailableDiscount) {
             final SharedPreferences.Editor edit = sharedPreferences.edit();
-            edit.putString(PREF_CAMPAIGN_ERROR, jsonUtil.toJson(campaignError));
+            edit.putBoolean(PREF_NOT_AVAILABLE_DISCOUNT, notAvailableDiscount);
             edit.apply();
-        }
     }
 
     public void saveDiscountCode(@Nullable final String code) {

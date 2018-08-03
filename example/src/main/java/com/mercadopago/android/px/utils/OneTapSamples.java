@@ -4,9 +4,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 
 import com.mercadopago.android.px.core.MercadoPagoCheckout;
-import com.mercadopago.android.px.model.Campaign;
-import com.mercadopago.android.px.model.CampaignError;
-import com.mercadopago.android.px.model.Discount;
 import com.mercadopago.android.px.model.Item;
 import com.mercadopago.android.px.model.Payment;
 import com.mercadopago.android.px.model.PaymentData;
@@ -14,11 +11,8 @@ import com.mercadopago.android.px.model.PaymentMethod;
 import com.mercadopago.android.px.model.Sites;
 import com.mercadopago.android.px.plugins.MainPaymentProcessor;
 import com.mercadopago.android.px.plugins.SamplePaymentMethodPlugin;
-import com.mercadopago.android.px.plugins.model.BusinessPayment;
-import com.mercadopago.android.px.plugins.model.ExitAction;
 import com.mercadopago.android.px.plugins.model.GenericPayment;
 import com.mercadopago.android.px.preferences.CheckoutPreference;
-import com.mercadopago.example.R;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -54,7 +48,6 @@ public final class OneTapSamples {
     private static final String ONE_TAP_CODE_DISCOUNT_MERCHANT_PUBLIC_KEY =
         "APP_USR-a9fbcb43-4d5a-41c6-a42e-56e8b153f142";
     private static final String PAYER_EMAIL_DUMMY = "prueba@gmail.com";
-    private static final String CAMPAIGN_ERROR_CODE = "collector_with_applicable_campaign";
 
     private OneTapSamples() {
 
@@ -293,7 +286,7 @@ public final class OneTapSamples {
         return new MercadoPagoCheckout.Builder(ONE_TAP_DIRECT_DISCOUNT_MERCHANT_PUBLIC_KEY,
             getCheckoutPreferenceWithPayerEmail(new ArrayList<String>(), 120))
             .setPrivateKey(ONE_TAP_PAYER_3_ACCESS_TOKEN)
-            .setCampaignError(new CampaignError(CAMPAIGN_ERROR_CODE))
+            .notAvailableDiscount()
             .setPaymentProcessor(mainPaymentProcessor);
     }
 

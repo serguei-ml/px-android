@@ -30,7 +30,6 @@ import com.mercadopago.android.px.internal.repository.DiscountRepository;
 import com.mercadopago.android.px.internal.repository.PaymentSettingRepository;
 import com.mercadopago.android.px.listeners.RecyclerItemClickListener;
 import com.mercadopago.android.px.model.Campaign;
-import com.mercadopago.android.px.model.CampaignError;
 import com.mercadopago.android.px.model.CardInfo;
 import com.mercadopago.android.px.model.Discount;
 import com.mercadopago.android.px.model.Issuer;
@@ -506,9 +505,9 @@ public class InstallmentsActivity extends MercadoPagoBaseActivity
     }
 
     @Override
-    public void showDetailDialog(@NonNull final Discount discount, @NonNull final Campaign campaign, @Nullable final
-    CampaignError campaignError) {
-        DiscountDetailDialog.showDialog(discount, campaign, campaignError, getSupportFragmentManager());
+    public void showDetailDialog(@NonNull final Discount discount, @NonNull final Campaign campaign, final
+    boolean notAvailableDiscount) {
+        DiscountDetailDialog.showDialog(discount, campaign, notAvailableDiscount, getSupportFragmentManager());
     }
 
     @Override
