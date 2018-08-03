@@ -30,6 +30,16 @@ public class PaymentMethodPage extends PageObject<CheckoutValidator> {
         return new CashPage(validator);
     }
 
+    public DiscountDetailPage pressOnDiscountDetail() {
+        onView(withId(R.id.amount_view)).perform(click());
+        return new DiscountDetailPage(validator);
+    }
+
+    public DiscountCodeInputPage pressOnDiscountCodeInput() {
+        onView(withId(R.id.amount_view)).perform(click());
+        return new DiscountCodeInputPage(validator);
+    }
+
     @Override
     public PaymentMethodPage validate(CheckoutValidator validator) {
         validator.validate(this);
