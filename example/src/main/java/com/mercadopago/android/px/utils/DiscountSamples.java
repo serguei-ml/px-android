@@ -35,7 +35,7 @@ final class DiscountSamples {
 
         final MainPaymentProcessor mainPaymentProcessor = new MainPaymentProcessor(getBusinessPaymentApproved());
         return getMercadoPagoBuilder(publicKey, prefId)
-            .notAvailableDiscount()
+            .discountNotAvailable()
             .setPaymentProcessor(mainPaymentProcessor);
     }
 

@@ -286,7 +286,7 @@ public final class OneTapSamples {
         return new MercadoPagoCheckout.Builder(ONE_TAP_DIRECT_DISCOUNT_MERCHANT_PUBLIC_KEY,
             getCheckoutPreferenceWithPayerEmail(new ArrayList<String>(), 120))
             .setPrivateKey(ONE_TAP_PAYER_3_ACCESS_TOKEN)
-            .notAvailableDiscount()
+            .discountNotAvailable()
             .setPaymentProcessor(mainPaymentProcessor);
     }
 

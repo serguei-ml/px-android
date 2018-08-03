@@ -269,6 +269,8 @@ public class MercadoPagoCheckout implements Serializable {
 
         Boolean binaryMode = false;
 
+        Boolean notAvailableDiscount = false;
+
         @NonNull
         FlowPreference flowPreference = new FlowPreference.Builder().build();
 
@@ -280,7 +282,6 @@ public class MercadoPagoCheckout implements Serializable {
         PaymentResult paymentResult;
         Discount discount;
         Campaign campaign;
-        boolean notAvailableDiscount;
         CheckoutHooks checkoutHooks;
         DataInitializationTask dataInitializationTask;
         String regularFontPath;
@@ -333,8 +334,8 @@ public class MercadoPagoCheckout implements Serializable {
          * because payer has reached the limit or it has expired.
          * You have to set a payment processor to apply this feature.
          */
-        public Builder notAvailableDiscount() {
-            this.notAvailableDiscount = true;
+        public Builder discountNotAvailable() {
+            notAvailableDiscount = true;
             return this;
         }
 
