@@ -331,7 +331,7 @@ public class MercadoPagoCheckout implements Serializable {
 
         /**
          * By enabling this feature you'll inform that payer's discount is no more applicable,
-         * because payer has reached the limit or it has expired.
+         * because payer has reached the limit.
          * You have to set a payment processor to apply this feature.
          */
         public Builder discountNotAvailable() {
