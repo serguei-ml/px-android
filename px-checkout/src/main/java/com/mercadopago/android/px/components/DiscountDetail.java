@@ -1,6 +1,7 @@
 package com.mercadopago.android.px.components;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -109,16 +110,19 @@ public class DiscountDetail extends CompactComponent<DiscountDetail.Props, Void>
         }
     }
 
-    private boolean isEndDateApplicable() {
+    @VisibleForTesting
+    /* default */ boolean isEndDateApplicable() {
         return props.hasValidDiscount() ? props.campaign.hasEndDate() && !props.isNotAvailableDiscount() : false;
     }
 
-    private boolean isMaxCouponAmountApplicable() {
+    @VisibleForTesting
+    /* default */ boolean isMaxCouponAmountApplicable() {
         return props.hasValidDiscount() ? props.campaign.hasMaxCouponAmount() && !props.isNotAvailableDiscount()
             : false;
     }
 
-    public boolean isAlwaysOnApplicable() {
+    @VisibleForTesting
+    /* default */ boolean isAlwaysOnApplicable() {
         return props.hasValidDiscount() ? props.campaign.isAlwaysOnDiscount() && !props.isNotAvailableDiscount()
             : false;
     }
