@@ -130,7 +130,7 @@ public class AmountView extends LinearLayoutCompat {
         final boolean notAvailableDiscount, @NonNull final BigDecimal totalAmount,
         @NonNull final Site site) {
         configureViewsVisibilityWhenNotAvailableDiscount(discount, campaign, notAvailableDiscount);
-        amountDescription.setText(R.string.px_used_up_discount_title);
+        amountDescription.setText(R.string.px_used_up_discount_row);
         amountDescription.setTextColor(getResources().getColor(R.color.px_form_text));
         showEffectiveAmount(totalAmount, site);
     }

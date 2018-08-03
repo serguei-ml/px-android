@@ -111,7 +111,7 @@ class Amount extends CompactComponent<Amount.Props, OneTap.Actions> {
         discountMaxLabel.setVisibility(View.GONE);
 
         discountMessage.setTextColor(discountLayout.getContext().getResources().getColor(R.color.px_color_payer_costs));
-        discountMessage.setText(R.string.px_used_up_discount_title);
+        discountMessage.setText(R.string.px_used_up_discount_row);
     }
 
     private void resolveArrow(@NonNull final View content) {
