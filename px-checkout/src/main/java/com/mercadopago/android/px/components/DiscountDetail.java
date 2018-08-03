@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.mercadopago.android.px.R;
 import com.mercadopago.android.px.model.Campaign;
 import com.mercadopago.android.px.model.Discount;
+import com.mercadopago.android.px.util.ViewUtils;
 import com.mercadopago.android.px.util.textformatter.TextFormatter;
 
 import java.util.Locale;
@@ -79,7 +80,7 @@ public class DiscountDetail extends CompactComponent<DiscountDetail.Props, Void>
     private void configureDetailMessage(final View mainContainer) {
         final TextView detailTextView = mainContainer.findViewById(R.id.detail);
         if (props.isNotAvailableDiscount()) {
-            setDetailMessage(detailTextView, R.string.px_used_up_discount_detail, mainContainer);
+            configureNotAvailableDiscountDetail(detailTextView, mainContainer);
         } else if (isMaxCouponAmountApplicable()) {
             if (isAlwaysOnApplicable()) {
                 setDetailMessage(detailTextView, R.string.px_always_on_discount_detail, mainContainer);
@@ -89,6 +90,12 @@ public class DiscountDetail extends CompactComponent<DiscountDetail.Props, Void>
         } else {
             detailTextView.setVisibility(View.GONE);
         }
+    }
+
+    private void configureNotAvailableDiscountDetail(final TextView detailTextView, final View mainContainer) {
+        setDetailMessage(detailTextView, R.string.px_used_up_discount_detail, mainContainer);
+        ViewUtils.setMarginBottomInView(detailTextView,
+            mainContainer.getContext().getResources().getDimensionPixelSize(R.dimen.px_xxs_margin));
     }
 
     private void setDetailMessage(TextView detailTextView, int detailId, View view) {
