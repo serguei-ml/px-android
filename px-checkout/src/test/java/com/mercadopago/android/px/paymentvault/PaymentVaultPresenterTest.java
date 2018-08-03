@@ -809,7 +809,7 @@ public class PaymentVaultPresenterTest {
         }
 
         @Override
-        public void showDetailDialog(@NonNull final Discount discount, @NonNull final Campaign campaign) {
+        public void showDetailDialog(@NonNull final Discount discount, @NonNull final Campaign campaign, final boolean notAvailableDiscount) {
             //Do nothing
         }
 

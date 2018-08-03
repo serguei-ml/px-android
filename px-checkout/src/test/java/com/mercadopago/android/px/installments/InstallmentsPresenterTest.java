@@ -588,7 +588,7 @@ public class InstallmentsPresenterTest {
         }
 
         @Override
-        public void showDetailDialog(@NonNull final Discount discount, @NonNull final Campaign campaign) {
+        public void showDetailDialog(@NonNull final Discount discount, @NonNull final Campaign campaign, final boolean notAvailableDiscount) {
             // do nothing
         }
 
