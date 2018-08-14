@@ -70,6 +70,15 @@
                 android:layout_marginTop="25dp"
                 android:text="@string/select_checkout"/>
 
+            <com.mercadopago.android.px.customviews.MPButton
+                android:id="@+id/init_card_flow"
+                style="@style/px_button_normal"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/px_button_height"
+                android:layout_marginTop="25dp"
+                android:text="@string/select_checkout"/>
+
+
             <TextView
                 android:id="@+id/jsonConfigButton"
                 android:layout_width="match_parent"

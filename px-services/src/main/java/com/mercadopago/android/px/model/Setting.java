@@ -2,6 +2,8 @@ package com.mercadopago.android.px.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
+import com.mercadopago.android.px.services.util.TextUtil;
 import java.io.Serializable;
 import java.util.List;
 
@@ -35,15 +37,12 @@ public class Setting implements Parcelable, Serializable {
         this.securityCode = securityCode;
     }
 
-    public static Setting getSettingByBin(List<Setting> settings, String bin) {
-
+    @Nullable
+    public static Setting getSettingByBin(final List<Setting> settings, final String bin) {
         Setting selectedSetting = null;
-
         if (settings != null && settings.size() > 0) {
-
-            for (Setting setting : settings) {
-
-                if (!"".equals(bin) && bin.matches(setting.getBin().getPattern() + ".*") &&
+            for (final Setting setting : settings) {
+                if (!TextUtil.isEmpty(bin) && bin.matches(setting.getBin().getPattern() + ".*") &&
                     (setting.getBin().getExclusionPattern() == null || setting.getBin().getExclusionPattern().isEmpty()
                         || !bin.matches(setting.getBin().getExclusionPattern() + ".*"))) {
                     selectedSetting = setting;

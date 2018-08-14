@@ -20,9 +20,9 @@ public class CardNumberTextWatcher implements TextWatcher {
     private final CardNumberEditTextCallback mEditTextCallback;
     private String mBin;
 
-    public CardNumberTextWatcher(PaymentMethodGuessingController controller,
-        PaymentMethodSelectionCallback paymentSelectionCallback,
-        CardNumberEditTextCallback editTextCallback) {
+    public CardNumberTextWatcher(final PaymentMethodGuessingController controller,
+        final PaymentMethodSelectionCallback paymentSelectionCallback,
+        final CardNumberEditTextCallback editTextCallback) {
         mController = controller;
         mPaymentSelectionCallback = paymentSelectionCallback;
         mEditTextCallback = editTextCallback;
@@ -46,18 +46,18 @@ public class CardNumberTextWatcher implements TextWatcher {
     }
 
     @Override
-    public void afterTextChanged(Editable s) {
+    public void afterTextChanged(final Editable s) {
         mEditTextCallback.changeErrorView();
         mEditTextCallback.toggleLineColorOnError(false);
         if (mController == null) {
             return;
         }
-        String number = s.toString().replaceAll("\\s", "");
+        final String number = s.toString().replaceAll("\\s", "");
         if (number.length() == Bin.BIN_LENGTH - 1) {
             mPaymentSelectionCallback.onPaymentMethodCleared();
         } else if (number.length() == Bin.BIN_LENGTH) {
             mBin = number.subSequence(0, Bin.BIN_LENGTH).toString();
-            List<PaymentMethod> list = mController.guessPaymentMethodsByBin(mBin);
+            final List<PaymentMethod> list = mController.guessPaymentMethodsByBin(mBin);
             mPaymentSelectionCallback.onPaymentMethodListSet(list, mBin);
         }
     }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.Toolbar;
@@ -38,9 +39,9 @@ import com.mercadopago.android.px.controllers.PaymentMethodGuessingController;
 import com.mercadopago.android.px.core.MercadoPagoComponents;
 import com.mercadopago.android.px.customviews.MPEditText;
 import com.mercadopago.android.px.customviews.MPTextView;
-import com.mercadopago.android.px.model.exceptions.ExceptionHandler;
-import com.mercadopago.android.px.model.exceptions.MercadoPagoError;
 import com.mercadopago.android.px.internal.di.Session;
+import com.mercadopago.android.px.internal.driver.GuessingCardDriver;
+import com.mercadopago.android.px.internal.repository.PaymentSettingRepository;
 import com.mercadopago.android.px.listeners.card.CardExpiryDateTextWatcher;
 import com.mercadopago.android.px.listeners.card.CardIdentificationNumberTextWatcher;
 import com.mercadopago.android.px.listeners.card.CardNumberTextWatcher;
@@ -52,12 +53,19 @@ import com.mercadopago.android.px.model.CardToken;
 import com.mercadopago.android.px.model.Identification;
 import com.mercadopago.android.px.model.IdentificationType;
 import com.mercadopago.android.px.model.Issuer;
+import com.mercadopago.android.px.model.Item;
 import com.mercadopago.android.px.model.PayerCost;
 import com.mercadopago.android.px.model.PaymentMethod;
 import com.mercadopago.android.px.model.PaymentRecovery;
 import com.mercadopago.android.px.model.PaymentType;
 import com.mercadopago.android.px.model.PaymentTypes;
+import com.mercadopago.android.px.model.Sites;
 import com.mercadopago.android.px.model.Token;
+import com.mercadopago.android.px.model.commission.ChargeRule;
+import com.mercadopago.android.px.model.exceptions.ExceptionHandler;
+import com.mercadopago.android.px.model.exceptions.MercadoPagoError;
+import com.mercadopago.android.px.preferences.AdvancedConfiguration;
+import com.mercadopago.android.px.preferences.CheckoutPreference;
 import com.mercadopago.android.px.preferences.PaymentPreference;
 import com.mercadopago.android.px.presenters.GuessingCardPresenter;
 import com.mercadopago.android.px.providers.GuessingCardProviderImpl;
@@ -78,6 +86,9 @@ import com.mercadopago.android.px.util.ScaleUtil;
 import com.mercadopago.android.px.util.ViewUtils;
 import com.mercadopago.android.px.views.GuessingCardActivityView;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class GuessingCardActivity extends MercadoPagoBaseActivity implements GuessingCardActivityView,
@@ -114,6 +125,7 @@ public class GuessingCardActivity extends MercadoPagoBaseActivity implements Gue
     public static final String IDENTIFICATION_TYPES_LIST_BUNDLE = "mIdTypesList";
     public static final String PAYMENT_RECOVERY_BUNDLE = "mPaymentRecovery";
     public static final String LOW_RES_BUNDLE = "mLowRes";
+    private static final String EXTRA_ONLY_GUESS_FLOW = "EXTRA_ONLY_GUESS_FLOW";
 
     //ViewMode
     protected boolean mLowResActive;
@@ -169,6 +181,28 @@ public class GuessingCardActivity extends MercadoPagoBaseActivity implements Gue
     private String mCardSideState;
     private boolean mActivityActive;
 
+    public static void start(@NonNull final Activity activity, final int resultCode) {
+        final Session session = Session.getSession(activity);
+        session.clear();
+        //va a setear algo en algun lado. para q cuando llegue a esta activity se pueda consultar
+        // y generar el driver que corresponda.
+        // osea un booleano.
+
+        final CheckoutPreference preference = new CheckoutPreference.Builder(Sites.ARGENTINA,
+            "algun.mai@pepe.com", Collections.singletonList(new Item("", new BigDecimal(10))))
+            .build();
+        final PaymentSettingRepository paymentSettings = session.getConfigurationModule().getPaymentSettings();
+        paymentSettings.configure(preference);
+        paymentSettings.configure(new ArrayList<ChargeRule>());
+        paymentSettings.configure(new AdvancedConfiguration.Builder()
+            .setBankDealsEnabled(false).build());
+        paymentSettings.configure("TEST-c6d9b1f9-71ff-4e05-9327-3c62468a23ee");
+        final Intent intent = new Intent(activity, GuessingCardActivity.class);
+        intent.putExtra(EXTRA_ONLY_GUESS_FLOW, true);
+
+        activity.startActivityForResult(intent, resultCode);
+    }
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -223,7 +257,8 @@ public class GuessingCardActivity extends MercadoPagoBaseActivity implements Gue
             session.getConfigurationModule().getUserSelectionRepository(),
             session.getConfigurationModule().getPaymentSettings(),
             session.getGroupsRepository(),
-            session.getConfigurationModule().getPaymentSettings().getAdvancedConfiguration());
+            session.getConfigurationModule().getPaymentSettings().getAdvancedConfiguration()
+        , new GuessingCardDriver(intent.getBooleanExtra(EXTRA_ONLY_GUESS_FLOW, false)));
         PaymentPreference paymentPreference =
             JsonUtil.getInstance().fromJson(intent.getStringExtra("paymentPreference"), PaymentPreference.class);
 
@@ -240,7 +275,7 @@ public class GuessingCardActivity extends MercadoPagoBaseActivity implements Gue
         mPresenter.setToken(token);
         mPresenter.setIdentification(identification);
         mPresenter.setIdentificationNumberRequired(identificationNumberRequired);
-        mPresenter.setPaymentPreference(paymentPreference);
+        mPresenter.setPaymentPreference(paymentPreference == null ? new PaymentPreference() : paymentPreference);
         mPresenter.setPaymentRecovery(paymentRecovery);
     }
 

@@ -16,8 +16,8 @@ public class PaymentMethodGuessingController {
     private final List<String> mExcludedPaymentTypes;
     private final String mPaymentTypeId;
 
-    public PaymentMethodGuessingController(List<PaymentMethod> paymentMethods,
-        String paymentTypeId, List<String> excludedPaymentTypes) {
+    public PaymentMethodGuessingController(final List<PaymentMethod> paymentMethods,
+        final String paymentTypeId, final List<String> excludedPaymentTypes) {
         mAllPaymentMethods = paymentMethods;
         mExcludedPaymentTypes = excludedPaymentTypes;
         mPaymentTypeId = paymentTypeId;
@@ -33,8 +33,8 @@ public class PaymentMethodGuessingController {
     }
 
     public List<PaymentMethod> getAllSupportedPaymentMethods() {
-        List<PaymentMethod> supportedPaymentMethods = new ArrayList<>();
-        for (PaymentMethod paymentMethod : mAllPaymentMethods) {
+        final List<PaymentMethod> supportedPaymentMethods = new ArrayList<>();
+        for (final PaymentMethod paymentMethod : mAllPaymentMethods) {
             if (isCardPaymentType(paymentMethod) &&
                 ((mPaymentTypeId == null) || (mPaymentTypeId.equals(paymentMethod.getPaymentTypeId())))) {
                 supportedPaymentMethods.add(paymentMethod);
@@ -43,8 +43,8 @@ public class PaymentMethodGuessingController {
         return supportedPaymentMethods;
     }
 
-    private boolean isCardPaymentType(PaymentMethod paymentMethod) {
-        String paymentTypeId = paymentMethod.getPaymentTypeId();
+    private boolean isCardPaymentType(final PaymentMethod paymentMethod) {
+        final String paymentTypeId = paymentMethod.getPaymentTypeId();
         return paymentTypeId.equals(PaymentTypes.CREDIT_CARD) ||
             paymentTypeId.equals(PaymentTypes.DEBIT_CARD) ||
             paymentTypeId.equals(PaymentTypes.PREPAID_CARD);
@@ -55,8 +55,7 @@ public class PaymentMethodGuessingController {
             return mGuessedPaymentMethods;
         }
         saveBin(bin);
-        mGuessedPaymentMethods = MercadoPagoUtil
-            .getValidPaymentMethodsForBin(mSavedBin, mAllPaymentMethods);
+        mGuessedPaymentMethods = MercadoPagoUtil.getValidPaymentMethodsForBin(mSavedBin, mAllPaymentMethods);
         mGuessedPaymentMethods = getValidPaymentMethodForType(mPaymentTypeId, mGuessedPaymentMethods);
         if (mGuessedPaymentMethods.size() > 1) {
             mGuessedPaymentMethods = filterByPaymentType(mExcludedPaymentTypes, mGuessedPaymentMethods);

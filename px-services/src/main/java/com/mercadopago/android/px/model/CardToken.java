@@ -182,7 +182,7 @@ public class CardToken {
             (cardNumber.length() < MAX_LENGTH_NUMBER);
     }
 
-    public void validateCardNumber(PaymentMethod paymentMethod) throws CardTokenException {
+    public void validateCardNumber(final PaymentMethod paymentMethod) throws CardTokenException {
 
         // Empty field
 
@@ -190,7 +190,7 @@ public class CardToken {
             throw new CardTokenException(CardTokenException.INVALID_EMPTY_CARD);
         }
 
-        Setting setting = Setting.getSettingByBin(paymentMethod.getSettings(), (cardNumber.length()
+        final Setting setting = Setting.getSettingByBin(paymentMethod.getSettings(), (cardNumber.length()
             >= Bin.BIN_LENGTH ? cardNumber.substring(0, Bin.BIN_LENGTH) : ""));
 
         if (setting == null) {
@@ -200,14 +200,14 @@ public class CardToken {
         } else {
 
             // Validate cards length
-            int cardLength = setting.getCardNumber().getLength();
+            final int cardLength = setting.getCardNumber().getLength();
             if (cardNumber.trim().length() != cardLength) {
 
                 throw new CardTokenException(CardTokenException.INVALID_CARD_LENGTH, String.valueOf(cardLength));
             }
 
             // Validate luhn
-            String luhnAlgorithm = setting.getCardNumber().getValidation();
+            final String luhnAlgorithm = setting.getCardNumber().getValidation();
             if (("standard".equals(luhnAlgorithm)) && (!checkLuhn(cardNumber))) {
                 throw new CardTokenException(CardTokenException.INVALID_CARD_LUHN);
             }

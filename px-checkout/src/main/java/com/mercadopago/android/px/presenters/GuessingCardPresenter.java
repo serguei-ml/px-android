@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.mercadopago.android.px.callbacks.FailureRecovery;
 import com.mercadopago.android.px.controllers.CheckoutTimer;
 import com.mercadopago.android.px.controllers.PaymentMethodGuessingController;
-import com.mercadopago.android.px.model.exceptions.MercadoPagoError;
+import com.mercadopago.android.px.internal.driver.GuessingCardDriver;
 import com.mercadopago.android.px.internal.repository.AmountRepository;
 import com.mercadopago.android.px.internal.repository.GroupsRepository;
 import com.mercadopago.android.px.internal.repository.PaymentSettingRepository;
@@ -27,6 +27,7 @@ import com.mercadopago.android.px.model.PaymentType;
 import com.mercadopago.android.px.model.SecurityCode;
 import com.mercadopago.android.px.model.Setting;
 import com.mercadopago.android.px.model.Token;
+import com.mercadopago.android.px.model.exceptions.MercadoPagoError;
 import com.mercadopago.android.px.mvp.MvpPresenter;
 import com.mercadopago.android.px.mvp.TaggedCallback;
 import com.mercadopago.android.px.preferences.AdvancedConfiguration;
@@ -93,24 +94,27 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
     //Discount
     private int mCurrentNumberLength;
     private Issuer mIssuer;
+    private GuessingCardDriver guessingCardDriver;
 
     public GuessingCardPresenter(@NonNull final AmountRepository amountRepository,
         @NonNull final UserSelectionRepository userSelectionRepository,
         @NonNull final PaymentSettingRepository paymentSettingRepository,
         @NonNull final GroupsRepository groupsRepository,
-        @NonNull final AdvancedConfiguration advancedConfiguration) {
+        @NonNull final AdvancedConfiguration advancedConfiguration,
+        @NonNull final GuessingCardDriver driver) {
         this.amountRepository = amountRepository;
         this.userSelectionRepository = userSelectionRepository;
         this.paymentSettingRepository = paymentSettingRepository;
         this.groupsRepository = groupsRepository;
         this.advancedConfiguration = advancedConfiguration;
         mEraseSpace = true;
+        guessingCardDriver = driver;
     }
 
     public void initialize() {
         try {
             onValidStart();
-        } catch (IllegalStateException exception) {
+        } catch (final IllegalStateException exception) {
             getView().showError(new MercadoPagoError(exception.getMessage(), false), "");
         }
     }
@@ -214,7 +218,7 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
         return mSecurityCodeLength;
     }
 
-    public void setToken(Token token) {
+    public void setToken(final Token token) {
         mToken = token;
     }
 
@@ -226,19 +230,19 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
         return mCardToken;
     }
 
-    public void setCardToken(CardToken cardToken) {
+    public void setCardToken(final CardToken cardToken) {
         mCardToken = cardToken;
     }
 
-    public void setPaymentTypesList(List<PaymentType> paymentTypesList) {
+    public void setPaymentTypesList(final List<PaymentType> paymentTypesList) {
         mPaymentTypesList = paymentTypesList;
     }
 
-    public void setIdentificationTypesList(List<IdentificationType> identificationTypesList) {
+    public void setIdentificationTypesList(final List<IdentificationType> identificationTypesList) {
         mIdentificationTypes = identificationTypesList;
     }
 
-    public void setBankDealsList(List<BankDeal> bankDealsList) {
+    public void setBankDealsList(final List<BankDeal> bankDealsList) {
         mBankDealsList = bankDealsList;
     }
 
@@ -343,7 +347,7 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
     }
 
     private boolean onlyOnePaymentMethodSupported() {
-        List<PaymentMethod> supportedPaymentMethods = getAllSupportedPaymentMethods();
+        final List<PaymentMethod> supportedPaymentMethods = getAllSupportedPaymentMethods();
         return supportedPaymentMethods != null && supportedPaymentMethods.size() == 1;
     }
 
@@ -635,7 +639,7 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
         return mIdentificationType;
     }
 
-    public void setIdentificationNumber(String number) {
+    public void setIdentificationNumber(final String number) {
         mIdentificationNumber = number;
         mIdentification.setNumber(number);
     }
@@ -644,7 +648,7 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
         return mCardNumber;
     }
 
-    public void setCardNumber(String cardNumber) {
+    public void setCardNumber(final String cardNumber) {
         mCardNumber = cardNumber;
     }
 
@@ -652,7 +656,7 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
         return mCardholderName;
     }
 
-    public void setCardholderName(String name) {
+    public void setCardholderName(final String name) {
         mCardholderName = name;
     }
 
@@ -830,20 +834,33 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
         getResourcesProvider()
             .createTokenAsync(mCardToken, new TaggedCallback<Token>(ApiUtil.RequestOrigin.CREATE_TOKEN) {
                 @Override
-                public void onSuccess(Token token) {
+                public void onSuccess(final Token token) {
                     resolveTokenRequest(token);
                 }
 
                 @Override
-                public void onFailure(MercadoPagoError error) {
+                public void onFailure(final MercadoPagoError error) {
                     resolveTokenCreationError(error, ApiUtil.RequestOrigin.CREATE_TOKEN);
                 }
             });
     }
 
-    public void resolveTokenRequest(Token token) {
+    public void resolveTokenRequest(final Token token) {
         mToken = token;
-        getIssuers();
+
+        //TOKEN y termino el flow.
+        guessingCardDriver.drive(new GuessingCardDriver.Handler() {
+
+            @Override
+            public void onGuessingCardFinished() {
+                getView().finishCardFlow(userSelectionRepository.getPaymentMethod(), token, new ArrayList<Issuer>());
+            }
+
+            @Override
+            public void onIssuerRequiered() {
+                getIssuers();
+            }
+        });
     }
 
     private void resolveTokenCreationError(MercadoPagoError error, String requestOrigin) {

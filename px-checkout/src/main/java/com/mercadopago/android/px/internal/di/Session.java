@@ -82,7 +82,7 @@ public final class Session extends ApplicationModule
         // end Store persistent configuration
     }
 
-    private void clear() {
+    public void clear() {
         getDiscountRepository().reset();
         getConfigurationModule().reset();
         getGroupsCache().evict();

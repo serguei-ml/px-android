@@ -6,6 +6,7 @@ import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ProgressBar;
+import com.mercadopago.android.px.GuessingCardActivity;
 import com.mercadopago.android.px.customviews.MPButton;
 import com.mercadopago.android.px.services.core.Settings;
 import com.mercadopago.android.px.tracking.constants.TrackingEnvironments;
@@ -35,6 +36,14 @@ public class CheckoutExampleActivity extends AppCompatActivity {
         setContentView(R.layout.activity_checkout_example);
         mProgressBar = findViewById(R.id.progressBar);
         mRegularLayout = findViewById(R.id.regularLayout);
+
+        final View view = findViewById(R.id.init_card_flow);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                GuessingCardActivity.start(CheckoutExampleActivity.this, 11);
+            }
+        });
 
         final View jsonConfigurationButton = findViewById(R.id.jsonConfigButton);
         continueSimpleCheckout = findViewById(R.id.continueButton);

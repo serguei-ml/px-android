@@ -2,9 +2,9 @@ package com.mercadopago.android.px.util;
 
 import android.content.Context;
 import com.mercadopago.android.px.R;
-import com.mercadopago.android.px.model.exceptions.BinException;
 import com.mercadopago.android.px.model.Bin;
 import com.mercadopago.android.px.model.PaymentMethod;
+import com.mercadopago.android.px.model.exceptions.BinException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,10 +88,11 @@ public class MercadoPagoUtil {
         return accreditationMessage;
     }
 
-    public static List<PaymentMethod> getValidPaymentMethodsForBin(String bin, List<PaymentMethod> paymentMethods) {
+    public static List<PaymentMethod> getValidPaymentMethodsForBin(final String bin,
+        final List<PaymentMethod> paymentMethods) {
         if (bin.length() == Bin.BIN_LENGTH) {
-            List<PaymentMethod> validPaymentMethods = new ArrayList<>();
-            for (PaymentMethod pm : paymentMethods) {
+            final List<PaymentMethod> validPaymentMethods = new ArrayList<>();
+            for (final PaymentMethod pm : paymentMethods) {
                 if (pm.isValidForBin(bin)) {
                     validPaymentMethods.add(pm);
                 }
