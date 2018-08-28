@@ -1,5 +1,6 @@
 package com.mercadopago.android.px.model;
 
+import android.support.annotation.Nullable;
 import java.io.Serializable;
 
 public class Identification implements Serializable {
@@ -19,7 +20,7 @@ public class Identification implements Serializable {
         return number;
     }
 
-    public void setNumber(String number) {
+    public void setNumber(@Nullable String number) {
         this.number = number;
     }
 }

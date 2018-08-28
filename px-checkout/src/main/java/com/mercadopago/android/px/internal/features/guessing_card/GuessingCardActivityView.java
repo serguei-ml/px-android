@@ -1,5 +1,6 @@
 package com.mercadopago.android.px.internal.features.guessing_card;
 
+import android.support.annotation.Nullable;
 import com.mercadopago.android.px.internal.base.MvpView;
 import com.mercadopago.android.px.internal.controllers.PaymentMethodGuessingController;
 import com.mercadopago.android.px.model.IdentificationType;
@@ -13,9 +14,10 @@ import com.mercadopago.android.px.model.exceptions.CardTokenException;
 import java.util.List;
 
 public interface GuessingCardActivityView extends MvpView {
-    void onValidStart();
 
-    void initializeTimer();
+    void setupPresenter();
+
+    void onValidStart();
 
     void showError(MercadoPagoError error, String requestOrigin);
 
@@ -91,12 +93,12 @@ public interface GuessingCardActivityView extends MvpView {
 
     void setSoftInputMode();
 
-    void finishCardFlow(PaymentMethod paymentMethod, Token token, List<Issuer> issuers);
+    void finishCardFlow(@Nullable PaymentMethod paymentMethod, Token token, List<Issuer> issuers);
 
-    void finishCardFlow(PaymentMethod paymentMethod, Token token, Issuer issuer,
+    void finishCardFlow(@Nullable PaymentMethod paymentMethod, Token token, Issuer issuer,
         List<PayerCost> payerCosts);
 
-    void finishCardFlow(PaymentMethod paymentMethod, Token token, Issuer issuer,
+    void finishCardFlow(@Nullable PaymentMethod paymentMethod, Token token, Issuer issuer,
         PayerCost payerCost);
 
     void hideProgress();

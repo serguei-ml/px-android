@@ -9,32 +9,27 @@ import com.mercadopago.android.px.model.Bin;
 import com.mercadopago.android.px.model.PaymentMethod;
 import java.util.List;
 
-/**
- * Created by vaserber on 10/13/16.
- */
-
 public class CardNumberTextWatcher implements TextWatcher {
 
     private final PaymentMethodGuessingController mController;
     private final PaymentMethodSelectionCallback mPaymentSelectionCallback;
     private final CardNumberEditTextCallback mEditTextCallback;
-    private String mBin;
 
-    public CardNumberTextWatcher(PaymentMethodGuessingController controller,
-        PaymentMethodSelectionCallback paymentSelectionCallback,
-        CardNumberEditTextCallback editTextCallback) {
+    public CardNumberTextWatcher(final PaymentMethodGuessingController controller,
+        final PaymentMethodSelectionCallback paymentSelectionCallback,
+        final CardNumberEditTextCallback editTextCallback) {
         mController = controller;
         mPaymentSelectionCallback = paymentSelectionCallback;
         mEditTextCallback = editTextCallback;
     }
 
     @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after) {
         //Do something
     }
 
     @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
+    public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
         mEditTextCallback.checkOpenKeyboard();
         mEditTextCallback.saveCardNumber(s.toString().replaceAll("\\s", ""));
         if (before == 0) {
@@ -46,18 +41,18 @@ public class CardNumberTextWatcher implements TextWatcher {
     }
 
     @Override
-    public void afterTextChanged(Editable s) {
+    public void afterTextChanged(final Editable s) {
         mEditTextCallback.changeErrorView();
         mEditTextCallback.toggleLineColorOnError(false);
         if (mController == null) {
             return;
         }
-        String number = s.toString().replaceAll("\\s", "");
+        final String number = s.toString().replaceAll("\\s", "");
         if (number.length() == Bin.BIN_LENGTH - 1) {
             mPaymentSelectionCallback.onPaymentMethodCleared();
         } else if (number.length() == Bin.BIN_LENGTH) {
-            mBin = number.subSequence(0, Bin.BIN_LENGTH).toString();
-            List<PaymentMethod> list = mController.guessPaymentMethodsByBin(mBin);
+            final String mBin = number.subSequence(0, Bin.BIN_LENGTH).toString();
+            final List<PaymentMethod> list = mController.guessPaymentMethodsByBin(mBin);
             mPaymentSelectionCallback.onPaymentMethodListSet(list, mBin);
         }
     }

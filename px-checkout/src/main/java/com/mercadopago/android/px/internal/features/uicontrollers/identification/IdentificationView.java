@@ -2,6 +2,7 @@ package com.mercadopago.android.px.internal.features.uicontrollers.identificatio
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +50,7 @@ public abstract class IdentificationView {
         mIdentificationNumberTextView = mView.findViewById(R.id.mpsdkIdNumberView);
     }
 
-    public void setIdentificationNumber(String number) {
+    public void setIdentificationNumber(@Nullable String number) {
         mIdentificationNumber = number;
     }
 

@@ -836,7 +836,7 @@ public class GuessingCardPresenterTest {
     }
 
     @Test
-    public void whenGuessedPaymentMethodsListisEmptyhenPaymentMethodShouldBeUndefined() {
+    public void whenGuessedPaymentMethodsListIsEmptyThenPaymentMethodShouldBeUndefined() {
 
         List<PaymentMethod> paymentMethodList = new ArrayList<>();
 
@@ -964,6 +964,11 @@ public class GuessingCardPresenterTest {
 
         @Override
         public void showApiExceptionError(ApiException exception, String requestOrigin) {
+        }
+
+        @Override
+        public void setupPresenter() {
+
         }
 
         @Override
@@ -1149,11 +1154,6 @@ public class GuessingCardPresenterTest {
         }
 
         @Override
-        public void initializeTimer() {
-
-        }
-
-        @Override
         public void initializeIdentificationTypes(List<IdentificationType> identificationTypes) {
             identificationTypesInitialized = true;
         }
@@ -1237,11 +1237,6 @@ public class GuessingCardPresenterTest {
             successfulIssuersResponse = issuers;
         }
 
-        public void setDiscountResponse(Discount discount) {
-            shouldFail = false;
-            successfulDiscountResponse = discount;
-        }
-
         public void setPaymentMethodsResponse(MercadoPagoError exception) {
             shouldFail = true;
             failedResponse = exception;
@@ -1293,11 +1288,6 @@ public class GuessingCardPresenterTest {
         }
 
         @Override
-        public String getMissingPublicKeyErrorMessage() {
-            return MISSING_PUBLIC_KEY;
-        }
-
-        @Override
         public String getInvalidFieldErrorMessage() {
             return INVALID_FIELD;
         }
@@ -1346,15 +1336,6 @@ public class GuessingCardPresenterTest {
                 taggedCallback.onFailure(failedResponse);
             } else {
                 taggedCallback.onSuccess(successfulIssuersResponse);
-            }
-        }
-
-        @Override
-        public void getPaymentMethodsAsync(TaggedCallback<List<PaymentMethod>> taggedCallback) {
-            if (shouldFail) {
-                taggedCallback.onFailure(failedResponse);
-            } else {
-                taggedCallback.onSuccess(successfulPaymentMethodsResponse);
             }
         }
     }

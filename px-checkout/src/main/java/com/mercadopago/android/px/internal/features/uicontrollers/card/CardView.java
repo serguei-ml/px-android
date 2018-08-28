@@ -1,6 +1,7 @@
 package com.mercadopago.android.px.internal.features.uicontrollers.card;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -169,7 +170,7 @@ public class CardView {
         mFrontCardView.hasToShowSecurityCode(true);
     }
 
-    public void flipCardToBack(PaymentMethod paymentMethod, int securityCodeLength, Window window,
+    public void flipCardToBack(@Nullable PaymentMethod paymentMethod, int securityCodeLength, Window window,
         FrameLayout cardBackground, String securityCode) {
         setPaymentMethod(paymentMethod);
         setSecurityCodeLength(securityCodeLength);
@@ -194,7 +195,7 @@ public class CardView {
     //SecurityCodeFront should be null if security code is in back
     public void flipCardToFrontFromBack(Window window, FrameLayout cardBackground, String cardNumber,
         String cardholderName, String expiryMonth, String expiryYear,
-        String securityCodeFront) {
+        @Nullable String securityCodeFront) {
 
         window.setFlags(
             WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,

@@ -2,20 +2,57 @@ package com.mercadopago.android.px.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Collection;
 
-public class Setting implements Parcelable, Serializable {
+public final class Setting implements Parcelable, Serializable {
 
+    public static final Creator<Setting> CREATOR = new Creator<Setting>() {
+        @Override
+        public Setting createFromParcel(final Parcel in) {
+            return new Setting(in);
+        }
+
+        @Override
+        public Setting[] newArray(final int size) {
+            return new Setting[size];
+        }
+    };
     private Bin bin;
     private CardNumber cardNumber;
     private SecurityCode securityCode;
+
+    @SuppressWarnings("WeakerAccess")
+    Setting(final Parcel in) {
+        bin = in.readParcelable(Bin.class.getClassLoader());
+        cardNumber = in.readParcelable(CardNumber.class.getClassLoader());
+        securityCode = in.readParcelable(SecurityCode.class.getClassLoader());
+    }
+
+    @Nullable
+    public static Setting getSettingByBin(final Collection<Setting> settings, @Nullable final String bin) {
+
+        Setting selectedSetting = null;
+
+        if (settings != null && !settings.isEmpty()) {
+
+            for (final Setting setting : settings) {
+                if (bin != null && !bin.isEmpty() && bin.matches(setting.getBin().getPattern() + ".*") &&
+                    (setting.getBin().getExclusionPattern() == null || setting.getBin().getExclusionPattern().isEmpty()
+                        || !bin.matches(setting.getBin().getExclusionPattern() + ".*"))) {
+                    selectedSetting = setting;
+                }
+            }
+        }
+        return selectedSetting;
+    }
 
     public Bin getBin() {
         return bin;
     }
 
-    public void setBin(Bin bin) {
+    public void setBin(final Bin bin) {
         this.bin = bin;
     }
 
@@ -23,7 +60,7 @@ public class Setting implements Parcelable, Serializable {
         return cardNumber;
     }
 
-    public void setCardNumber(CardNumber cardNumber) {
+    public void setCardNumber(final CardNumber cardNumber) {
         this.cardNumber = cardNumber;
     }
 
@@ -31,46 +68,9 @@ public class Setting implements Parcelable, Serializable {
         return securityCode;
     }
 
-    public void setSecurityCode(SecurityCode securityCode) {
+    public void setSecurityCode(final SecurityCode securityCode) {
         this.securityCode = securityCode;
     }
-
-    public static Setting getSettingByBin(List<Setting> settings, String bin) {
-
-        Setting selectedSetting = null;
-
-        if (settings != null && settings.size() > 0) {
-
-            for (Setting setting : settings) {
-
-                if (!"".equals(bin) && bin.matches(setting.getBin().getPattern() + ".*") &&
-                    (setting.getBin().getExclusionPattern() == null || setting.getBin().getExclusionPattern().isEmpty()
-                        || !bin.matches(setting.getBin().getExclusionPattern() + ".*"))) {
-                    selectedSetting = setting;
-                }
-            }
-        }
-
-        return selectedSetting;
-    }
-
-    protected Setting(Parcel in) {
-        bin = in.readParcelable(Bin.class.getClassLoader());
-        cardNumber = in.readParcelable(CardNumber.class.getClassLoader());
-        securityCode = in.readParcelable(SecurityCode.class.getClassLoader());
-    }
-
-    public static final Creator<Setting> CREATOR = new Creator<Setting>() {
-        @Override
-        public Setting createFromParcel(Parcel in) {
-            return new Setting(in);
-        }
-
-        @Override
-        public Setting[] newArray(int size) {
-            return new Setting[size];
-        }
-    };
 
     @Override
     public int describeContents() {

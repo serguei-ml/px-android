@@ -365,7 +365,7 @@ public class MercadoPagoComponents {
                 return this;
             }
 
-            public PaymentTypesActivityBuilder setPaymentMethods(List<PaymentMethod> paymentMethods) {
+            public PaymentTypesActivityBuilder setPaymentMethods(@Nullable List<PaymentMethod> paymentMethods) {
                 this.paymentMethods = paymentMethods;
                 return this;
             }
