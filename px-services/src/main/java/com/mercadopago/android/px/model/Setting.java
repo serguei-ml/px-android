@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
-public final class Setting implements Parcelable, Serializable {
+public class Setting implements Parcelable, Serializable {
 
     public static final Creator<Setting> CREATOR = new Creator<Setting>() {
         @Override
