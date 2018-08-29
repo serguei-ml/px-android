@@ -18,25 +18,11 @@ public class PaymentMethodGuessingController {
     private List<PaymentMethod> mGuessedPaymentMethods;
 
     public PaymentMethodGuessingController(final List<PaymentMethod> paymentMethods,
-        final String paymentTypeId, final List<String> excludedPaymentTypes) {
+        final String paymentTypeId, @Nullable final List<String> excludedPaymentTypes) {
         mAllPaymentMethods = paymentMethods;
         mExcludedPaymentTypes = excludedPaymentTypes;
         mPaymentTypeId = paymentTypeId;
         mSavedBin = "";
-    }
-
-    @Nullable
-    public static Setting getSettingByPaymentMethodAndBin(final PaymentMethod paymentMethod, final String bin) {
-        Setting setting = null;
-        if (bin == null) {
-            if (paymentMethod.getSettings() != null && !paymentMethod.getSettings().isEmpty()) {
-                setting = paymentMethod.getSettings().get(0);
-            }
-        } else {
-            final List<Setting> settings = paymentMethod.getSettings();
-            setting = Setting.getSettingByBin(settings, bin);
-        }
-        return setting;
     }
 
     public static Integer getCardNumberLength(@Nullable final PaymentMethod paymentMethod, final String bin) {
@@ -44,7 +30,7 @@ public class PaymentMethodGuessingController {
         if (paymentMethod == null || bin == null) {
             return CardInformation.CARD_NUMBER_MAX_LENGTH;
         }
-        final Setting setting = PaymentMethodGuessingController.getSettingByPaymentMethodAndBin(paymentMethod, bin);
+        final Setting setting = Setting.getSettingByPaymentMethodAndBin(paymentMethod, bin);
         int cardNumberLength = CardInformation.CARD_NUMBER_MAX_LENGTH;
         if (setting != null) {
             cardNumberLength = setting.getCardNumber().getLength();
@@ -111,7 +97,7 @@ public class PaymentMethodGuessingController {
         }
     }
 
-    private List<PaymentMethod> filterByPaymentType(final Iterable<String> excludedPaymentTypes,
+    private List<PaymentMethod> filterByPaymentType(@Nullable final Iterable<String> excludedPaymentTypes,
         final List<PaymentMethod> guessingPaymentMethods) {
         if (excludedPaymentTypes == null) {
             return guessingPaymentMethods;

@@ -143,8 +143,7 @@ public class SecurityCodePresenter extends MvpPresenter<SecurityCodeActivityView
     public void initializeSettings() {
         if (mCardInfo != null) {
 
-            final Setting setting = PaymentMethodGuessingController
-                .getSettingByPaymentMethodAndBin(mPaymentMethod, mCardInfo.getFirstSixDigits());
+            final Setting setting = Setting.getSettingByPaymentMethodAndBin(mPaymentMethod, mCardInfo.getFirstSixDigits());
 
             initializeSecurityCodeSettings(setting);
             initializeCardNumberSettings(setting);

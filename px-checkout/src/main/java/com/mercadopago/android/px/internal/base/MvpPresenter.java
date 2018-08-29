@@ -13,7 +13,8 @@ import java.lang.ref.WeakReference;
  * See also {@link MvpView}
  */
 
-public class MvpPresenter<V extends MvpView, R extends ResourcesProvider> {
+@SuppressWarnings("AbstractClassWithoutAbstractMethods")
+public abstract class MvpPresenter<V extends MvpView, R extends ResourcesProvider> {
 
     private transient WeakReference<V> mView;
     private transient R resourcesProvider;

@@ -1,12 +1,9 @@
 package com.mercadopago.android.px.utils;
 
+import android.support.annotation.Nullable;
 import com.mercadopago.android.px.mocks.DummyCard;
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- * Created by vaserber on 8/24/17.
- */
 
 public class CardTestUtils {
     // * Card
@@ -18,6 +15,7 @@ public class CardTestUtils {
     public final static String DUMMY_EXPIRY_YEAR_LONG = "2019";
     public final static String DUMMY_IDENTIFICATION_NUMBER_DNI = "12312312";
 
+    @Nullable
     public static DummyCard getDummyCard(String paymentMethodId) {
         switch (paymentMethodId) {
         case "master":
@@ -50,8 +48,9 @@ public class CardTestUtils {
             return new DummyCard("mercadopago_cc", "5150730431208304", DUMMY_SECURITY_CODE, "5150 7304 3120 8304");
         case "master_mlm":
             return new DummyCard("master", "5031755734530604", DUMMY_SECURITY_CODE, "5031 7557 3453 0604");
+        default:
+            return null;
         }
-        return null;
     }
 
     public static DummyCard getPaymentMethodOnWithFrontSecurityCode() {

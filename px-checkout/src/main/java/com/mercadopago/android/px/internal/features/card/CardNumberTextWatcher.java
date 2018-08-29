@@ -25,7 +25,7 @@ public class CardNumberTextWatcher implements TextWatcher {
 
     @Override
     public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after) {
-        //Do something
+        //Do nothing
     }
 
     @Override

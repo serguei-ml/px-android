@@ -161,7 +161,7 @@ public class SecurityCodePresenterTest {
 
         mvp.getPresenter().initialize();
         mvp.getPresenter().initializeSettings();
-        assertEquals(mvp.getView().maxLenght, mockedPaymentMethod.getSettings().get(0).getSecurityCode().getLength());
+        assertEquals(mvp.getView().maxLength, mockedPaymentMethod.getSettings().get(0).getSecurityCode().getLength());
     }
 
     @Test
@@ -180,7 +180,7 @@ public class SecurityCodePresenterTest {
 
         mvp.getPresenter().initialize();
         mvp.getPresenter().initializeSettings();
-        assertEquals(mvp.getView().maxLenght, Card.CARD_DEFAULT_SECURITY_CODE_LENGTH);
+        assertEquals(mvp.getView().maxLength, Card.CARD_DEFAULT_SECURITY_CODE_LENGTH);
     }
 
     @Test
@@ -683,7 +683,7 @@ public class SecurityCodePresenterTest {
         private String errorMessage;
         private MercadoPagoError error;
         private boolean timerShown = false;
-        private Integer maxLenght;
+        int maxLength;
         private boolean errorState = false;
         private Integer cardTokenErrorCode;
 
@@ -693,8 +693,8 @@ public class SecurityCodePresenterTest {
         }
 
         @Override
-        public void setSecurityCodeInputMaxLength(int length) {
-            this.maxLenght = length;
+        public void setSecurityCodeInputMaxLength(final int length) {
+            maxLength = length;
         }
 
         @Override

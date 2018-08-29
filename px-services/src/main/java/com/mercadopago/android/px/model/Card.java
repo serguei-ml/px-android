@@ -3,10 +3,12 @@ package com.mercadopago.android.px.model;
 import android.support.annotation.Nullable;
 import java.util.Date;
 
+@SuppressWarnings("UseOfObsoleteDateTimeApi")
 public class Card implements CardInformation {
 
-    public static final Integer CARD_DEFAULT_SECURITY_CODE_LENGTH = 4;
-    public static final String CARD_DEFAULT_SECURITY_CODE_LOCATION = "back";
+    public static final int CARD_DEFAULT_IDENTIFICATION_NUMBER_LENGTH = 12;
+    public static final int CARD_DEFAULT_SECURITY_CODE_LENGTH = 4;
+    private static final String CARD_DEFAULT_SECURITY_CODE_LOCATION = "back";
     public static final Integer CARD_NUMBER_MAX_LENGTH = 16;
 
     private Cardholder cardHolder;
@@ -27,7 +29,7 @@ public class Card implements CardInformation {
         return cardHolder;
     }
 
-    public void setCardHolder(Cardholder cardHolder) {
+    public void setCardHolder(final Cardholder cardHolder) {
         this.cardHolder = cardHolder;
     }
 
@@ -35,7 +37,7 @@ public class Card implements CardInformation {
         return customerId;
     }
 
-    public void setCustomerId(String customerId) {
+    public void setCustomerId(final String customerId) {
         this.customerId = customerId;
     }
 
@@ -43,7 +45,7 @@ public class Card implements CardInformation {
         return dateCreated;
     }
 
-    public void setDateCreated(Date dateCreated) {
+    public void setDateCreated(final Date dateCreated) {
         this.dateCreated = dateCreated;
     }
 
@@ -51,7 +53,7 @@ public class Card implements CardInformation {
         return dateLastUpdated;
     }
 
-    public void setDateLastUpdated(Date dateLastUpdated) {
+    public void setDateLastUpdated(final Date dateLastUpdated) {
         this.dateLastUpdated = dateLastUpdated;
     }
 
@@ -60,7 +62,7 @@ public class Card implements CardInformation {
         return expirationMonth;
     }
 
-    public void setExpirationMonth(Integer expirationMonth) {
+    public void setExpirationMonth(final Integer expirationMonth) {
         this.expirationMonth = expirationMonth;
     }
 
@@ -69,7 +71,7 @@ public class Card implements CardInformation {
         return expirationYear;
     }
 
-    public void setExpirationYear(Integer expirationYear) {
+    public void setExpirationYear(final Integer expirationYear) {
         this.expirationYear = expirationYear;
     }
 
@@ -78,7 +80,7 @@ public class Card implements CardInformation {
         return firstSixDigits;
     }
 
-    public void setFirstSixDigits(String firstSixDigits) {
+    public void setFirstSixDigits(final String firstSixDigits) {
         this.firstSixDigits = firstSixDigits;
     }
 
@@ -86,7 +88,7 @@ public class Card implements CardInformation {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
@@ -113,7 +115,7 @@ public class Card implements CardInformation {
         return paymentMethod;
     }
 
-    public void setPaymentMethod(@Nullable PaymentMethod paymentMethod) {
+    public void setPaymentMethod(@Nullable final PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
 
@@ -126,11 +128,7 @@ public class Card implements CardInformation {
     }
 
     public boolean isSecurityCodeRequired() {
-        if (securityCode != null) {
-            return securityCode.getLength() != 0;
-        } else {
-            return false;
-        }
+        return securityCode != null && securityCode.getLength() != 0;
     }
 
     @Override
@@ -142,6 +140,7 @@ public class Card implements CardInformation {
         return securityCode != null ? securityCode.getCardLocation() : CARD_DEFAULT_SECURITY_CODE_LOCATION;
     }
 
+    @SuppressWarnings("ObjectToString")
     @Override
     public String toString() {
         return "Card{" +

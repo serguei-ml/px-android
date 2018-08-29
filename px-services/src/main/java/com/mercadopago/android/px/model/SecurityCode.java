@@ -19,11 +19,11 @@ public class SecurityCode implements Parcelable, Serializable {
         this.cardLocation = cardLocation;
     }
 
-    public Integer getLength() {
+    public int getLength() {
         return length;
     }
 
-    public void setLength(Integer length) {
+    public void setLength(int length) {
         this.length = length;
     }
 

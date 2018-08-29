@@ -21,6 +21,7 @@ import com.mercadopago.android.px.internal.util.ApiUtil;
 import com.mercadopago.android.px.internal.util.MPCardMaskUtil;
 import com.mercadopago.android.px.model.BankDeal;
 import com.mercadopago.android.px.model.Bin;
+import com.mercadopago.android.px.model.Card;
 import com.mercadopago.android.px.model.CardToken;
 import com.mercadopago.android.px.model.Cardholder;
 import com.mercadopago.android.px.model.DifferentialPricing;
@@ -47,19 +48,19 @@ import com.mercadopago.android.px.tracking.internal.utils.TrackingUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.mercadopago.android.px.model.Card.CARD_DEFAULT_SECURITY_CODE_LENGTH;
+
 public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView, GuessingCardProvider> {
 
-    public static final int CARD_DEFAULT_SECURITY_CODE_LENGTH = 4;
-    private static final int CARD_DEFAULT_IDENTIFICATION_NUMBER_LENGTH = 12;
-    @NonNull private final AmountRepository amountRepository;
-    @NonNull private final UserSelectionRepository userSelectionRepository;
-    @NonNull private final PaymentSettingRepository paymentSettingRepository;
-    @NonNull private final GroupsRepository groupsRepository;
-    @NonNull private final AdvancedConfiguration advancedConfiguration;
+    @NonNull private final AmountRepository mAmountRepository;
+    @NonNull private final UserSelectionRepository mUserSelectionRepository;
+    @NonNull private final PaymentSettingRepository mPaymentSettingRepository;
+    @NonNull private final GroupsRepository mGroupsRepository;
+    @NonNull private final AdvancedConfiguration mAdvancedConfiguration;
 
     //Card controller
-    @SuppressWarnings("WeakerAccess") PaymentMethodGuessingController mPaymentMethodGuessingController;
-    @SuppressWarnings("WeakerAccess") PaymentPreference mPaymentPreference;
+    @SuppressWarnings("WeakerAccess") protected PaymentMethodGuessingController mPaymentMethodGuessingController;
+    @SuppressWarnings("WeakerAccess") protected PaymentPreference mPaymentPreference;
     private List<IdentificationType> mIdentificationTypes;
     private FailureRecovery mFailureRecovery;
     //Activity parameters
@@ -97,12 +98,19 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
         @NonNull final UserSelectionRepository userSelectionRepository,
         @NonNull final PaymentSettingRepository paymentSettingRepository,
         @NonNull final GroupsRepository groupsRepository,
-        @NonNull final AdvancedConfiguration advancedConfiguration) {
-        this.amountRepository = amountRepository;
-        this.userSelectionRepository = userSelectionRepository;
-        this.paymentSettingRepository = paymentSettingRepository;
-        this.groupsRepository = groupsRepository;
-        this.advancedConfiguration = advancedConfiguration;
+        @NonNull final AdvancedConfiguration advancedConfiguration,
+        @NonNull final PaymentPreference paymentPreference,
+        @NonNull final PaymentRecovery paymentRecovery
+        ) {
+        mAmountRepository = amountRepository;
+        mUserSelectionRepository = userSelectionRepository;
+        mPaymentSettingRepository = paymentSettingRepository;
+        mGroupsRepository = groupsRepository;
+        mAdvancedConfiguration = advancedConfiguration;
+        mPaymentPreference = paymentPreference;
+        mPaymentRecovery = paymentRecovery;
+        mToken = new Token();
+        mIdentification = new Identification();
         mEraseSpace = true;
     }
 
@@ -115,15 +123,13 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
         if (recoverWithCardHolder()) {
             fillRecoveryFields();
         }
-        getView().showInputContainer();
     }
 
-    protected void trackScreen() {
+    public void trackScreen() {
         final String paymentTypeId = getPaymentTypeId();
-        @SuppressWarnings("StringConcatenationMissingWhitespace")
         final ScreenViewEvent event = new ScreenViewEvent.Builder()
             .setFlowId(FlowHandler.getInstance().getFlowId())
-            .setScreenId(TrackingUtil.SCREEN_ID_CARD_FORM + paymentTypeId)
+            .setScreenId(String.format("%s%s", TrackingUtil.SCREEN_ID_CARD_FORM, paymentTypeId))
             .setScreenName(TrackingUtil.SCREEN_NAME_CARD_FORM + " " + paymentTypeId)
             .build();
 
@@ -167,11 +173,11 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
 
     @Nullable
     public PaymentMethod getPaymentMethod() {
-        return userSelectionRepository.getPaymentMethod();
+        return mUserSelectionRepository.getPaymentMethod();
     }
 
     public void setPaymentMethod(@Nullable final PaymentMethod paymentMethod) {
-        userSelectionRepository.select(paymentMethod);
+        mUserSelectionRepository.select(paymentMethod);
         if (paymentMethod == null) {
             clearCardSettings();
         }
@@ -269,15 +275,15 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
     }
 
     private boolean isCardLengthResolved() {
-        return userSelectionRepository.getPaymentMethod() != null && mBin != null;
+        return mUserSelectionRepository.getPaymentMethod() != null && mBin != null;
     }
 
     public Integer getCardNumberLength() {
-        return PaymentMethodGuessingController.getCardNumberLength(userSelectionRepository.getPaymentMethod(), mBin);
+        return PaymentMethodGuessingController.getCardNumberLength(mUserSelectionRepository.getPaymentMethod(), mBin);
     }
 
     public void getPaymentMethods() {
-        groupsRepository.getGroups().enqueue(new Callback<PaymentMethodSearch>() {
+        mGroupsRepository.getGroups().enqueue(new Callback<PaymentMethodSearch>() {
             @Override
             public void success(final PaymentMethodSearch paymentMethodSearch) {
                 mPaymentMethodGuessingController = new PaymentMethodGuessingController(
@@ -304,7 +310,7 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
     }
 
     @SuppressWarnings("WeakerAccess")
-    void startGuessingForm() {
+    protected void startGuessingForm() {
         getView().initializeTitle();
         getView().setCardNumberListeners(mPaymentMethodGuessingController);
         getView().setCardholderNameListeners();
@@ -356,7 +362,7 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
     }
 
     private void resolveBankDeals() {
-        if (advancedConfiguration.isBankDealsEnabled()) {
+        if (mAdvancedConfiguration.isBankDealsEnabled()) {
             getBankDealsAsync();
         } else {
             getView().hideBankDeals();
@@ -379,7 +385,7 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
     }
 
     public void onPaymentMethodSet(final PaymentMethod paymentMethod) {
-        if (!userSelectionRepository.hasSelectedPaymentMethod()) {
+        if (!mUserSelectionRepository.hasSelectedPaymentMethod()) {
             setPaymentMethod(paymentMethod);
             configureWithSettings(paymentMethod);
             loadIdentificationTypes(paymentMethod);
@@ -394,7 +400,7 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
         getView().restoreBlackInfoContainerView();
         getView().clearCardNumberInputLength();
 
-        if (!userSelectionRepository.hasSelectedPaymentMethod()) {
+        if (!mUserSelectionRepository.hasSelectedPaymentMethod()) {
             return;
         }
         clearSpaceErasableSettings();
@@ -438,7 +444,7 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
                 getView().hideSecurityCodeInput();
             }
             final Setting setting =
-                PaymentMethodGuessingController.getSettingByPaymentMethodAndBin(paymentMethod, mBin);
+                Setting.getSettingByPaymentMethodAndBin(paymentMethod, mBin);
             if (setting == null) {
                 getView()
                     .showError(
@@ -483,7 +489,7 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
     }
 
     @SuppressWarnings("WeakerAccess")
-    void getIdentificationTypesAsync() {
+    protected void getIdentificationTypesAsync() {
         getResourcesProvider().getIdentificationTypesAsync(
             new TaggedCallback<List<IdentificationType>>(ApiUtil.RequestOrigin.GET_IDENTIFICATION_TYPES) {
                 @Override
@@ -507,7 +513,7 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
     }
 
     @SuppressWarnings("WeakerAccess")
-    void resolveIdentificationTypes(final List<IdentificationType> identificationTypes) {
+    protected void resolveIdentificationTypes(final List<IdentificationType> identificationTypes) {
         if (identificationTypes.isEmpty()) {
             getView().showError(
                 new MercadoPagoError(getResourcesProvider().getMissingIdentificationTypesErrorMessage(), false),
@@ -528,7 +534,7 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
     }
 
     @SuppressWarnings("WeakerAccess")
-    void getBankDealsAsync() {
+    protected void getBankDealsAsync() {
         getResourcesProvider()
             .getBankDealsAsync(new TaggedCallback<List<BankDeal>>(ApiUtil.RequestOrigin.GET_BANK_DEALS) {
                 @Override
@@ -551,7 +557,7 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
     }
 
     @SuppressWarnings("WeakerAccess")
-    void resolveBankDeals(final List<BankDeal> bankDeals) {
+    protected void resolveBankDeals(final List<BankDeal> bankDeals) {
         if (isViewAttached()) {
             if (bankDeals == null || bankDeals.isEmpty()) {
                 getView().hideBankDeals();
@@ -676,7 +682,7 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
     }
 
     public int getIdentificationNumberMaxLength() {
-        int maxLength = CARD_DEFAULT_IDENTIFICATION_NUMBER_LENGTH;
+        int maxLength = Card.CARD_DEFAULT_IDENTIFICATION_NUMBER_LENGTH;
         if (mIdentificationType != null) {
             maxLength = mIdentificationType.getMaxLength();
         }
@@ -686,7 +692,7 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
     public boolean validateCardNumber() {
         mCardToken.setCardNumber(getCardNumber());
         try {
-            final PaymentMethod paymentMethod = userSelectionRepository.getPaymentMethod();
+            final PaymentMethod paymentMethod = mUserSelectionRepository.getPaymentMethod();
             if (paymentMethod == null) {
                 if (getCardNumber() == null || getCardNumber().length() < Bin.BIN_LENGTH) {
                     throw new CardTokenException(CardTokenException.INVALID_CARD_NUMBER_INCOMPLETE);
@@ -741,7 +747,7 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
     public boolean validateSecurityCode() {
         mCardToken.setSecurityCode(getSecurityCode());
         try {
-            mCardToken.validateSecurityCode(userSelectionRepository.getPaymentMethod());
+            mCardToken.validateSecurityCode(mUserSelectionRepository.getPaymentMethod());
             getView().clearErrorView();
             return true;
         } catch (final CardTokenException e) {
@@ -822,7 +828,7 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
     }
 
     @SuppressWarnings("WeakerAccess")
-    void createToken() {
+    protected void createToken() {
         getResourcesProvider()
             .createTokenAsync(mCardToken, new TaggedCallback<Token>(ApiUtil.RequestOrigin.CREATE_TOKEN) {
                 @Override
@@ -839,12 +845,12 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
 
     public void resolveTokenRequest(final Token token) {
         mToken = token;
-        paymentSettingRepository.configure(mToken);
+        mPaymentSettingRepository.configure(mToken);
         getIssuers();
     }
 
     @SuppressWarnings("WeakerAccess")
-    void resolveTokenCreationError(final MercadoPagoError error, final String requestOrigin) {
+    protected void resolveTokenCreationError(final MercadoPagoError error, final String requestOrigin) {
         if (wrongIdentificationNumber(error)) {
             showIdentificationNumberError();
         } else {
@@ -874,8 +880,8 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
     }
 
     @SuppressWarnings("WeakerAccess")
-    void getIssuers() {
-        final PaymentMethod paymentMethod = userSelectionRepository.getPaymentMethod();
+    protected void getIssuers() {
+        final PaymentMethod paymentMethod = mUserSelectionRepository.getPaymentMethod();
         if (paymentMethod != null) {
             getResourcesProvider().getIssuersAsync(paymentMethod.getId(), mBin,
                 new TaggedCallback<List<Issuer>>(ApiUtil.RequestOrigin.GET_ISSUERS) {
@@ -899,25 +905,25 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
     }
 
     @SuppressWarnings("WeakerAccess")
-    void resolveIssuersList(final List<Issuer> issuers) {
+    protected void resolveIssuersList(final List<Issuer> issuers) {
         if (issuers.size() == 1) {
             mIssuer = issuers.get(0);
-            userSelectionRepository.select(mIssuer);
+            mUserSelectionRepository.select(mIssuer);
             getInstallments();
         } else {
-            getView().finishCardFlow(userSelectionRepository.getPaymentMethod(), mToken, issuers);
+            getView().finishCardFlow(mUserSelectionRepository.getPaymentMethod(), mToken, issuers);
         }
     }
 
     @SuppressWarnings("WeakerAccess")
-    void getInstallments() {
-        final CheckoutPreference checkoutPreference = paymentSettingRepository.getCheckoutPreference();
+    protected  void getInstallments() {
+        final CheckoutPreference checkoutPreference = mPaymentSettingRepository.getCheckoutPreference();
         if (checkoutPreference != null) {
             final DifferentialPricing differentialPricing = checkoutPreference.getDifferentialPricing();
             final Integer differentialPricingId = differentialPricing == null ? null : differentialPricing.getId();
-            final PaymentMethod paymentMethod = userSelectionRepository.getPaymentMethod();
+            final PaymentMethod paymentMethod = mUserSelectionRepository.getPaymentMethod();
             if (paymentMethod != null) {
-                getResourcesProvider().getInstallmentsAsync(mBin, amountRepository.getAmountToPay(), mIssuer.getId(),
+                getResourcesProvider().getInstallmentsAsync(mBin, mAmountRepository.getAmountToPay(), mIssuer.getId(),
                     paymentMethod.getId(), differentialPricingId,
                     new TaggedCallback<List<Installment>>(ApiUtil.RequestOrigin.GET_INSTALLMENTS) {
                         @Override
@@ -941,7 +947,7 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
     }
 
     @SuppressWarnings("WeakerAccess")
-    void resolveInstallments(final List<Installment> installments) {
+    protected void resolveInstallments(final List<Installment> installments) {
         String errorMessage = null;
         if (installments == null || installments.isEmpty()) {
             errorMessage = getResourcesProvider().getMissingInstallmentsForIssuerErrorMessage();
@@ -958,19 +964,19 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
     private void resolvePayerCosts(final List<PayerCost> payerCosts) {
         final PayerCost defaultPayerCost = mPaymentPreference.getDefaultInstallments(payerCosts);
         if (defaultPayerCost != null) {
-            userSelectionRepository.select(defaultPayerCost);
-            getView().finishCardFlow(userSelectionRepository.getPaymentMethod(), mToken, mIssuer,
+            mUserSelectionRepository.select(defaultPayerCost);
+            getView().finishCardFlow(mUserSelectionRepository.getPaymentMethod(), mToken, mIssuer,
                 defaultPayerCost);
         } else if (payerCosts.isEmpty()) {
             getView().showError(new MercadoPagoError(getResourcesProvider().getMissingPayerCostsErrorMessage(), false),
                 ApiUtil.RequestOrigin.GET_INSTALLMENTS);
         } else if (payerCosts.size() == 1) {
             final PayerCost payerCost = payerCosts.get(0);
-            userSelectionRepository.select(payerCost);
-            getView().finishCardFlow(userSelectionRepository.getPaymentMethod(), mToken, mIssuer,
+            mUserSelectionRepository.select(payerCost);
+            getView().finishCardFlow(mUserSelectionRepository.getPaymentMethod(), mToken, mIssuer,
                 payerCost);
         } else {
-            getView().finishCardFlow(userSelectionRepository.getPaymentMethod(), mToken, mIssuer, payerCosts);
+            getView().finishCardFlow(mUserSelectionRepository.getPaymentMethod(), mToken, mIssuer, payerCosts);
         }
     }
 
@@ -986,7 +992,7 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
         }
     }
 
-    public boolean shouldAskPaymentType(final List<PaymentMethod> paymentMethodList) {
+    public boolean shouldAskPaymentType(@Nullable final List<PaymentMethod> paymentMethodList) {
 
         boolean paymentTypeUndefined = false;
         final String paymentType;

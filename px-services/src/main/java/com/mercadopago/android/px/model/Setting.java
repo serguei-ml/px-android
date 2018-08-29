@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 
 public final class Setting implements Parcelable, Serializable {
 
@@ -46,6 +47,20 @@ public final class Setting implements Parcelable, Serializable {
             }
         }
         return selectedSetting;
+    }
+
+    @Nullable
+    public static Setting getSettingByPaymentMethodAndBin(final PaymentMethod paymentMethod, final String bin) {
+        Setting setting = null;
+        if (bin == null) {
+            if (paymentMethod.getSettings() != null && !paymentMethod.getSettings().isEmpty()) {
+                setting = paymentMethod.getSettings().get(0);
+            }
+        } else {
+            final List<Setting> settings = paymentMethod.getSettings();
+            setting = Setting.getSettingByBin(settings, bin);
+        }
+        return setting;
     }
 
     public Bin getBin() {
