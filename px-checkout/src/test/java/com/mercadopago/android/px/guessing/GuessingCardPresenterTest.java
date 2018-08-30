@@ -821,37 +821,38 @@ public class GuessingCardPresenterTest {
             paymentStatusDetail);
     }
 
+    @SuppressWarnings("WeakerAccess")
     private static class MockedView implements GuessingCardActivityView {
 
-        boolean validStart;
-        boolean paymentMethodSet;
-        boolean invalidPaymentMethod;
-        boolean multipleErrorViewShown;
-        String savedCardholderName;
-        String savedIdentificationNumber;
-        boolean errorState;
-        boolean cardNumberLengthDefault;
-        boolean cardNumberMaskDefault;
-        boolean securityCodeInputErased;
-        boolean clearCardView;
-        boolean identificationTypesInitialized;
-        boolean hideIdentificationInput;
-        boolean showInputContainer;
-        boolean initializeGuessingForm;
-        boolean initializeGuessingListeners;
-        MercadoPagoError errorShown;
-        boolean hideBankDeals;
-        boolean hideSecurityCodeInput;
-        boolean bankDealsShown;
-        boolean onlyOnePMErrorViewShown;
-        boolean infoContainerTurnedRed;
-        String supportedPaymentMethodId;
-        private CardTokenException cardTokenError;
-        private boolean formDataErrorState;
+        protected boolean validStart;
+        protected boolean paymentMethodSet;
+        protected boolean invalidPaymentMethod;
+        protected boolean multipleErrorViewShown;
+        protected String savedCardholderName;
+        protected String savedIdentificationNumber;
+        protected boolean errorState;
+        protected boolean cardNumberLengthDefault;
+        protected boolean cardNumberMaskDefault;
+        protected boolean securityCodeInputErased;
+        protected boolean clearCardView;
+        protected boolean identificationTypesInitialized;
+        protected boolean hideIdentificationInput;
+        protected boolean showInputContainer;
+        protected boolean initializeGuessingForm;
+        protected boolean initializeGuessingListeners;
+        protected MercadoPagoError errorShown;
+        protected boolean hideBankDeals;
+        protected boolean hideSecurityCodeInput;
+        protected boolean bankDealsShown;
+        protected boolean onlyOnePMErrorViewShown;
+        protected boolean infoContainerTurnedRed;
+        protected String supportedPaymentMethodId;
+        protected CardTokenException cardTokenError;
+        protected boolean formDataErrorState;
 
         @Override
         public void setPaymentMethod(final PaymentMethod paymentMethod) {
-
+            //Empty body
         }
 
         @Override
@@ -917,21 +918,23 @@ public class GuessingCardPresenterTest {
         @Override
         public void finishCardFlow(final PaymentMethod paymentMethod, final Token token, final Issuer issuer,
             final PayerCost payerCost) {
-
+            // Empty body
         }
 
         @Override
         public void finishCardFlow(final PaymentMethod paymentMethod, final Token token, final Issuer issuer,
             final List<PayerCost> payerCosts) {
+            // Empty body
         }
 
         @Override
         public void showApiExceptionError(final ApiException exception, final String requestOrigin) {
+            // Empty body
         }
 
         @Override
         public void setupPresenter() {
-
+            // Empty body
         }
 
         @Override
@@ -942,7 +945,7 @@ public class GuessingCardPresenterTest {
 
         @Override
         public void hideExclusionWithOneElementInfoView() {
-
+            // Empty body
         }
 
         @Override
@@ -952,7 +955,7 @@ public class GuessingCardPresenterTest {
 
         @Override
         public void setContainerAnimationListeners() {
-
+            // Empty body
         }
 
         @Override
@@ -989,12 +992,12 @@ public class GuessingCardPresenterTest {
 
         @Override
         public void setErrorSecurityCode() {
-
+            // Empty body
         }
 
         @Override
         public void setErrorCardNumber() {
-
+            // Empty body
         }
 
         @Override
@@ -1030,17 +1033,17 @@ public class GuessingCardPresenterTest {
 
         @Override
         public void setSecurityCodeInputMaxLength(final int length) {
-
+            // Empty body
         }
 
         @Override
         public void setSecurityCodeViewLocation(final String location) {
-
+            // Empty body
         }
 
         @Override
         public void setIdentificationNumberRestrictions(final String type) {
-
+            // Empty body
         }
 
         @Override
@@ -1060,22 +1063,22 @@ public class GuessingCardPresenterTest {
 
         @Override
         public void setCardNumberInputMaxLength(final int length) {
-
+            // Empty body
         }
 
         @Override
         public void setErrorCardholderName() {
-
+            // Empty body
         }
 
         @Override
         public void setErrorExpiryDate() {
-
+            // Empty body
         }
 
         @Override
         public void setErrorIdentificationNumber() {
-
+            // Empty body
         }
 
         @Override

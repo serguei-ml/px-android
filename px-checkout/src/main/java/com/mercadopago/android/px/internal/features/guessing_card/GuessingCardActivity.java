@@ -557,7 +557,7 @@ public class GuessingCardActivity extends MercadoPagoBaseActivity implements Gue
         }
     }
 
-    boolean cardViewsActive() {
+    protected boolean cardViewsActive() {
         return !mLowResActive;
     }
 
@@ -1480,7 +1480,7 @@ public class GuessingCardActivity extends MercadoPagoBaseActivity implements Gue
         }
     }
 
-    boolean showingIdentification() {
+    protected boolean showingIdentification() {
         initCardState();
         return mCardSideState.equals(CARD_IDENTIFICATION);
     }
