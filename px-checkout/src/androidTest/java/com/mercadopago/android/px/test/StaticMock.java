@@ -24,6 +24,7 @@ import com.mercadopago.android.px.preferences.PaymentPreference;
 import com.mercadopago.android.px.model.exceptions.ApiException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.util.Calendar;
 import java.util.List;
 
 public class StaticMock {
@@ -98,7 +99,7 @@ public class StaticMock {
 
         return new CardToken(DUMMY_CARD_NUMBER, DUMMY_EXPIRATION_MONTH,
             DUMMY_EXPIRATION_YEAR_SHORT, DUMMY_SECURITY_CODE, DUMMY_CARDHOLDER_NAME,
-            DUMMY_IDENTIFICATION_TYPE, DUMMY_IDENTIFICATION_NUMBER);
+            DUMMY_IDENTIFICATION_TYPE, DUMMY_IDENTIFICATION_NUMBER, Calendar.getInstance());
     }
 
     public static CardToken getCardToken(Context context, String flavor) {

@@ -11,7 +11,6 @@ public class CardToken {
 
     private static final int MIN_LENGTH_NUMBER = 10;
     private static final int MAX_LENGTH_NUMBER = 19;
-    @SuppressWarnings("UseOfObsoleteDateTimeApi") private static final Calendar NOW = Calendar.getInstance();
 
     private Cardholder cardholder;
     private String cardNumber;
@@ -19,12 +18,14 @@ public class CardToken {
     private Integer expirationMonth;
     private Integer expirationYear;
     private String securityCode;
+    private final Calendar calendar;
 
-    public CardToken(final String cardNumber, @Nullable final Integer expirationMonth, @Nullable final Integer expirationYear,
+    public CardToken(final String cardNumber, final Integer expirationMonth, final Integer expirationYear,
         final String securityCode, final String cardholderName, final String identificationType,
-        final String identificationNumber) {
+        final String identificationNumber, final Calendar calendar) {
         this.cardNumber = normalizeCardNumber(cardNumber);
         this.expirationMonth = expirationMonth;
+        this.calendar = calendar;
         this.expirationYear = normalizeYear(expirationYear);
         this.securityCode = securityCode;
         cardholder = new Cardholder();
@@ -58,19 +59,6 @@ public class CardToken {
         }
     }
 
-    public static boolean validateExpiryDate(final Integer month, final Integer year) {
-        return validateExpMonth(month) && validateExpYear(year) && !hasMonthPassed(month, year);
-    }
-
-    @SuppressWarnings("MagicNumber")
-    private static boolean validateExpMonth(final Integer month) {
-        return month != null && (month >= 1 && month <= 12);
-    }
-
-    private static boolean validateExpYear(final Integer year) {
-        return year != null && !hasYearPassed(year);
-    }
-
     public static boolean checkLuhn(final String cardNumber) {
         int sum = 0;
         boolean alternate = false;
@@ -91,24 +79,37 @@ public class CardToken {
         return (sum % 10 == 0);
     }
 
-    private static boolean hasYearPassed(final int year) {
-        final int normalized = normalizeYear(year);
-        return normalized < NOW.get(Calendar.YEAR);
-    }
-
-    private static boolean hasMonthPassed(final int month, final int year) {
-        return hasYearPassed(year) ||
-            normalizeYear(year) == NOW.get(Calendar.YEAR) && month < (NOW.get(Calendar.MONTH) + 1);
-    }
-
-    private static Integer normalizeYear(final Integer year) {
+    private int normalizeYear(final Integer year) {
         Integer normalizedYear = year;
         if ((year != null) && (year < 100 && year >= 0)) {
-            final String currentYear = String.valueOf(NOW.get(Calendar.YEAR));
+            final String currentYear = String.valueOf(calendar.get(Calendar.YEAR));
             final String prefix = currentYear.substring(0, currentYear.length() - 2);
             normalizedYear = Integer.parseInt(String.format(Locale.US, "%s%02d", prefix, year));
         }
         return normalizedYear;
+    }
+
+    public boolean validateExpiryDate(final Integer month, final Integer year) {
+        return validateExpMonth(month) && validateExpYear(year) && !hasMonthPassed(month, year);
+    }
+
+    @SuppressWarnings("MagicNumber")
+    private boolean validateExpMonth(final Integer month) {
+        return month != null && (month >= 1 && month <= 12);
+    }
+
+    private boolean validateExpYear(final Integer year) {
+        return year != null && !hasYearPassed(year);
+    }
+
+    private boolean hasYearPassed(final int year) {
+        final int normalized = normalizeYear(year);
+        return normalized < calendar.get(Calendar.YEAR);
+    }
+
+    private boolean hasMonthPassed(final int month, final int year) {
+        return hasYearPassed(year) ||
+            normalizeYear(year) == calendar.get(Calendar.YEAR) && month < (calendar.get(Calendar.MONTH) + 1);
     }
 
     public Cardholder getCardholder() {
@@ -147,8 +148,8 @@ public class CardToken {
         return expirationYear;
     }
 
-    public void setExpirationYear(@Nullable final Integer expirationYear) {
-        this.expirationYear = CardToken.normalizeYear(expirationYear);
+    public void setExpirationYear(final Integer expirationYear) {
+        this.expirationYear = normalizeYear(expirationYear);
     }
 
     public String getSecurityCode() {
