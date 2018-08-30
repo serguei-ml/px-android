@@ -46,7 +46,6 @@ import com.mercadopago.android.px.preferences.PaymentPreference;
 import com.mercadopago.android.px.services.Callback;
 import com.mercadopago.android.px.tracking.internal.utils.TrackingUtil;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import static com.mercadopago.android.px.model.Card.CARD_DEFAULT_SECURITY_CODE_LENGTH;
@@ -327,7 +326,7 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
     }
 
     private void initializeCardToken() {
-        mCardToken = new CardToken("", null, null, "", "", "", "", Calendar.getInstance());
+        mCardToken = new CardToken("", null, null, "", "", "", "");
     }
 
     private void checkPaymentMethodsSupported(final boolean withAnimation) {
@@ -677,7 +676,7 @@ public class GuessingCardPresenter extends MvpPresenter<GuessingCardActivityView
         return mIdentificationNumber;
     }
 
-    public void setIdentificationNumber(final String number) {
+    public void setIdentificationNumber(@Nullable final String number) {
         mIdentificationNumber = number;
         mIdentification.setNumber(number);
     }
